@@ -2,7 +2,7 @@ import Header from '../components/header/Header';
 import About from '../components/about/About';
 import Timeline from '../components/timeLine/Timeline';
 import Image from 'next/image';
-
+import Highlights from '../components/pressAndHighlights/Highlights';
 export default function Home() {
   return (
     <main className="relative">
@@ -21,6 +21,7 @@ export default function Home() {
         </div>
       </div>
       <Timeline />
+      <Highlights/>
     </main>
   );
 }
