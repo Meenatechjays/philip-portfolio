@@ -1,12 +1,13 @@
 'use client';
 
 import Image from 'next/image';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 
 export default function PortfolioHero() {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isAnimating, setIsAnimating] = useState(false);
   const [direction, setDirection] = useState(null);
+  const [isInitialMount, setIsInitialMount] = useState(true);
 
   const rightContentItems = [
     {
@@ -23,8 +24,18 @@ export default function PortfolioHero() {
     }
   ];
 
+  // Initial mount animation - content slides up from bottom after component renders
+  useEffect(() => {
+    // Wait a bit for the about section to render, then trigger initial animation
+    const timer = setTimeout(() => {
+      setIsInitialMount(false);
+    }, 500); // Delay to ensure about section is fully rendered
+
+    return () => clearTimeout(timer);
+  }, []);
+
   const handleContentClick = () => {
-    if (isAnimating) return;
+    if (isAnimating || isInitialMount) return;
     
     setIsAnimating(true);
     setDirection('up');
@@ -34,11 +45,12 @@ export default function PortfolioHero() {
       setCurrentIndex((prev) => (prev + 1) % rightContentItems.length);
       setIsAnimating(false);
       setDirection(null);
-    }, 5000);
+    }, 1500);
   };
 
   return (
     <div className="min-h-screen relative overflow-hidden">
+        
       {/* Background Images */}
       <div className="absolute inset-0 w-full h-full">
         {/* Banner Blue Background */}
@@ -81,6 +93,13 @@ export default function PortfolioHero() {
 
       {/* Main Content Container */}
       <div className="relative z-10 min-h-screen">
+        {/* Logo - phil.in */}
+        <div className="absolute top-6 left-6 md:left-12 z-20">
+          <a href="/" className="text-xl md:text-2xl font-bold text-gray-900 hover:opacity-80 transition-opacity">
+            phil.in
+          </a>
+        </div>
+
         {/* Left Content */}
         <div className="absolute w-[529px] h-[284px] top-[150px] left-[76px] opacity-100 flex flex-col gap-4">
           <h1 className="opacity-100 font-sans font-bold text-6xl text-gray-900 leading-normal tracking-[0%]">
@@ -118,51 +137,54 @@ export default function PortfolioHero() {
               />
             </div>
           </div>
+      </div>
 
-        {/* Right Side Content - Scrollable */}
-        <div 
-          className="absolute w-[529px] h-[166px] top-[210px] left-[980px] overflow-hidden cursor-pointer"
-          onClick={handleContentClick}
-        >
-          <div className="relative w-full h-full">
-            {rightContentItems.map((item, index) => {
-              const isActive = index === currentIndex;
-              const isNext = index === (currentIndex + 1) % rightContentItems.length;
-              
-              let animationClass = '';
-              if (isActive && !isAnimating) {
-                // Currently visible item (not animating)
+      {/* Right Side Content - Scrollable (Outside main container, slides from bottom) */}
+      <div 
+        className="absolute w-[529px] h-[166px] top-[210px] left-[980px] overflow-hidden cursor-pointer z-10"
+        onClick={handleContentClick}
+      >
+        <div className="relative w-full h-full">
+          {rightContentItems.map((item, index) => {
+            const isActive = index === currentIndex;
+            const isNext = index === (currentIndex + 1) % rightContentItems.length;
+            
+            let animationClass = '';
+            if (isActive && !isAnimating && !isInitialMount) {
+              // Currently visible item (not animating, after initial mount)
+              animationClass = 'translate-y-0 opacity-100';
+            } else if (isActive && isInitialMount) {
+              // Initial mount: start from bottom, slide up slowly
+              animationClass = 'translate-y-full opacity-0';
+            } else if (isActive && isAnimating && direction === 'up') {
+              // Current item sliding up and fading out
+              animationClass = '-translate-y-full opacity-0';
+            } else if (isNext) {
+              // Next item: positioned below, will slide up when animating
+              if (isAnimating && direction === 'up') {
                 animationClass = 'translate-y-0 opacity-100';
-              } else if (isActive && isAnimating && direction === 'up') {
-                // Current item sliding up and out
-                animationClass = '-translate-y-full opacity-0';
-              } else if (isNext) {
-                // Next item: positioned below, will slide up when animating
-                if (isAnimating && direction === 'up') {
-                  animationClass = 'translate-y-0 opacity-100';
-                } else {
-                  animationClass = 'translate-y-full opacity-0';
-                }
               } else {
-                // All other items: positioned below (invisible)
                 animationClass = 'translate-y-full opacity-0';
               }
-              
-              return (
-                <div
-                  key={index}
-                  className={`absolute w-full h-full flex flex-col gap-4 transition-all duration-500 ease-in-out ${animationClass}`}
-                >
-                  <h2 className="text-xl md:text-2xl lg:text-3xl font-bold text-gray-800 leading-tight">
-                    {item.title}
-                  </h2>
-                  <p className="text-gray-600 text-sm md:text-base leading-relaxed">
-                    {item.description}
-                  </p>
-                </div>
-              );
-            })}
-          </div>
+            } else {
+              // All other items: positioned below (invisible)
+              animationClass = 'translate-y-full opacity-0';
+            }
+            
+            return (
+              <div
+                key={index}
+                className={`absolute w-full h-full flex flex-col gap-4 transition-all duration-[1500ms] ease-in-out ${animationClass}`}
+              >
+                <h2 className="text-xl md:text-2xl lg:text-3xl font-bold text-gray-800 leading-tight">
+                  {item.title}
+                </h2>
+                <p className="text-gray-600 text-sm md:text-base leading-relaxed">
+                  {item.description}
+                </p>
+              </div>
+            );
+          })}
         </div>
       </div>
     </div>
