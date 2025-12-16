@@ -1,9 +1,14 @@
-import Image from "next/image";
+import Header from '../components/header/Header';
+import About from '../components/about/About';
+import Timeline from '../components/timeLine/Timeline';
 
 export default function Home() {
   return (
-    <div>
-    </div>
+    <main className="relative">
+      <Header />
+      <About />
+      <Timeline />
+    </main>
   );
 }
 
