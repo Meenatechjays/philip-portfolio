@@ -49,7 +49,7 @@ export default function Highlights() {
         </div>
 
         {/* Content Area - Highlights Cards */}
-        <div className="relative w-full mt-32 flex flex-row items-start justify-center gap-4 flex-nowrap px-4 ">
+        <div className="relative w-full mt-22 flex flex-row items-start justify-center gap-4 flex-nowrap px-4 ">
           {/* Card 1 - Press One Image - Highest */}
           <HighlightsCard
             imageSrc="/pressOneImg.jpg"
@@ -70,6 +70,7 @@ export default function Highlights() {
             readMoreLink="/article"
             position={{ left: '0', top: '0' }}
             className="relative translate-y-22"
+          
           />
 
           {/* Card 3 - Philip Header Image - Higher than Card 2 */}
@@ -80,7 +81,7 @@ export default function Highlights() {
             description="Insights into strategic leadership and vision that drives successful technology ventures and innovation."
             readMoreLink="/article"
             position={{ left: '0', top: '0' }}
-            className="relative -translate-y-2"
+            className="relative -translate-y-2 "
           />
 
           {/* Card 4 - Timeline 2018 Image - Lower than Card 3 */}
