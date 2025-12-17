@@ -1,6 +1,7 @@
 'use client';
 
 import InvestmentCard from '../ui/InvestmentCard';
+import DesktopFrame from '../layout/DesktopFrame';
 
 export default function Investors() {
   return (
@@ -28,67 +29,70 @@ export default function Investors() {
       />
       
       {/* Investment Header */}
-      <div
-        className="absolute z-10"
-        style={{
-          display: 'flex',
-          flexDirection: 'column',
-          alignItems: 'center',
-          padding: '0px',
-          gap: '16px',
-          width: '671px',
-          height: '145px',
-          left: 'calc(50% - 671px/2 + 0.5px)',
-          top: '100px',
-        }}
-      >
-        {/* Investment Heading */}
-        <h2 className="w-[428px] h-[65px] opacity-100 font-satoshi font-bold text-4xl leading-[100%] tracking-[0%] text-center text-[#1F2024]">
-          Investment portfolio
-        </h2>
+      <DesktopFrame>
+        <div
+          className="absolute z-10"
+          style={{
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'center',
+            padding: '0px',
+            gap: '16px',
+            width: '671px',
+            height: '145px',
+            left: 'calc(50% - 671px/2 + 0.5px)',
+            top: '100px',
+          }}
+        >
+          {/* Investment Heading */}
+          <h2 className="w-[428px] h-[65px] opacity-100 font-satoshi font-bold text-4xl leading-[100%] tracking-[0%] text-center text-[#1F2024]">
+            Investment portfolio
+          </h2>
+          
+          {/* Investment Paragraph Content */}
+          <p className="w-[671px] h-[64px] opacity-100 font-satoshi font-normal text-lg leading-[100%] tracking-[0%] text-center text-[#454654]">
+            Lorem ipsum dolor sit amet consectetur. Aliquam mattis tortor magna nisl. Non risus semper vel est amet leo non
+          </p>
+        </div>
         
-        {/* Investment Paragraph Content */}
-        <p className="w-[671px] h-[64px] opacity-100 font-satoshi font-normal text-lg leading-[100%] tracking-[0%] text-center text-[#454654]">
-          Lorem ipsum dolor sit amet consectetur. Aliquam mattis tortor magna nisl. Non risus semper vel est amet leo non
-        </p>
-      </div>
-      
-      {/* Investment Cards Container */}
-      {/* Investment Cards Container */}
-<div
-  className="relative z-10 w-full overflow-x-auto"
-  style={{ marginTop: '300px' }}
->
-  <div className="flex gap-8 px-10">
-    <InvestmentCard
-      imageSrc="/pepcare.png"
-      imageAlt="PepCare"
-      title="Pepcare"
-      description="Built a web HIPPA-compliant platform to streamline scheduling."
-    />
+        {/* Investment Cards Container */}
+        <div
+          className="relative z-10 w-full max-[1727px]:mt-[240px]"
+          style={{ marginTop: '300px' }}
+        >
+          <div className="overflow-x-auto scroll-smooth [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
+            <div className="flex gap-8 pl-[76px] pr-[76px] max-[1727px]:pl-[48px] max-[1727px]:pr-[48px]">
+              <InvestmentCard
+                imageSrc="/pepcare.png"
+                imageAlt="PepCare"
+                title="Pepcare"
+                description="Built a web HIPPA-compliant platform to streamline scheduling."
+              />
 
-    <InvestmentCard
-      imageSrc="/belongy.png"
-      imageAlt="Belongly"
-      title="Belongly"
-      description="A HIPAA-compliant AI matching solution that streamlines therapist connections, enhances"
-    />
+              <InvestmentCard
+                imageSrc="/belongy.png"
+                imageAlt="Belongly"
+                title="Belongly"
+                description="A HIPAA-compliant AI matching solution that streamlines therapist connections, enhances"
+              />
 
-    <InvestmentCard
-      imageSrc="/decerna.png"
-      imageAlt="Decerna"
-      title="Decerna"
-      description="Our team created a cutting-edge emission calculation tool with multiple data interface"
-    />
+              <InvestmentCard
+                imageSrc="/decerna.png"
+                imageAlt="Decerna"
+                title="Decerna"
+                description="Our team created a cutting-edge emission calculation tool with multiple data interface"
+              />
 
-    <InvestmentCard
-      imageSrc="/ameya.png"
-      imageAlt="Ameya"
-      title="Ameya"
-      description="Ameya is a du designed to o"
-    />
-  </div>
-</div>
+              <InvestmentCard
+                imageSrc="/ameya.png"
+                imageAlt="Ameya"
+                title="Ameya"
+                description="Ameya is a du designed to o"
+              />
+            </div>
+          </div>
+        </div>
+      </DesktopFrame>
 
     </section>
   );

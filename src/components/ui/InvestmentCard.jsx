@@ -11,10 +11,10 @@ export default function InvestmentCard({
 }) {
   return (
     <div
-      className={`relative w-[464px] h-[576px] overflow-hidden rounded-[28px] bg-white shadow-[0_20px_50px_rgba(0,0,0,0.18)] ${className}`}
+      className={`relative w-[370px] h-[460px] flex-shrink-0 overflow-hidden rounded-[28px] bg-white shadow-[0_20px_50px_rgba(0,0,0,0.18)] ${className}`}
     >
       {/* Image Section */}
-      <div className="relative h-[360px] w-full overflow-hidden">
+      <div className="relative h-[288px] w-[370px] flex-shrink-0 overflow-hidden">
         {imageSrc && (
           <Image
             src={imageSrc}
@@ -41,28 +41,28 @@ export default function InvestmentCard({
       </div>
 
       {/* Content Section */}
-      <div className="relative z-10 -mt-14 rounded-t-[32px] bg-white px-8 pt-8 pb-10 shadow-[0_-12px_30px_rgba(0,0,0,0.12)]">
+      <div className="relative z-10 -mt-12 rounded-t-[32px] bg-white px-6 pt-6 pb-8 shadow-[0_-12px_30px_rgba(0,0,0,0.12)]">
         {/* Icon */}
-        <div className="mb-4 h-10 w-10">
+        <div className="mb-3 h-8 w-8">
           <Image
             src="/star.svg"
             alt="Icon"
-            width={40}
-            height={40}
+            width={32}
+            height={32}
             className="h-full w-full object-contain"
           />
         </div>
 
         {/* Title */}
         {title && (
-          <h3 className="mb-3 text-[28px] font-semibold leading-tight text-[#0F172A]">
+          <h3 className="mb-2 text-[24px] font-semibold leading-tight text-[#0F172A]">
             {title}
           </h3>
         )}
 
         {/* Description */}
         {description && (
-          <p className="text-lg leading-relaxed text-[#475569]">
+          <p className="text-base leading-relaxed text-[#475569]">
             {description}
           </p>
         )}

@@ -2,6 +2,7 @@
 
 import Image from 'next/image';
 import { useState, useEffect } from 'react';
+import DesktopFrame from '../layout/DesktopFrame';
 
 export default function PortfolioHero() {
   const [currentIndex, setCurrentIndex] = useState(0);
@@ -92,101 +93,103 @@ export default function PortfolioHero() {
     
 
       {/* Main Content Container */}
-      <div className="relative z-10 min-h-screen">
-        {/* Logo - phil.in */}
-        <div className="absolute top-6 left-6 md:left-12 z-20">
-          <a href="/" className="text-xl md:text-2xl font-bold text-gray-900 hover:opacity-80 transition-opacity">
-            phil.in
-          </a>
-        </div>
-
-        {/* Left Content */}
-        <div className="absolute w-[529px] h-[284px] top-[150px] left-[76px] opacity-100 flex flex-col gap-4">
-          <h1 className="opacity-100 font-sans font-bold text-6xl text-gray-900 leading-normal tracking-[0%]">
-            Hey Im<br /> 
-              Philip Samuelraj
-            </h1>
-          <p className="h-[96px] opacity-100 text-base sm:text-lg text-gray-700 leading-[100%]">
-              Lorem ipsum dolor sit amet consectetur. Aliquam mattis tortor magna nisl. Non risus semper vel est amet leo non
-            </p>
+      <DesktopFrame>
+        <div className="relative z-10 min-h-screen max-xl:flex max-xl:flex-col max-xl:items-center max-xl:justify-center max-xl:py-20">
+          {/* Logo - phil.in */}
+          <div className="absolute top-6 left-[76px] z-20 max-xl:relative max-xl:top-0 max-xl:left-0 max-xl:mb-8">
+            <a href="/" className="text-xl md:text-2xl font-bold text-gray-900 hover:opacity-80 transition-opacity">
+              phil.in
+            </a>
           </div>
 
-        {/* Center Image */}
-        <div className="absolute top-1/2 left-[52%] transform -translate-x-1/2 -translate-y-1/2">
-          {/* Mobile/Tablet: Responsive */}
-          <div className="relative w-full max-w-[400px] sm:max-w-[500px] lg:hidden">
-            <Image 
-              src="/header-img.svg"
-              alt="Philip Samuelraj"
-              width={815}
-              height={831}
-              className="w-full h-auto object-contain"
-              priority
-            />
-          </div>
+          {/* Left Content */}
+          <div className="absolute w-[529px] h-[284px] top-[150px] left-[76px] opacity-100 flex flex-col gap-4 max-[1727px]:gap-y-3 max-xl:relative max-xl:top-0 max-xl:left-0 max-xl:w-full max-xl:max-w-[529px] max-xl:text-center max-xl:mb-8">
+            <h1 className="opacity-100 font-sans font-bold text-6xl text-gray-900 leading-normal tracking-[0%]">
+              Hey Im<br /> 
+                Philip Samuelraj
+              </h1>
+            <p className="h-[96px] opacity-100 text-base sm:text-lg text-gray-700 leading-[100%]">
+                Lorem ipsum dolor sit amet consectetur. Aliquam mattis tortor magna nisl. Non risus semper vel est amet leo non
+              </p>
+            </div>
 
-          {/* Desktop: Fixed size */}
-          <div className="hidden lg:block ">
-              <Image
-              src="/header-img.svg"
+          {/* Center Image */}
+          <div className="absolute top-1/2 left-[52%] transform -translate-x-1/2 -translate-y-1/2 max-xl:relative max-xl:top-0 max-xl:left-0 max-xl:transform-none max-xl:mb-8">
+            {/* Mobile/Tablet: Responsive */}
+            <div className="relative w-full max-w-[400px] sm:max-w-[500px] lg:hidden max-xl:block">
+              <Image 
+                src="/header-img.svg"
                 alt="Philip Samuelraj"
-              width={815}
-              height={831}
-                className="object-contain"
+                width={815}
+                height={831}
+                className="w-full h-auto object-contain"
                 priority
               />
             </div>
-          </div>
-      </div>
 
-      {/* Right Side Content - Scrollable (Outside main container, slides from bottom) */}
-      <div 
-        className="absolute w-[529px] h-[166px] top-[210px] left-[980px] overflow-hidden cursor-pointer z-10"
-        onClick={handleContentClick}
-      >
-        <div className="relative w-full h-full">
-          {rightContentItems.map((item, index) => {
-            const isActive = index === currentIndex;
-            const isNext = index === (currentIndex + 1) % rightContentItems.length;
-            
-            let animationClass = '';
-            if (isActive && !isAnimating && !isInitialMount) {
-              // Currently visible item (not animating, after initial mount)
-              animationClass = 'translate-y-0 opacity-100';
-            } else if (isActive && isInitialMount) {
-              // Initial mount: start from bottom, slide up slowly
-              animationClass = 'translate-y-full opacity-0';
-            } else if (isActive && isAnimating && direction === 'up') {
-              // Current item sliding up and fading out
-              animationClass = '-translate-y-full opacity-0';
-            } else if (isNext) {
-              // Next item: positioned below, will slide up when animating
-              if (isAnimating && direction === 'up') {
+            {/* Desktop: Fixed size */}
+            <div className="hidden lg:block max-xl:hidden">
+                <Image
+                src="/header-img.svg"
+                  alt="Philip Samuelraj"
+                width={815}
+                height={831}
+                  className="object-contain"
+                  priority
+                />
+              </div>
+            </div>
+        </div>
+
+        {/* Right Side Content - Scrollable (Outside main container, slides from bottom) */}
+        <div 
+          className="absolute w-[529px] h-[166px] top-[210px] left-[980px] overflow-hidden cursor-pointer z-10 max-xl:relative max-xl:top-0 max-xl:left-0 max-xl:w-full max-xl:max-w-[529px] max-xl:text-center"
+          onClick={handleContentClick}
+        >
+          <div className="relative w-full h-full">
+            {rightContentItems.map((item, index) => {
+              const isActive = index === currentIndex;
+              const isNext = index === (currentIndex + 1) % rightContentItems.length;
+              
+              let animationClass = '';
+              if (isActive && !isAnimating && !isInitialMount) {
+                // Currently visible item (not animating, after initial mount)
                 animationClass = 'translate-y-0 opacity-100';
+              } else if (isActive && isInitialMount) {
+                // Initial mount: start from bottom, slide up slowly
+                animationClass = 'translate-y-full opacity-0';
+              } else if (isActive && isAnimating && direction === 'up') {
+                // Current item sliding up and fading out
+                animationClass = '-translate-y-full opacity-0';
+              } else if (isNext) {
+                // Next item: positioned below, will slide up when animating
+                if (isAnimating && direction === 'up') {
+                  animationClass = 'translate-y-0 opacity-100';
+                } else {
+                  animationClass = 'translate-y-full opacity-0';
+                }
               } else {
+                // All other items: positioned below (invisible)
                 animationClass = 'translate-y-full opacity-0';
               }
-            } else {
-              // All other items: positioned below (invisible)
-              animationClass = 'translate-y-full opacity-0';
-            }
-            
-            return (
-              <div
-                key={index}
-                className={`absolute w-full h-full flex flex-col gap-4 transition-all duration-[1500ms] ease-in-out ${animationClass}`}
-              >
-                <h2 className="text-xl md:text-2xl lg:text-3xl font-bold text-gray-800 leading-tight">
-                  {item.title}
-                </h2>
-                <p className="text-gray-600 text-sm md:text-base leading-relaxed">
-                  {item.description}
-                </p>
-              </div>
-            );
-          })}
+              
+              return (
+                <div
+                  key={index}
+                  className={`absolute w-full h-full flex flex-col gap-4 max-[1727px]:gap-y-3 transition-all duration-[1500ms] ease-in-out ${animationClass}`}
+                >
+                  <h2 className="text-xl md:text-2xl lg:text-3xl font-bold text-gray-800 leading-tight">
+                    {item.title}
+                  </h2>
+                  <p className="text-gray-600 text-sm md:text-base leading-relaxed">
+                    {item.description}
+                  </p>
+                </div>
+              );
+            })}
+          </div>
         </div>
-      </div>
+      </DesktopFrame>
     </div>
   );
 }

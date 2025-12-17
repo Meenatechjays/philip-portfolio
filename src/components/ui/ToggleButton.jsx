@@ -2,7 +2,7 @@
 
 export default function ToggleButton({ options, activeOption, onOptionChange }) {
   return (
-    <div className="flex flex-row items-center p-0 bg-white rounded-full gap-3 w-[248px] h-12">
+    <div className="flex flex-row items-center p-1.5 bg-white rounded-[30px] gap-2.5 w-[260px] h-[60px]">
       {options.map((option) => {
         const isActive = option === activeOption;
         
@@ -12,11 +12,11 @@ export default function ToggleButton({ options, activeOption, onOptionChange }) 
             onClick={() => onOptionChange(option)}
             className={`
               box-border flex flex-row items-center justify-center
-              font-inter font-medium text-sm font-weight-600 transition-all  duration-200
-              p-4 gap-2 h-12 flex-none self-stretch grow-0
+              font-satoshi font-medium text-sm transition-all duration-200
+              h-full flex-1
               ${isActive 
-                ? 'bg-[#454654] border border-white rounded-[24px] text-white w-[141px]' 
-                : 'bg-white rounded-lg text-[#454654] w-[95px]'
+                ? 'bg-[#454654] rounded-[30px] text-white' 
+                : 'bg-transparent rounded-[30px] text-[#454654]'
               }
             `}
           >

@@ -3,6 +3,7 @@
 import { useEffect, useRef, useState } from 'react';
 import Image from 'next/image';
 import TimeLineCard from '../ui/TimeLineCard';
+import DesktopFrame from '../layout/DesktopFrame';
 
 export default function Timeline() {
   const scrollContainerRef = useRef(null);
@@ -91,6 +92,13 @@ export default function Timeline() {
     const scrollContainer = scrollContainerRef.current;
     const innerContainer = innerContainerRef.current;
     if (!scrollContainer || !innerContainer) return;
+
+    // Check if viewport is tablet size (≤1439px) - disable auto-scroll on tablet
+    const isTablet = window.innerWidth <= 1439;
+    if (isTablet) {
+      // On tablet, only enable manual scroll - disable auto-scroll logic
+      return;
+    }
 
     // Calculate max scroll width based on last card
     const containerWidth = scrollContainer.clientWidth;
@@ -236,20 +244,22 @@ export default function Timeline() {
       </div>
 
       {/* Fixed Header */}
-      <div className="relative z-10 w-full flex items-start justify-center pt-[100px]">
-        {/* Timeline Container */}
-        <div className="w-[671px] h-[145px] opacity-100 flex flex-col gap-4 items-center">
-          {/* Timeline Heading */}
-          <h2 className="w-[428px] h-[65px] opacity-100 font-satoshi font-bold text-4xl leading-[100%] tracking-[0%] text-center text-[#1F2024]">
-            Timeline & Journey
-          </h2>
+      <DesktopFrame>
+        <div className="relative z-10 w-full flex items-start justify-center pt-[100px] max-[1727px]:pt-[80px]">
+          {/* Timeline Container */}
+          <div className="w-[671px] h-[145px] opacity-100 flex flex-col gap-4 max-[1727px]:gap-y-3 items-center">
+            {/* Timeline Heading */}
+            <h2 className="w-[428px] h-[65px] opacity-100 font-satoshi font-bold text-4xl leading-[100%] tracking-[0%] text-center text-[#1F2024]">
+              Timeline & Journey
+            </h2>
 
-          {/* Timeline Paragraph Content */}
-          <p className="w-[671px] h-[64px] opacity-100 font-satoshi font-normal text-lg leading-[100%] tracking-[0%] text-center text-[#454654]">
-            Lorem ipsum dolor sit amet consectetur. Aliquam mattis tortor magna nisl. Non risus semper vel est amet leo non
-          </p>
+            {/* Timeline Paragraph Content */}
+            <p className="w-[671px] h-[64px] opacity-100 font-satoshi font-normal text-lg leading-[100%] tracking-[0%] text-center text-[#454654]">
+              Lorem ipsum dolor sit amet consectetur. Aliquam mattis tortor magna nisl. Non risus semper vel est amet leo non
+            </p>
+          </div>
         </div>
-      </div>
+      </DesktopFrame>
 
       {/* Scrollable Timeline Container */}
       <div

@@ -75,7 +75,7 @@ export default function World() {
             
             {/* Stats Container - Bottom Right */}
             <div 
-              className="absolute bottom-0 right-4 lg:right-[16.6vw] flex flex-row items-center gap-3 z-10"
+              className="absolute bottom-0 right-4 lg:right-[14.6vw] flex flex-row items-center gap-3 z-10"
               style={{ 
                 maxWidth: 'clamp(350px, 35vw, 500px)',
                 minHeight: 'clamp(70px, 8.7vh, 89px)'
