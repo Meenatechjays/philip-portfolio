@@ -49,7 +49,7 @@ export default function Highlights() {
         </div>
 
         {/* Content Area - Highlights Cards */}
-        <div className="relative w-full mt-32 flex flex-row items-start justify-center gap-4 flex-nowrap px-4 overflow-hidden">
+        <div className="relative w-full mt-32 flex flex-row items-start justify-center gap-4 flex-nowrap px-4 ">
           {/* Card 1 - Press One Image - Highest */}
           <HighlightsCard
             imageSrc="/pressOneImg.jpg"
@@ -69,7 +69,7 @@ export default function Highlights() {
             description="Discover how cutting-edge technology solutions are transforming industries and driving digital transformation."
             readMoreLink="/article"
             position={{ left: '0', top: '0' }}
-            className="relative translate-y-4"
+            className="relative translate-y-22"
           />
 
           {/* Card 3 - Philip Header Image - Higher than Card 2 */}
@@ -91,7 +91,7 @@ export default function Highlights() {
             description="A look back at the milestones and achievements that have shaped the technology landscape over the years."
             readMoreLink="/article"
             position={{ left: '0', top: '0' }}
-            className="relative translate-y-6"
+            className="relative translate-y-22"
           />
         </div>
       </div>
