@@ -1,0 +1,33 @@
+"use client";
+
+import { useState } from "react";
+import { STACKS } from "./panels/stack.config";
+import SlidingPanels from "./panels/SlidingPanels";
+import RightStacks from "./panels/RightStacks";
+
+export default function AroundTheWorld() {
+  const [active, setActive] = useState("world");
+
+  return (
+    <section className="relative bg-white mt-0">
+      <div className="flex min-h-screen overflow-x-hidden relative">
+
+        {/* LEFT – sliding content */}
+        <SlidingPanels
+          stacks={STACKS}
+          active={active}
+        />
+
+        {/* RIGHT – stack columns */}
+        <div className="flex-shrink-0">
+          <RightStacks
+            stacks={STACKS}
+            active={active}
+            onChange={setActive}
+          />
+        </div>
+
+      </div>
+    </section>
+  );
+}

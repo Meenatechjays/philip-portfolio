@@ -31,7 +31,7 @@ export default function HighlightsCard({
         {/* Image Section */}
         {imageSrc && (
           <div className="box-border w-[341px] h-[267px] flex justify-between rounded-[24px] p-4 border-2 border-white relative overflow-hidden">
-            <div className="absolute inset-4 rounded-[20px] overflow-hidden">
+            <div >
               <Image
                 src={imageSrc}
                 alt={imageAlt}
@@ -88,22 +88,13 @@ export default function HighlightsCard({
             className="flex items-center gap-2 font-satoshi font-medium text-sm text-[#1F2024] hover:opacity-80 transition-opacity mt-auto"
           >
             Read more
-            <svg 
-              width="16" 
-              height="16" 
-              viewBox="0 0 16 16" 
-              fill="none" 
-              xmlns="http://www.w3.org/2000/svg"
+            <Image
+              src="/Arrow up.svg"
+              alt="Arrow icon"
+              width={16}
+              height={16}
               className="inline-block"
-            >
-              <path 
-                d="M6 12L10 8L6 4" 
-                stroke="currentColor" 
-                strokeWidth="2" 
-                strokeLinecap="round" 
-                strokeLinejoin="round"
-              />
-            </svg>
+            />
           </a>
         </div>
       </div>

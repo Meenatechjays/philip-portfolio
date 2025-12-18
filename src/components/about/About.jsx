@@ -1,13 +1,11 @@
 'use client';
 
 import Image from 'next/image';
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
 
 export default function PortfolioHero() {
   const [currentIndex, setCurrentIndex] = useState(0);
-  const [isAnimating, setIsAnimating] = useState(false);
-  const [direction, setDirection] = useState(null);
-  const [isInitialMount, setIsInitialMount] = useState(true);
 
   const rightContentItems = [
     {
@@ -24,28 +22,31 @@ export default function PortfolioHero() {
     }
   ];
 
-  // Initial mount animation - content slides up from bottom after component renders
-  useEffect(() => {
-    // Wait a bit for the about section to render, then trigger initial animation
-    const timer = setTimeout(() => {
-      setIsInitialMount(false);
-    }, 500); // Delay to ensure about section is fully rendered
-
-    return () => clearTimeout(timer);
-  }, []);
-
   const handleContentClick = () => {
-    if (isAnimating || isInitialMount) return;
-    
-    setIsAnimating(true);
-    setDirection('up');
-    
-    // After animation completes, update index
-    setTimeout(() => {
-      setCurrentIndex((prev) => (prev + 1) % rightContentItems.length);
-      setIsAnimating(false);
-      setDirection(null);
-    }, 1500);
+    setCurrentIndex((prev) => (prev + 1) % rightContentItems.length);
+  };
+
+  const contentVariants = {
+    initial: {
+      y: '100vh',
+      opacity: 0
+    },
+    animate: {
+      y: 0,
+      opacity: 1,
+      transition: {
+        duration: 1,
+        ease: 'easeInOut'
+      }
+    },
+    exit: {
+      y: '-100vh',
+      opacity: 0,
+      transition: {
+        duration: 1,
+        ease: 'easeInOut'
+      }
+    }
   };
 
   return (
@@ -139,53 +140,28 @@ export default function PortfolioHero() {
           </div>
       </div>
 
-      {/* Right Side Content - Scrollable (Outside main container, slides from bottom) */}
+      {/* Right Side Content - Framer Motion Full Height Animation */}
       <div 
-        className="absolute w-[529px] h-[166px] top-[210px] left-[980px] overflow-hidden cursor-pointer z-10"
+        className="absolute w-[500px] top-[150px] left-[980px] h-screen overflow-hidden cursor-pointer z-10"
         onClick={handleContentClick}
       >
-        <div className="relative w-full h-full">
-          {rightContentItems.map((item, index) => {
-            const isActive = index === currentIndex;
-            const isNext = index === (currentIndex + 1) % rightContentItems.length;
-            
-            let animationClass = '';
-            if (isActive && !isAnimating && !isInitialMount) {
-              // Currently visible item (not animating, after initial mount)
-              animationClass = 'translate-y-0 opacity-100';
-            } else if (isActive && isInitialMount) {
-              // Initial mount: start from bottom, slide up slowly
-              animationClass = 'translate-y-full opacity-0';
-            } else if (isActive && isAnimating && direction === 'up') {
-              // Current item sliding up and fading out
-              animationClass = '-translate-y-full opacity-0';
-            } else if (isNext) {
-              // Next item: positioned below, will slide up when animating
-              if (isAnimating && direction === 'up') {
-                animationClass = 'translate-y-0 opacity-100';
-              } else {
-                animationClass = 'translate-y-full opacity-0';
-              }
-            } else {
-              // All other items: positioned below (invisible)
-              animationClass = 'translate-y-full opacity-0';
-            }
-            
-            return (
-              <div
-                key={index}
-                className={`absolute w-full h-full flex flex-col gap-4 transition-all duration-[1500ms] ease-in-out ${animationClass}`}
-              >
-                <h2 className="text-xl md:text-2xl lg:text-3xl font-bold text-gray-800 leading-tight">
-                  {item.title}
-                </h2>
-                <p className="text-gray-600 text-sm md:text-base leading-relaxed">
-                  {item.description}
-                </p>
-              </div>
-            );
-          })}
-        </div>
+        <AnimatePresence mode="wait">
+          <motion.div
+            key={currentIndex}
+            variants={contentVariants}
+            initial="initial"
+            animate="animate"
+            exit="exit"
+            className="absolute inset-0 flex flex-col justify-start gap-4"
+          >
+            <h2 className="text-xl md:text-2xl lg:text-3xl font-bold text-gray-800 leading-tight">
+              {rightContentItems[currentIndex].title}
+            </h2>
+            <p className="text-gray-600 text-sm md:text-base leading-relaxed max-w-md">
+              {rightContentItems[currentIndex].description}
+            </p>
+          </motion.div>
+        </AnimatePresence>
       </div>
     </div>
   );

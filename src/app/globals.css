@@ -3,6 +3,7 @@
 :root {
   --background: #ffffff;
   --foreground: #171717;
+  --investment-bg: #F7F7F7;
 }
 
 @theme inline {
@@ -18,6 +19,17 @@
     --background: #0a0a0a;
     --foreground: #ededed;
   }
+  
+  /* Force light background for investment section even in dark mode */
+  section.investment-section {
+    background-color: rgb(247, 247, 247) !important;
+    background: rgb(247, 247, 247) !important;
+  }
+  
+  .investment-section-bg {
+    background-color: rgb(247, 247, 247) !important;
+    background: rgb(247, 247, 247) !important;
+  }
 }
 
 body {
@@ -28,4 +40,61 @@ body {
 
 .font-satoshi {
   font-family: 'Satoshi', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+}
+
+.investment-section-bg {
+  background-color: rgb(247, 247, 247) !important;
+  background: rgb(247, 247, 247) !important;
+}
+
+/* Override dark mode for investment section */
+section.investment-section {
+  background-color: rgb(247, 247, 247) !important;
+  background: rgb(247, 247, 247) !important;
+}
+
+/* Alternative selector for better browser support */
+section .investment-section-bg {
+  background-color: rgb(247, 247, 247) !important;
+  background: rgb(247, 247, 247) !important;
+}
+
+/* Direct targeting for investment section */
+.investment-section .investment-section-bg {
+  background-color: rgb(247, 247, 247) !important;
+  background: rgb(247, 247, 247) !important;
+}
+
+/* Force light background - override any dark mode */
+.investment-section-bg[style*="background"] {
+  background-color: rgb(247, 247, 247) !important;
+  background: rgb(247, 247, 247) !important;
+}
+
+/* Ripple animation for signal markers */
+@keyframes ripple {
+  0% {
+    transform: scale(0.8);
+    opacity: 1;
+  }
+  100% {
+    transform: scale(2.4);
+    opacity: 0;
+  }
+}
+
+.animate-ripple {
+  animation: ripple 2.1s cubic-bezier(0, 0, 0.2, 1) infinite;
+}
+
+.animate-ripple.delay-0 {
+  animation-delay: 0ms;
+}
+
+.animate-ripple.delay-700 {
+  animation-delay: 700ms;
+}
+
+.animate-ripple.delay-1400 {
+  animation-delay: 1400ms;
 }

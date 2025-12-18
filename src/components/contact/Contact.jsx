@@ -10,18 +10,125 @@ export default function Contact() {
     message: ''
   });
 
+  const [errors, setErrors] = useState({
+    email: ''
+  });
+
+  const [touched, setTouched] = useState({
+    email: false
+  });
+
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [submitStatus, setSubmitStatus] = useState(null); // 'success' or 'error'
+  const [submitMessage, setSubmitMessage] = useState('');
+
+  const validateEmail = (email) => {
+    if (email && !email.includes('@')) {
+      return 'Email must contain @ symbol';
+    }
+    return '';
+  };
+
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData(prev => ({
       ...prev,
       [name]: value
     }));
+
+    // Clear error when user starts typing again after blur
+    if (name === 'email' && errors.email) {
+      setErrors(prev => ({
+        ...prev,
+        email: ''
+      }));
+    }
   };
 
-  const handleSubmit = (e) => {
+  const handleBlur = (e) => {
+    const { name, value } = e.target;
+    
+    if (name === 'email') {
+      setTouched(prev => ({
+        ...prev,
+        email: true
+      }));
+      setErrors(prev => ({
+        ...prev,
+        email: validateEmail(value)
+      }));
+    }
+  };
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    // Handle form submission here
-    console.log('Form submitted:', formData);
+    
+    // Validate email before submission
+    const emailError = validateEmail(formData.email);
+    if (emailError) {
+      setErrors(prev => ({
+        ...prev,
+        email: emailError
+      }));
+      setTouched(prev => ({
+        ...prev,
+        email: true
+      }));
+      return;
+    }
+
+    // Validate all fields are filled
+    if (!formData.name || !formData.email || !formData.message) {
+      setSubmitStatus('error');
+      setSubmitMessage('Please fill in all fields');
+      return;
+    }
+    
+    setIsSubmitting(true);
+    setSubmitStatus(null);
+    setSubmitMessage('');
+
+    try {
+      // Using Web3Forms API - Send to both email addresses
+      const response = await fetch('https://api.web3forms.com/submit', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          access_key: '13458513-e2b5-40d3-b075-ebaf25b3552f',
+          name: formData.name,
+          email: formData.email,
+          message: formData.message,
+          subject: 'New Contact Form Submission - Philip Portfolio',
+          from_name: 'Philip Portfolio Website',
+          cc: 'meena.sivakumar@techjays.com', // Send copy to second email
+        }),
+      });
+
+      const data = await response.json();
+
+      if (data.success) {
+        setSubmitStatus('success');
+        setSubmitMessage('Thank you! Your message has been sent successfully.');
+        // Reset form
+        setFormData({
+          name: '',
+          email: '',
+          message: ''
+        });
+        setTouched({ email: false });
+      } else {
+        setSubmitStatus('error');
+        setSubmitMessage('Failed to send message. Please try again.');
+      }
+    } catch (error) {
+      console.error('Error submitting form:', error);
+      setSubmitStatus('error');
+      setSubmitMessage('An error occurred. Please try again later.');
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
@@ -73,14 +180,22 @@ export default function Contact() {
                 </div>
                 <div>
                   <input
-                    type="email"
+                    type="text"
                     id="email"
                     name="email"
                     value={formData.email}
                     onChange={handleChange}
-                    className="w-full px-4 py-3 rounded-lg bg-white border border-gray-200 focus:outline-none focus:ring-2 focus:ring-[#89BBDD] focus:border-transparent text-[#1a1a1a] placeholder-gray-400"
+                    onBlur={handleBlur}
+                    className={`w-full px-4 py-3 rounded-lg bg-white border ${
+                      errors.email 
+                        ? 'border-red-500 focus:ring-2 focus:ring-red-500 focus:border-red-500' 
+                        : 'border-gray-200 focus:ring-2 focus:ring-[#89BBDD] focus:border-transparent'
+                    } focus:outline-none text-[#1a1a1a] placeholder-gray-400`}
                     placeholder="email"
                   />
+                  {errors.email && (
+                    <p className="mt-1 text-xs text-red-500">{errors.email}</p>
+                  )}
                 </div>
               </div>
 
@@ -97,13 +212,35 @@ export default function Contact() {
                 />
               </div>
 
+              {/* Status Message */}
+              {submitStatus && (
+                <div 
+                  className={`p-4 rounded-lg ${
+                    submitStatus === 'success' 
+                      ? 'bg-green-50 border border-green-200' 
+                      : 'bg-red-50 border border-red-200'
+                  }`}
+                >
+                  <p className={`text-sm ${
+                    submitStatus === 'success' ? 'text-green-800' : 'text-red-800'
+                  }`}>
+                    {submitMessage}
+                  </p>
+                </div>
+              )}
+
               {/* Submit Button */}
               <button
                 type="submit"
-                className="px-4 py-2 text-sm rounded-lg bg-[#0d3a5c] hover:bg-[#0a2d47] text-white font-medium transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-[#89BBDD] focus:ring-offset-2"
+                disabled={isSubmitting}
+                className={`px-4 py-2 text-sm rounded-lg font-medium transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-[#89BBDD] focus:ring-offset-2 ${
+                  isSubmitting 
+                    ? 'bg-gray-400 cursor-not-allowed' 
+                    : 'bg-[#0d3a5c] hover:bg-[#0a2d47] text-white'
+                }`}
                 style={{ width: 'fit-content' }}
               >
-                Send form
+                {isSubmitting ? 'Sending...' : 'Send form'}
               </button>
             </form>
           </div>
