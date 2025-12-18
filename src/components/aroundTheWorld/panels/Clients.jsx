@@ -1,3 +1,5 @@
+'use client';
+
 import Image from 'next/image';
 
 export default function Clients() {
@@ -18,49 +20,32 @@ export default function Clients() {
   ];
 
   return (
-    <div className="relative">
+    <div className="w-full h-full flex flex-col">
       {/* Header Content Section */}
-      <div 
-        className="absolute flex flex-col items-start opacity-100"
-        style={{
-          width: 'clamp(300px, 38.8vw, 671px)',
-          height: 'clamp(120px, 14.2vh, 145px)',
-          top: 'clamp(20px, 7.8vh, 80px)',
-          left: 'clamp(20px, 18.5vw, 320px)',
-          gap: '16px'
-        }}
-      >
-        <h2 className="text-4xl font-bold text-[#1F2024] font-satoshi">
+      <div className="flex flex-col items-start opacity-100 mb-6 sm:mb-8 lg:mb-10 gap-3 sm:gap-4 w-full">
+        <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold text-[#1F2024] font-satoshi">
           Our clients
         </h2>
-        <p className="font-satoshi text-lg text-[#454654]">
+        <p className="font-satoshi text-sm sm:text-base md:text-lg text-[#454654] max-w-3xl">
           Lorem ipsum dolor sit amet consectetur. Aliquam mattis tortor magna nisl.
           Non risus semper vel est amet leo non
         </p>
       </div>
   
       {/* Clients Grid Container */}
-      <div 
-        className="absolute flex flex-col items-start opacity-100"
-        style={{
-          width: 'clamp(300px, 56.2vw, 970px)',
-          height: 'clamp(400px, 54.7vh, 590px)',
-          left: 'clamp(20px, 18.5vw, 320px)',
-          top: 'clamp(20px, 25.9vh, 265px)',
-        }}
-      >
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-0 w-full">
+      <div className="flex flex-col items-start opacity-100 w-full">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 w-full max-w-5xl auto-rows-fr gap-0">
           {clients.map((client, index) => (
             <div
               key={index}
-              className="flex items-center justify-center opacity-100 bg-white w-full lg:w-[323.33px] h-[147.5px] p-4 border border-[#CFD4D9]"
+              className="flex items-center justify-center opacity-100 bg-white w-full min-w-0 aspect-[2.5/1] p-4 sm:p-5 md:p-6 lg:p-7 border border-[#CFD4D9] overflow-hidden"
             >
               <Image
                 src={client.logo}
                 alt={client.alt}
                 width={280}
                 height={115}
-                className="object-contain w-auto h-auto max-w-full max-h-full"
+                className="object-contain max-w-[70%] max-h-[60%] w-auto h-auto"
               />
             </div>
           ))}

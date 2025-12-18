@@ -22,14 +22,14 @@ const LOCATION_POSITIONS = [
 // SignalRipple component
 function SignalRipple() {
   return (
-    <div className="relative flex items-center justify-center w-40 h-40">
+    <div className="relative flex items-center justify-center" style={{ width: '57px', height: '57px' }}>
       {/* Ripple circles */}
-      <span className="absolute w-full h-full rounded-full bg-blue-400/30 animate-ripple delay-0" />
-      <span className="absolute w-full h-full rounded-full bg-blue-400/30 animate-ripple delay-700" />
-      <span className="absolute w-full h-full rounded-full bg-blue-400/30 animate-ripple delay-1400" />
+      <span className="absolute w-full h-full rounded-full bg-blue-400/[0.72] animate-ripple delay-0" />
+      <span className="absolute w-full h-full rounded-full bg-blue-400/[0.72] animate-ripple delay-700" />
+      <span className="absolute w-full h-full rounded-full bg-blue-400/[0.72] animate-ripple delay-1400" />
 
       {/* Center dot */}
-      <span className="relative w-6 h-6 rounded-full bg-blue-600" />
+      <span className="relative w-2 h-2 rounded-full bg-blue-600" />
     </div>
   );
 }
@@ -146,11 +146,11 @@ export default function World() {
       </div>
 
       {/* Map Section Wrapper */}
-      <div className="relative mt-4 md:mt-8 px-4 md:px-0 flex-shrink-0">
+      <div className="relative mt-4 md:mt-6 px-4 md:px-0 flex-shrink-0">
         {/* Map Container - Responsive with overflow hidden for scroll effect */}
         <div 
           ref={mapContainerRef}
-          className="relative overflow-hidden"
+          className="relative overflow-hidden max-w-full"
         >
           {/* Animated Map - Task 2: Scrolls right to left with fade */}
           <motion.div
@@ -158,12 +158,13 @@ export default function World() {
             animate={hasAnimated ? mapScrollControls : {}}
             initial={{ x: '0%', opacity: 1 }}
             className="relative w-full"
-            style={{ willChange: 'transform, opacity' }}
+            style={{ willChange: 'transform, opacity', maxWidth: '85%' }}
           >
             <img
               src="/map.svg"
               alt="World map"
-              className="w-full max-w-full h-auto"
+              className="w-full h-auto"
+              style={{ maxHeight: '400px', objectFit: 'contain' }}
             />
           </motion.div>
 
@@ -205,6 +206,15 @@ export default function World() {
               <SignalRipple />
             </div>
           ))}
+
+          {/* Stats positioned on the map - Desktop only */}
+          {showFinalLogo && (
+            <div className="hidden md:flex absolute bottom-2 left-1/2 -translate-x-[60%] flex-row items-center gap-3 z-20">
+              <Stat value="7+" label="Countries" />
+              <Stat value="150+" label="Projects" />
+              <Stat value="170+" label="People" />
+            </div>
+          )}
         </div>
 
         {/* Task 3: Final logo position - appears only after map reaches original position, to the right of map */}
@@ -232,8 +242,8 @@ export default function World() {
         )}
       </div>
 
-        {/* Bottom Section - Stats and Content */}
-        <div className="relative mt-6 md:mt-8 mb-4 md:mb-8 flex-1 min-h-0 px-4 md:px-0">
+        {/* Bottom Section - Content only (Stats moved to map) */}
+        <div className="relative mt-8 md:mt-12 mb-4 md:mb-8 px-4 md:px-0">
           {/* Mobile: Stack vertically */}
           <div className="md:hidden flex flex-col gap-4">
             {/* Mobile Logo */}
@@ -264,50 +274,13 @@ export default function World() {
             </div>
           </div>
 
-          {/* Desktop Layout - Absolute positioning */}
-          <div className="hidden md:block relative min-h-[300px]">
-            {/* Logo - Bottom Left (only shown after animations on mobile, hidden on desktop as it's animated) */}
-            <div 
-              className="absolute bottom-0 left-0 lg:left-[1.2vw] flex items-center h-[clamp(60px,8.7vh,89px)] z-10 opacity-0 pointer-events-none"
-            >
-              <Image
-                src="/techjays-logo.svg"
-                alt="Techjays Logo"
-                width={91}
-                height={83}
-                className="object-contain w-auto h-full"
-              />
-            </div>
-            
-            {/* Stats Container - Bottom Right */}
-            <div 
-              className="absolute bottom-0 right-4 lg:right-[16.6vw] flex flex-row items-center gap-3 z-10"
-              style={{ 
-                maxWidth: 'clamp(350px, 35vw, 500px)',
-                minHeight: 'clamp(70px, 8.7vh, 89px)'
-              }}
-            >
-              <Stat value="7+" label="Countries" />
-              <Stat value="150+" label="Projects" />
-              <Stat value="170+" label="People" />
-            </div>
-      
-            {/* Content - Bottom Left, above stats */}
-            <div 
-              className="absolute left-[4.6vw] flex flex-col items-start z-0"
-              style={{
-          
-                width: 'clamp(400px, 50vw, 800px)'
-              }}
-            >
-              <p 
-                className="font-satoshi font-normal text-base lg:text-lg leading-normal tracking-[0%] opacity-100 text-[#454654] w-full"
-              >
-                Lorem ipsum dolor sit amet consectetur. Aliquam mattis tortor magna nisl.
-                Non risus semper vel est amet leo non Lorem ipsum dolor sit amet consectetur. Aliquam mattis tortor magna nisl.
-                Non risus semper vel est amet leo non Lorem ipsum dolor sit amet consectetur.
-              </p>
-            </div>
+          {/* Desktop Layout - Content only */}
+          <div className="hidden md:flex justify-center">
+            <p className="font-satoshi font-normal text-base lg:text-lg leading-relaxed text-[#454654] max-w-4xl text-center">
+              Lorem ipsum dolor sit amet consectetur. Aliquam mattis tortor magna nisl.
+              Non risus semper vel est amet leo non Lorem ipsum dolor sit amet consectetur. Aliquam mattis tortor magna nisl.
+              Non risus semper vel est amet leo non Lorem ipsum dolor sit amet consectetur.
+            </p>
           </div>
         </div>
       </div>

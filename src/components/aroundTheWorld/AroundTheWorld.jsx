@@ -10,7 +10,7 @@ export default function AroundTheWorld() {
 
   return (
     <section className="relative bg-white mt-0">
-      <div className="flex  min-h-screen overflow-x-hidden relative">
+      <div className="flex min-h-screen overflow-x-hidden relative">
 
         {/* LEFT – sliding content */}
         <SlidingPanels
@@ -19,11 +19,13 @@ export default function AroundTheWorld() {
         />
 
         {/* RIGHT – stack columns */}
-        <RightStacks
-          stacks={STACKS}
-          active={active}
-          onChange={setActive}
-        />
+        <div className="flex-shrink-0">
+          <RightStacks
+            stacks={STACKS}
+            active={active}
+            onChange={setActive}
+          />
+        </div>
 
       </div>
     </section>
