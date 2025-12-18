@@ -38,7 +38,7 @@ export default function Clients() {
           {clients.map((client, index) => (
             <div
               key={index}
-              className="flex items-center justify-center opacity-100 bg-white w-full min-w-0 aspect-[2.2/1] p-4 sm:p-5 md:p-6 lg:p-8 border border-[#CFD4D9] overflow-hidden"
+              className="flex items-center justify-center opacity-100 bg-white w-full min-w-0 aspect-[2.5/1] p-4 sm:p-5 md:p-6 lg:p-7 border border-[#CFD4D9] overflow-hidden"
             >
               <Image
                 src={client.logo}

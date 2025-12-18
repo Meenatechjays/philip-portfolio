@@ -10,13 +10,13 @@ const PANELS = {
 
 export default function SlidingPanels({ stacks, active }) {
   const index = stacks.findIndex(s => s.id === active);
-  const isWorldActive = active === "world";
   
   // Calculate left margin based on active stack
-  // Stack width: w-[100px] sm:w-[120px] md:w-[140px] lg:w-[150px]
-  // When services is active: 1 left stack (world)
-  // When clients is active: 2 left stacks (world + services)
-  const leftStackCount = isWorldActive ? 0 : index;
+  // Stack width: w-[60px] sm:w-[70px] md:w-[80px] lg:w-[90px]
+  // When world is active: 1 left stack (world itself)
+  // When services is active: 2 left stacks (world + services)
+  // When clients is active: 3 left stacks (world + services + clients)
+  const leftStackCount = index + 1; // Always count from 0 to current index (inclusive)
   
   // Generate unique ID for this component instance to scope the styles
   const styleId = `sliding-panels-${leftStackCount}`;
@@ -70,11 +70,11 @@ export default function SlidingPanels({ stacks, active }) {
       )}
       <div 
         id={styleId}
-        className="overflow-x-hidden overflow-y-auto min-h-screen relative z-10 transition-all duration-700 ease-in-out"
+        className="overflow-x-hidden overflow-hidden min-h-screen relative z-10 transition-all duration-700 ease-in-out"
         style={leftStackCount === 0 ? { width: '100%' } : {}}
       >
         <div
-          className="flex transition-transform duration-700 ease-in-out h-full"
+          className="flex transition-transform duration-700 ease-in-out min-h-screen"
           style={{
             transform: `translateX(-${index * 100}%)`,
           }}
@@ -82,10 +82,10 @@ export default function SlidingPanels({ stacks, active }) {
           {stacks.map((stack) => (
             <div
               key={stack.id}
-              className="w-full flex-shrink-0 min-h-screen relative overflow-hidden"
+              className="w-full flex-shrink-0 min-h-screen relative"
               style={{ minWidth: '100%' }}
             >
-              <div className="absolute right-0 top-0 w-[calc(100%-120px)] sm:w-[calc(100%-140px)] md:w-[calc(100%-160px)] lg:w-[calc(100%-180px)] xl:w-[calc(100%-200px)] h-full px-4 sm:px-6 md:px-8 lg:px-10 xl:px-12 pt-4 sm:pt-6 md:pt-8 lg:pt-10 pb-12 sm:pb-16 md:pb-20 lg:pb-24 overflow-y-auto">
+              <div className="absolute inset-0 px-4 sm:px-6 md:px-8 lg:px-10 xl:px-12 2xl:px-16 py-6 sm:py-8 md:py-10 lg:py-12 pb-16 sm:pb-20 md:pb-24 lg:pb-28">
                 {PANELS[stack.id]}
               </div>
             </div>

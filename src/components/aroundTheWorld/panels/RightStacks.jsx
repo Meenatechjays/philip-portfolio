@@ -1,13 +1,11 @@
 export default function RightStacks({ stacks, active, onChange }) {
   const activeIndex = stacks.findIndex(s => s.id === active);
-  const isWorldActive = active === "world";
   
-  // Left side: Show all stacks from start up to and including the active one (except when world is active)
+  // Left side: Show all stacks from start up to and including the active one
+  // When world is active: show world (01) on left
   // When services is active: show world (01) and services (02) on left
-  // When clients is active: show world (01) and services (02) on left
-  const leftStacks = isWorldActive 
-    ? [] // Don't show anything on left when world is active
-    : stacks.slice(0, activeIndex + 1); // Show all stacks from start to active (inclusive)
+  // When clients is active: show world (01), services (02), and clients (03) on left
+  const leftStacks = stacks.slice(0, activeIndex + 1); // Always show from start to active (inclusive)
   
   // Right side: Show only stacks after the active one
   // When world is active: show services (02) and clients (03)
@@ -17,8 +15,8 @@ export default function RightStacks({ stacks, active, onChange }) {
 
   return (
     <>
-      {/* Left Side - Stacks from start to active (only when not world) */}
-      {!isWorldActive && leftStacks.length > 0 && (
+      {/* Left Side - Stacks from start to active (always shown) */}
+      {leftStacks.length > 0 && (
         <div className="absolute left-0 top-0 bottom-0 flex z-[5]">
           {leftStacks.map((stack) => (
             <button
