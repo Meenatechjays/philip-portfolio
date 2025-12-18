@@ -19,54 +19,58 @@ export default function RightStacks({ stacks, active, onChange }) {
     <>
       {/* Left Side - Stacks from start to active (only when not world) */}
       {!isWorldActive && leftStacks.length > 0 && (
-        <div className="absolute left-0 top-0 bottom-0 flex z-20">
+        <div className="absolute left-0 top-0 bottom-0 flex z-[5]">
           {leftStacks.map((stack) => (
             <button
               key={stack.id}
               onClick={() => onChange(stack.id)}
-              className="w-[180px] sm:w-[200px] md:w-[220px] lg:w-[240px] h-full pt-8 px-4 sm:px-6 md:px-8 pb-8 text-left border-l transition-all duration-300 flex flex-col items-start"
+              className="w-[60px] sm:w-[70px] md:w-[80px] lg:w-[90px] h-full py-8 px-2 sm:px-3 border-l transition-all duration-300 flex flex-col items-center justify-between"
               style={{
                 background: "linear-gradient(180deg, #DBECF6 0%, #93CDEB 100%)",
               }}
             >
-              <div className="text-3xl font-bold mb-6 text-[#1F2024]">
+              <div className="text-2xl sm:text-3xl font-bold text-[#1F2024] flex-shrink-0">
                 {stack.number}
               </div>
 
-              <h3 className="text-lg font-semibold mb-4 text-[#1F2024]">
-                {stack.title}
-              </h3>
-
-              <p className="text-sm text-gray-600 leading-relaxed">
-                {stack.description}
-              </p>
+              {/* Vertical title from bottom to top */}
+              <div 
+                className="flex-1 flex items-center justify-center"
+                style={{ writingMode: 'vertical-rl', textOrientation: 'mixed' }}
+              >
+                <h3 className="text-base sm:text-lg font-semibold text-[#1F2024] whitespace-nowrap transform rotate-180">
+                  {stack.title}
+                </h3>
+              </div>
             </button>
           ))}
         </div>
       )}
 
       {/* Right Side - Remaining Stacks */}
-      <div className="flex">
+      <div className="flex h-full">
         {rightStacks.map((stack) => (
           <button
             key={stack.id}
             onClick={() => onChange(stack.id)}
-            className="w-[180px] sm:w-[200px] md:w-[220px] lg:w-[240px] pt-8 px-4 sm:px-6 md:px-8 pb-8 text-left border-l transition-all duration-300 flex flex-col items-start"
+            className="w-[60px] sm:w-[70px] md:w-[80px] lg:w-[90px] h-full py-8 px-2 sm:px-3 border-l transition-all duration-300 flex flex-col items-center justify-between"
             style={{
               background: "linear-gradient(180deg, #DBECF6 0%, #93CDEB 100%)",
             }}
           >
-            <div className="text-3xl font-bold mb-6 text-[#1F2024]">
+            <div className="text-2xl sm:text-3xl font-bold text-[#1F2024] flex-shrink-0">
               {stack.number}
             </div>
 
-            <h3 className="text-lg font-semibold mb-4 text-[#1F2024]">
-              {stack.title}
-            </h3>
-
-            <p className="text-sm text-gray-600 leading-relaxed">
-              {stack.description}
-            </p>
+            {/* Vertical title from bottom to top */}
+            <div 
+              className="flex-1 flex items-center justify-center"
+              style={{ writingMode: 'vertical-rl', textOrientation: 'mixed' }}
+            >
+              <h3 className="text-base sm:text-lg font-semibold text-[#1F2024] whitespace-nowrap transform rotate-180">
+                {stack.title}
+              </h3>
+            </div>
           </button>
         ))}
       </div>

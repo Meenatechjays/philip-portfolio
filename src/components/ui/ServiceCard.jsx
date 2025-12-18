@@ -13,27 +13,13 @@ export default function ServiceCard({
 }) {
   const content = (
     <div 
-      className={`flex flex-col opacity-100 ${className}`}
-      style={{
-        width: '307.33px',
-        height: '298px',
-        borderRadius: '8px',
-        padding: '16px',
-        background: '#F3F4F5'
-      }}
+      className={`flex flex-col opacity-100 w-full min-w-0 rounded-lg p-3 sm:p-4 md:p-5 lg:p-6 bg-[#F3F4F5] h-full ${className}`}
     >
       {/* Inner Content Container */}
-      <div 
-        className="flex flex-col opacity-100"
-        style={{
-          width: '275.33px',
-          height: '212px',
-          gap: '16px'
-        }}
-      >
+      <div className="flex flex-col opacity-100 flex-1 min-h-0 gap-2 sm:gap-3 md:gap-4">
         {/* Logo - Default to star icon if no logo provided */}
         {(logo || showStarIcon) && (
-          <div>
+          <div className="flex-shrink-0">
             {logo ? (
               typeof logo === 'string' ? (
                 <Image
@@ -41,7 +27,7 @@ export default function ServiceCard({
                   alt={logoAlt}
                   width={48}
                   height={48}
-                  className="object-contain"
+                  className="object-contain w-8 h-8 sm:w-10 sm:h-10 md:w-12 md:h-12"
                 />
               ) : (
                 logo
@@ -52,7 +38,7 @@ export default function ServiceCard({
                 alt="Service icon"
                 width={48}
                 height={48}
-                className="object-contain"
+                className="object-contain w-8 h-8 sm:w-10 sm:h-10 md:w-12 md:h-12"
               />
             )}
           </div>
@@ -60,31 +46,21 @@ export default function ServiceCard({
 
         {/* Title */}
         {title && (
-          <h3 className="text-2xl md:text-3xl font-bold text-[#1F2024] font-satoshi leading-tight">
+          <h3 className="text-lg sm:text-xl md:text-2xl lg:text-2xl font-bold text-[#1F2024] font-satoshi leading-tight flex-shrink-0 break-words">
             {title}
           </h3>
         )}
 
         {/* Description */}
         {description && (
-          <p className="text-base text-[#454654] flex-grow font-satoshi leading-relaxed">
+          <p className="text-xs sm:text-sm md:text-base text-[#454654] flex-grow font-satoshi leading-relaxed break-words overflow-hidden">
             {description}
           </p>
         )}
 
         {/* Learn More Link */}
-        <div className="flex items-center gap-2 mt-auto">
-          <span 
-            className="font-satoshi font-bold opacity-100"
-            style={{
-              fontSize: '16px',
-              lineHeight: '100%',
-              letterSpacing: '0%',
-              color: '#2A2A2A',
-              width: '103px',
-              height: '22px'
-            }}
-          >
+        <div className="flex items-center gap-2 mt-auto flex-shrink-0">
+          <span className="font-satoshi font-bold text-sm sm:text-base text-[#2A2A2A] whitespace-nowrap">
             {linkText}
           </span>
           <svg
@@ -93,7 +69,7 @@ export default function ServiceCard({
             viewBox="0 0 20 20"
             fill="none"
             xmlns="http://www.w3.org/2000/svg"
-            className="text-[#2A2A2A]"
+            className="text-[#2A2A2A] flex-shrink-0"
           >
             <path
               d="M5 15L15 5M15 5H7M15 5V13"

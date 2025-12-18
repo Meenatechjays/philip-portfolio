@@ -29,28 +29,21 @@ export default function Services() {
   ];
 
   return (
-    <div className="relative">
-      <p className="text-gray-600 max-w-xl mb-12 font-satoshi">
+    <div className="w-full h-full flex flex-col">
+      <p className="text-gray-600 mb-6 sm:mb-8 lg:mb-10 font-satoshi max-w-3xl">
         Lorem ipsum dolor sit amet consectetur. Aliquam mattis tortor magna nisl.
       </p>
   
-      <div 
-        className="absolute opacity-100 grid grid-cols-3"
-        style={{
-          width: '970px',
-          height: '620px',
-        
-          gap: '24px'
-        }}
-      >
+      <div className="opacity-100 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 w-full max-w-5xl gap-4 sm:gap-5 md:gap-6 lg:gap-8 auto-rows-fr">
         {services.map((service, i) => (
-          <ServiceCard
-            key={i}
-            title={service.title}
-            description={service.description}
-            linkText="Learn More"
-            showStarIcon={true}
-          />
+          <div key={i} className="w-full min-w-0">
+            <ServiceCard
+              title={service.title}
+              description={service.description}
+              linkText="Learn More"
+              showStarIcon={true}
+            />
+          </div>
         ))}
       </div>
     </div>

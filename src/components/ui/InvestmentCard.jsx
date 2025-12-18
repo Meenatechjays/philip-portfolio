@@ -41,7 +41,7 @@ export default function InvestmentCard({
       </div>
 
       {/* Content Section */}
-      <div className="relative z-10 -mt-14 rounded-t-[32px] bg-white px-8 pt-8 pb-10 shadow-[0_-12px_30px_rgba(0,0,0,0.12)]">
+      <div className="relative z-10 -mt-14 rounded-t-[12px]  px-8 pt-8 pb-10 shadow-[0_-12px_30px_rgba(0,0,0,0.12)]">
         {/* Icon */}
         <div className="mb-4 h-10 w-10">
           <Image

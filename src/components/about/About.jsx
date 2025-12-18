@@ -142,7 +142,7 @@ export default function PortfolioHero() {
 
       {/* Right Side Content - Framer Motion Full Height Animation */}
       <div 
-        className="absolute w-[500px] top-[0px] left-[980px] h-screen overflow-hidden cursor-pointer z-10"
+        className="absolute w-[500px] top-[150px] left-[980px] h-screen overflow-hidden cursor-pointer z-10"
         onClick={handleContentClick}
       >
         <AnimatePresence mode="wait">
@@ -152,7 +152,7 @@ export default function PortfolioHero() {
             initial="initial"
             animate="animate"
             exit="exit"
-            className="absolute inset-0 flex flex-col justify-center gap-4"
+            className="absolute inset-0 flex flex-col justify-start gap-4"
           >
             <h2 className="text-xl md:text-2xl lg:text-3xl font-bold text-gray-800 leading-tight">
               {rightContentItems[currentIndex].title}
