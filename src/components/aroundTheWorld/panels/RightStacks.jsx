@@ -19,7 +19,7 @@ export default function RightStacks({ stacks, active, onChange }) {
     <>
       {/* Left Side - Stacks from start to active (only when not world) */}
       {!isWorldActive && leftStacks.length > 0 && (
-        <div className="absolute left-0 top-0 h-full flex z-20">
+        <div className="absolute left-0 top-0 bottom-0 flex z-20">
           {leftStacks.map((stack) => (
             <button
               key={stack.id}

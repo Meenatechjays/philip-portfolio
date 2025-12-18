@@ -1,12 +1,24 @@
 'use client';
 
+import { motion, useAnimation } from 'framer-motion';
 import { useEffect, useRef, useState } from 'react';
 import Image from 'next/image';
 import TimeLineCard from '../ui/TimeLineCard';
 
+// Timeline constants for pre-scroll animation (2000 → 2014)
+const PRE_SCROLL_START_YEAR = 2000;
+const PRE_SCROLL_END_YEAR = 2014;
+const TOTAL_YEARS = PRE_SCROLL_END_YEAR - PRE_SCROLL_START_YEAR + 1; // 15 years (2000-2014)
+// Calculate exact width for 15 years - divide space equally
+const PRE_SCROLL_TIMELINE_WIDTH = 3000; // Exact width for 15 years timeline
+const YEAR_WIDTH = PRE_SCROLL_TIMELINE_WIDTH / (TOTAL_YEARS - 1); // Equal spacing between years
+const PRE_SCROLL_DISTANCE = PRE_SCROLL_TIMELINE_WIDTH;
+
 export default function Timeline() {
   const scrollContainerRef = useRef(null);
   const innerContainerRef = useRef(null);
+  const timelineControls = useAnimation();
+  const [introDone, setIntroDone] = useState(false);
   const [currentCardIndex, setCurrentCardIndex] = useState(0);
   const [isAutoScrolling, setIsAutoScrolling] = useState(false);
   const [isAnimationSkipped, setIsAnimationSkipped] = useState(false);
@@ -51,43 +63,45 @@ export default function Timeline() {
 
   const cardWidth = 1013.84; // Width of each timeline card
   const paddingBeforeFirstCard = 2000; // Add space before first card for more lines
-  const paddingAfterLastCard = 500; // Add padding after last card to prevent bounce
+  const paddingAfterLastCard = 800; // Add padding after last card to ensure timeline extends fully
   const cardPositions = timelineCards.map(card => parseInt(card.position.left) + paddingBeforeFirstCard);
   const firstCardPosition = cardPositions[0];
   const lastCardIndex = timelineCards.length - 1;
   const lastCardPosition = cardPositions[lastCardIndex];
-  const timelineStart = 0; // Start timeline from 0
+  const timelineStart = 2000; // Start timeline from 0
   const timelineEnd = lastCardPosition + cardWidth + paddingAfterLastCard;
   const totalTimelineWidth = timelineEnd;
 
-  // Skip animation function - accessible from button
-  const skipAnimation = () => {
-    const scrollContainer = scrollContainerRef.current;
-    if (!scrollContainer) return;
+  // Phase 1: Intro auto-scroll animation (2000 → 2014)
+  useEffect(() => {
+    async function runIntro() {
+      // Start timeline off-screen to the right, then animate to left
+      // Use window width if available, otherwise use a default large value
+      const startX = window.innerWidth || 1920;
+      
+      // Set initial position off-screen to the right
+      await timelineControls.set({ x: startX  });
+      
+      // Animate from right to left
+      await timelineControls.start({
+        x: -PRE_SCROLL_DISTANCE,
+        transition: {
+          duration: 6,
+          ease: 'linear'
+        }
+      });
 
-    setIsAnimationSkipped(true);
-    setIsAutoScrolling(false);
-
-    // Clear any existing timeouts
-    if (animationTimeoutRef.current) {
-      clearTimeout(animationTimeoutRef.current);
+      setIntroDone(true); // unlock existing scroll logic
+      hasShownInitialPaddingRef.current = true;
     }
 
-    // Jump directly to the last card
-    const containerWidth = scrollContainer.clientWidth;
-    const lastCardLeft = cardPositions[lastCardIndex];
-    const scrollPosition = Math.max(0, lastCardLeft - (containerWidth / 2) + (cardWidth / 2));
+    runIntro();
+  }, [timelineControls]);
 
-    scrollContainer.scrollTo({
-      left: scrollPosition,
-      behavior: 'auto'
-    });
-
-    setCurrentCardIndex(lastCardIndex);
-    hasShownInitialPaddingRef.current = true;
-  };
-
+  // Phase 2: Existing scroll logic (only runs after intro completes)
   useEffect(() => {
+    if (!introDone) return;
+
     const scrollContainer = scrollContainerRef.current;
     const innerContainer = innerContainerRef.current;
     if (!scrollContainer || !innerContainer) return;
@@ -219,7 +233,7 @@ export default function Timeline() {
         clearTimeout(animationTimeoutRef.current);
       }
     };
-  }, [currentCardIndex, cardPositions, cardWidth, lastCardIndex, lastCardPosition, firstCardPosition, isAnimationSkipped]);
+  }, [introDone, currentCardIndex, cardPositions, cardWidth, lastCardIndex, lastCardPosition, firstCardPosition]);
 
   return (
     <section className="relative min-h-screen w-full mb-0 overflow-hidden">
@@ -263,14 +277,24 @@ export default function Timeline() {
           style={{ width: `${totalTimelineWidth}px` }}
         >
           {/* Main Timeline Line - Horizontal line spanning the scrollable width */}
-          <div className="absolute left-0 top-[380px] z-[10] w-full">
+          <motion.div 
+            className="absolute left-[2000px] top-[380px] z-[10]"
+            style={{ width: `${totalTimelineWidth}px` }}
+            animate={timelineControls}
+            initial={{ x: 1920 }}
+          >
             <svg width={totalTimelineWidth} height="1" viewBox={`0 0 ${totalTimelineWidth} 1`} fill="none" xmlns="http://www.w3.org/2000/svg" className="w-full h-[1px]">
               <line x1="0" y1="0.5" x2={totalTimelineWidth} y2="0.5" stroke="#112643" strokeWidth="1" />
             </svg>
-          </div>
+          </motion.div>
 
           {/* Vertical Timeline Markers - Evenly spaced along the horizontal line */}
-          <div className="absolute left-0 top-[380px] z-[15] w-full h-[68px] pointer-events-none transform -translate-y-1/2">
+          <motion.div 
+            className="absolute left-[2000px] top-[380px] z-[15] h-[68px] pointer-events-none transform -translate-y-1/2"
+            style={{ width: `${totalTimelineWidth}px` }}
+            animate={timelineControls}
+            initial={{ x: 1920 }}
+          >
             <svg width={totalTimelineWidth} height="68" viewBox={`0 0 ${totalTimelineWidth} 68`} fill="none" xmlns="http://www.w3.org/2000/svg" className="w-full h-full">
               {/* Generate evenly spaced vertical lines every 50px for dense grid pattern */}
               {Array.from({ length: Math.ceil(totalTimelineWidth / 50) }, (_, i) => (
@@ -285,7 +309,31 @@ export default function Timeline() {
                 />
               ))}
             </svg>
-          </div>
+          </motion.div>
+
+          {/* Year Labels - Display years below the timeline, evenly distributed */}
+          <motion.div 
+            className="absolute left-0 top-[380px] z-[15] pointer-events-none"
+            style={{ width: `${totalTimelineWidth}px`, paddingTop: '40px' }}
+            animate={timelineControls}
+            initial={{ x: 1920 }}
+          >
+            {Array.from({ length: TOTAL_YEARS }, (_, i) => {
+              const year = PRE_SCROLL_START_YEAR + i;
+              // Position years starting from paddingBeforeFirstCard, evenly distributed across PRE_SCROLL_TIMELINE_WIDTH
+              // Year 2000 at start, Year 2014 at end of the 1800px timeline width
+              const yearX = paddingBeforeFirstCard + (i * YEAR_WIDTH);
+              return (
+                <div
+                  key={year}
+                  className="absolute text-[#112643] font-medium font-satoshi text-lg whitespace-nowrap"
+                  style={{ left: `${yearX}px`, transform: 'translateX(-50%)' }}
+                >
+                  {year}
+                </div>
+              );
+            })}
+          </motion.div>
 
           {/* Timeline Events Container */}
           <div className="absolute inset-0 z-20 w-full">
@@ -313,7 +361,7 @@ export default function Timeline() {
       {/* Skip Animation Button - Positioned within section layout */}
       <div className="absolute bottom-8 right-8 top-200">
         <button
-          onClick={skipAnimation}
+          // onClick={skipAnimation}
           className="box-border flex flex-row justify-center items-center px-6 py-4 gap-3 isolate w-[196px] h-14 bg-[rgba(167,185,255,0.2)] rounded-lg font-satoshi text-[#1F2024] hover:bg-[rgba(167,185,255,0.3)] transition-colors duration-200"
         >
 

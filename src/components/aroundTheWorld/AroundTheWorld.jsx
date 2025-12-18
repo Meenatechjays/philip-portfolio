@@ -10,7 +10,7 @@ export default function AroundTheWorld() {
 
   return (
     <section className="relative bg-white mt-0">
-      <div className="flex h-screen max-h-screen overflow-hidden relative">
+      <div className="flex  min-h-screen overflow-x-hidden relative">
 
         {/* LEFT – sliding content */}
         <SlidingPanels
