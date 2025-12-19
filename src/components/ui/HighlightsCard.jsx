@@ -2,7 +2,6 @@
 
 import { useState } from 'react';
 import Image from 'next/image';
-import { DotLottieReact } from '@lottiefiles/dotlottie-react';
 
 export default function HighlightsCard({ 
   imageSrc,
@@ -20,7 +19,7 @@ export default function HighlightsCard({
   
   return (
     <div 
-      className={`${positionClass} flex flex-col items-start p-0 w-[341px] h-[497px] flex-shrink-0 ${className}`}
+      className={`${positionClass} flex flex-col items-start p-0 w-full max-w-[341px] h-[497px] flex-shrink-0 ${className}`}
       style={!isRelative ? {
         left: position.left,
         top: position.top
@@ -30,8 +29,8 @@ export default function HighlightsCard({
       <div className="w-full h-full bg-white rounded-2xl overflow-visible relative">
         {/* Image Section */}
         {imageSrc && (
-          <div className="box-border w-[341px] h-[267px] flex justify-between rounded-[24px] p-4 border-2 border-white relative overflow-hidden">
-            <div >
+          <div className="box-border w-full h-[267px] flex justify-between rounded-[24px] p-4 border-2 border-white relative overflow-hidden">
+            <div className="w-full h-full relative">
               <Image
                 src={imageSrc}
                 alt={imageAlt}
@@ -50,22 +49,16 @@ export default function HighlightsCard({
             onMouseEnter={() => setIsHovered(true)}
             onMouseLeave={() => setIsHovered(false)}
           >
-            {isHovered ? (
-              <DotLottieReact
-                src="/Rotating star.lottie"
-                loop
-                autoplay
-                className="w-full h-full"
-              />
-            ) : (
-              <Image
-                src="/star.svg"
-                alt="Star Icon"
-                width={48}
-                height={48}
-                className="w-full h-full object-contain"
-              />
-            )}
+            <Image
+              src="/star.svg"
+              alt="Star Icon"
+              width={48}
+              height={48}
+              className="w-full h-full object-contain transition-transform duration-1000"
+              style={{
+                transform: isHovered ? 'rotate(360deg)' : 'rotate(0deg)',
+              }}
+            />
           </div>
 
           {/* Title */}

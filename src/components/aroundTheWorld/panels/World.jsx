@@ -3,6 +3,16 @@
 import Image from 'next/image';
 import { motion, useAnimation } from 'framer-motion';
 import { useEffect, useRef, useState } from 'react';
+import dynamic from 'next/dynamic';
+
+// Dynamically import DotLottie with SSR disabled to avoid CORS issues
+const DotLottieReact = dynamic(
+  () => import('@lottiefiles/dotlottie-react').then((mod) => mod.DotLottieReact),
+  { 
+    ssr: false,
+    loading: () => <div className="w-full h-auto max-h-[400px] bg-gray-100 animate-pulse rounded" />
+  }
+);
 
 // Animation constants
 const ANIMATION_DURATION = 3; // seconds for scroll animations
@@ -160,11 +170,11 @@ export default function World() {
             className="relative w-full"
             style={{ willChange: 'transform, opacity', maxWidth: '85%' }}
           >
-            <img
-              src="/map.svg"
-              alt="World map"
-              className="w-full h-auto"
-              style={{ maxHeight: '400px', objectFit: 'contain' }}
+            <DotLottieReact
+              src="/Map.lottie"
+              loop
+              autoplay
+              className="w-full h-auto max-h-[400px] object-contain"
             />
           </motion.div>
 

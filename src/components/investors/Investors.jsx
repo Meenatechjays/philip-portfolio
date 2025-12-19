@@ -1,11 +1,56 @@
 'use client';
 
 import InvestmentCard from '../ui/InvestmentCard';
+import { motion } from 'framer-motion';
 
 export default function Investors() {
+
+  const cardVariants = {
+    initial: {
+      x: 800,
+      opacity: 0,
+    },
+    animate: (index) => ({
+      x: 0,
+      opacity: 1,
+      transition: {
+        duration: 1.2,
+        delay: index * 0.15,
+        ease: [0.25, 0.1, 0.25, 1],
+      },
+    }),
+  };
+
+  const cards = [
+    {
+      imageSrc: '/pepcare.png',
+      imageAlt: 'PepCare',
+      title: 'Pepcare',
+      description: 'Built a web HIPPA-compliant platform to streamline scheduling.',
+    },
+    {
+      imageSrc: '/belongy.png',
+      imageAlt: 'Belongly',
+      title: 'Belongly',
+      description: 'A HIPAA-compliant AI matching solution that streamlines therapist connections, enhances',
+    },
+    {
+      imageSrc: '/decerna.png',
+      imageAlt: 'Decerna',
+      title: 'Decerna',
+      description: 'Our team created a cutting-edge emission calculation tool with multiple data interface',
+    },
+    {
+      imageSrc: '/ameya.png',
+      imageAlt: 'Ameya',
+      title: 'Ameya',
+      description: 'Ameya is a du designed to o',
+    },
+  ];
+
   return (
     <section 
-      className="relative w-full min-h-screen overflow-hidden investment-section" 
+      className="relative w-full min-h-screen overflow-hidden investment-section pb-32" 
       style={{ 
         backgroundColor: 'rgb(247, 247, 247)',
         background: 'rgb(247, 247, 247)',
@@ -54,41 +99,32 @@ export default function Investors() {
       </div>
       
       {/* Investment Cards Container */}
-      {/* Investment Cards Container */}
-<div
-  className="relative z-10 w-full overflow-x-auto"
-  style={{ marginTop: '300px' }}
->
-  <div className="flex gap-8 px-10">
-    <InvestmentCard
-      imageSrc="/pepcare.png"
-      imageAlt="PepCare"
-      title="Pepcare"
-      description="Built a web HIPPA-compliant platform to streamline scheduling."
-    />
-
-    <InvestmentCard
-      imageSrc="/belongy.png"
-      imageAlt="Belongly"
-      title="Belongly"
-      description="A HIPAA-compliant AI matching solution that streamlines therapist connections, enhances"
-    />
-
-    <InvestmentCard
-      imageSrc="/decerna.png"
-      imageAlt="Decerna"
-      title="Decerna"
-      description="Our team created a cutting-edge emission calculation tool with multiple data interface"
-    />
-
-    <InvestmentCard
-      imageSrc="/ameya.png"
-      imageAlt="Ameya"
-      title="Ameya"
-      description="Ameya is a du designed to o"
-    />
-  </div>
-</div>
+      <div
+        className="relative z-10 w-full overflow-x-auto pb-32"
+        style={{ marginTop: '300px' }}
+      >
+        <motion.div 
+          className="flex gap-8 px-10"
+          initial="initial"
+          whileInView="animate"
+          viewport={{ once: true, amount: 0.2 }}
+        >
+          {cards.map((card, index) => (
+            <motion.div
+              key={index}
+              custom={index}
+              variants={cardVariants}
+            >
+              <InvestmentCard
+                imageSrc={card.imageSrc}
+                imageAlt={card.imageAlt}
+                title={card.title}
+                description={card.description}
+              />
+            </motion.div>
+          ))}
+        </motion.div>
+      </div>
 
     </section>
   );
