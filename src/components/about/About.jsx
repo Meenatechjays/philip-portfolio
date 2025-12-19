@@ -1,11 +1,13 @@
 'use client';
 
 import Image from 'next/image';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 
-export default function PortfolioHero() {
+export default function PortfolioHero({ isVisible = true }) {
   const [currentIndex, setCurrentIndex] = useState(0);
+  const [isLeftMounted, setIsLeftMounted] = useState(false);
+  const [isRightMounted, setIsRightMounted] = useState(false);
 
   const rightContentItems = [
     {
@@ -28,6 +30,26 @@ export default function PortfolioHero() {
   const handleContentClick = () => {
     setCurrentIndex((prev) => (prev + 1) % rightContentItems.length);
   };
+
+  // Mount animation effects - triggered only when component becomes visible (after splash)
+  useEffect(() => {
+    if (!isVisible) return;
+
+    // Show left content immediately after component becomes visible
+    const leftMountTimer = setTimeout(() => {
+      setIsLeftMounted(true);
+    }, 100); // Small delay for smooth transition from splash
+
+    // Show right content after 2000ms
+    const rightMountTimer = setTimeout(() => {
+      setIsRightMounted(true);
+    }, 2000);
+
+    return () => {
+      clearTimeout(leftMountTimer);
+      clearTimeout(rightMountTimer);
+    };
+  }, [isVisible]);
 
   /* ❗ Animation UNCHANGED */
   const contentVariants = {
@@ -84,8 +106,12 @@ export default function PortfolioHero() {
         </div>
 
 
-        {/* Logo */}
-        <div className="absolute top-[32px] left-[76px] z-20">
+        {/* Logo - Shows immediately */}
+        <div 
+          className={`absolute top-[32px] left-[76px] z-20 transition-all duration-700 ease-out ${
+            isLeftMounted ? 'opacity-100 translate-y-0' : 'opacity-0 -translate-y-4'
+          }`}
+        >
           <a
             href="/"
             className="text-xl md:text-2xl font-bold text-gray-900 hover:opacity-80 transition-opacity"
@@ -95,8 +121,12 @@ export default function PortfolioHero() {
         </div>
 
 
-        {/* Left Content */}
-        <div className="absolute w-[529px] top-[150px] left-[76px] flex flex-col gap-4">
+        {/* Left Content - Shows immediately */}
+        <div 
+          className={`absolute w-[529px] top-[150px] left-[76px] flex flex-col gap-4 transition-all duration-700 ease-out delay-100 ${
+            isLeftMounted ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'
+          }`}
+        >
           <h1 className="font-sans font-bold text-6xl text-gray-900 leading-tight">
             Hey Im <br />
             Philip Samuelraj
@@ -109,9 +139,12 @@ export default function PortfolioHero() {
         </div>
 
 
-        {/* Center Image */}
-      {/* Center Image */}
-<div className="absolute top-1/2 left-[52%] -translate-x-1/2 -translate-y-1/2">
+        {/* Center Image - Shows immediately */}
+<div 
+  className={`absolute top-1/2 left-[52%] -translate-x-1/2 -translate-y-1/2 transition-all duration-700 ease-out delay-200 ${
+    isLeftMounted ? 'opacity-100 scale-100' : 'opacity-0 scale-95'
+  }`}
+>
   <div
     className="relative"
     style={{
@@ -134,9 +167,11 @@ export default function PortfolioHero() {
 
 
 
-        {/* ================= RIGHT CONTENT ================= */}
+        {/* ================= RIGHT CONTENT - Delayed 2000ms, Slides from Bottom ================= */}
         <div
-          className="absolute w-[500px] left-[980px] cursor-pointer z-10"
+          className={`absolute w-[500px] left-[980px] cursor-pointer z-10 transition-all duration-1000 ease-out ${
+            isRightMounted ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-16'
+          }`}
           style={{ top: '230px' }}
           onClick={handleContentClick}
         >
