@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import Image from 'next/image';
 import About from '../components/about/About';
 import Timeline from '../components/timeLine/Timeline';
 import Highlights from '../components/pressAndHighlights/Highlights';

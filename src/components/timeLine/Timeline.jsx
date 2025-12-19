@@ -77,7 +77,7 @@ export default function Timeline() {
     async function runIntro() {
       // Start timeline off-screen to the right, then animate to left
       // Use window width if available, otherwise use a default large value
-      const startX = window.innerWidth || 1920;
+      const startX = typeof window !== 'undefined' ? window.innerWidth : 1920;
       
       // Set initial position off-screen to the right
       await timelineControls.set({ x: startX  });

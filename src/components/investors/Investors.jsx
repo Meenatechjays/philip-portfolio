@@ -4,21 +4,32 @@ import InvestmentCard from '../ui/InvestmentCard';
 import { motion } from 'framer-motion';
 
 export default function Investors() {
+  const containerVariants = {
+    hidden: {
+      opacity: 1,
+    },
+    visible: {
+      opacity: 1,
+      transition: {
+        staggerChildren: 0.15,
+        delayChildren: 0,
+      },
+    },
+  };
 
   const cardVariants = {
-    initial: {
+    hidden: {
       x: 800,
       opacity: 0,
     },
-    animate: (index) => ({
+    visible: {
       x: 0,
       opacity: 1,
       transition: {
         duration: 1.2,
-        delay: index * 0.15,
         ease: [0.25, 0.1, 0.25, 1],
       },
-    }),
+    },
   };
 
   const cards = [
@@ -105,15 +116,20 @@ export default function Investors() {
       >
         <motion.div 
           className="flex gap-8 px-10"
-          initial="initial"
-          whileInView="animate"
-          viewport={{ once: true, amount: 0.2 }}
+          variants={containerVariants}
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true, amount: 0.1 }}
         >
           {cards.map((card, index) => (
             <motion.div
-              key={index}
-              custom={index}
+              key={`card-${index}`}
               variants={cardVariants}
+              style={{
+                minWidth: '500px',
+                flexShrink: 0,
+                willChange: 'transform, opacity',
+              }}
             >
               <InvestmentCard
                 imageSrc={card.imageSrc}
