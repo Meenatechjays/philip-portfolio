@@ -28,7 +28,7 @@ export default function Home() {
         }`}
       >
         <div className="relative">
-          <About />
+          <About isVisible={!showSplash} />
           <div className="absolute bottom-0 left-0 right-0 w-full z-30 pointer-events-none translate-y-1/2">
             <Image
               src="/rectangle.svg"
