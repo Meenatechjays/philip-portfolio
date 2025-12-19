@@ -127,7 +127,7 @@ export default function SplashScreen({ onComplete }) {
           showSkyPhase ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-[100vh]'
         }`}
       >
-        <h1 className="text-center uppercase splash-sky-text">
+        <h1 className="text-center uppercase splash-sky-text text-4xl font-bold">
           Sky is the limit
         </h1>
       </div>
