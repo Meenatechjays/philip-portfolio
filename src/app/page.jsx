@@ -10,7 +10,7 @@ import AroundTheWorld from '../components/aroundTheWorld/AroundTheWorld';
 import SplashScreen from '../components/ui/SplashScreen';
 import Contact from '../components/contact/Contact';
 export default function Home() {
-  const [showSplash, setShowSplash] = useState(false);
+  const [showSplash, setShowSplash] = useState(true);
 
   const handleSplashComplete = () => {
     setShowSplash(false);

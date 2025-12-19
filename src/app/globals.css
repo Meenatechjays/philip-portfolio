@@ -127,6 +127,22 @@ section .investment-section-bg {
   animation: fade-in 0.3s ease-out;
 }
 
+/* Slide-up animation for About section after splash */
+@keyframes slide-up {
+  0% {
+    opacity: 0;
+    transform: translateY(64px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-slide-up {
+  animation: slide-up 2s ease-out forwards;
+}
+
 /* Splash Screen Greeting Text Typography */
 .splash-greeting-text {
   font-family: var(--font-sparkling-mellow);
