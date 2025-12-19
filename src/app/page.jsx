@@ -1,13 +1,13 @@
 'use client';
 
 import { useState } from 'react';
-import Image from 'next/image';
 import About from '../components/about/About';
 import Timeline from '../components/timeLine/Timeline';
 import Highlights from '../components/pressAndHighlights/Highlights';
 import Investors from '../components/investors/Investors';
 import AroundTheWorld from '../components/aroundTheWorld/AroundTheWorld';
-
+import SplashScreen from '../components/ui/SplashScreen';
+import Contact from '../components/contact/Contact';
 export default function Home() {
   const [showSplash, setShowSplash] = useState(false);
 
@@ -17,15 +17,13 @@ export default function Home() {
 
   return (
     <>
-      {/* Splash Screen - Shows and stays visible */}
-      {/* <SplashScreen onComplete={handleSplashComplete} /> */}
+      {/* Splash Screen - Shows on initial load */}
+      {showSplash && <SplashScreen onComplete={handleSplashComplete} />}
 
-      {/* Main Content - Hidden for now (don't show after splash) */}
-      {/* Uncomment below when ready to show About section */}
-      
+      {/* Main Content - Slides up slowly after splash screen */}
       <main 
-        className={`relative transition-all duration-1000 ease-out ${
-          showSplash ? 'opacity-0 translate-y-8' : 'opacity-100 translate-y-0'
+        className={`relative transition-all duration-[2000ms] ease-out ${
+          showSplash ? 'opacity-0 translate-y-16' : 'opacity-100 translate-y-0'
         }`}
       >
         <div className="relative">
@@ -45,9 +43,9 @@ export default function Home() {
         <AroundTheWorld />
         <Highlights/>
         <Investors/>
-        {/* <Contact /> */}
-    </main>
-     
+        <Contact />
+      </main>
+      
     </>
   );
 }
