@@ -142,7 +142,7 @@ export default function PortfolioHero() {
 
       {/* Right Side Content - Framer Motion Full Height Animation */}
       <div 
-        className="absolute w-[500px] top-[150px] left-[980px] h-screen overflow-hidden cursor-pointer z-10"
+        className="absolute w-[500px] top-[150px] left-[980px] h-screen  cursor-pointer z-10"
         onClick={handleContentClick}
       >
         <AnimatePresence mode="wait">
