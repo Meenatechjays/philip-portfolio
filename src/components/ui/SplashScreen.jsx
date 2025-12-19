@@ -46,18 +46,18 @@ export default function SplashScreen({ onComplete }) {
       setShowSkyPhase(true);
     }, 2000); // 1.5s greetings + 0.5s pause
 
-    // Don't hide splash screen - stay on "Sky is the Limit" phase
-    // const loaderTimeout = setTimeout(() => {
-    //   if (onComplete) {
-    //     onComplete();
-    //   }
-    // }, 4000);
+    // Hide splash screen after sky phase displays (3s for sky phase to be visible)
+    const loaderTimeout = setTimeout(() => {
+      if (onComplete) {
+        onComplete();
+      }
+    }, 5000); // 1.5s greetings + 0.5s pause + 3s sky phase
 
     // Cleanup intervals and timeouts
     return () => {
       clearInterval(greetingInterval);
       clearTimeout(skyPhaseTimeout);
-      // clearTimeout(loaderTimeout);
+      clearTimeout(loaderTimeout);
     };
   }, [onComplete]);
 
