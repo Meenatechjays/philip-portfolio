@@ -17,44 +17,35 @@ const PRE_SCROLL_DISTANCE = PRE_SCROLL_TIMELINE_WIDTH;
 export default function Timeline() {
   const scrollContainerRef = useRef(null);
   const innerContainerRef = useRef(null);
+  const sectionRef = useRef(null);
   const timelineControls = useAnimation();
   const [introDone, setIntroDone] = useState(false);
   const [currentCardIndex, setCurrentCardIndex] = useState(0);
-  const [isAutoScrolling, setIsAutoScrolling] = useState(false);
   const [isAnimationSkipped, setIsAnimationSkipped] = useState(false);
+  const [scrollHijackActive, setScrollHijackActive] = useState(false);
+  const [timelineComplete, setTimelineComplete] = useState(false);
   const hasShownInitialPaddingRef = useRef(false);
-  const animationTimeoutRef = useRef(null);
-  const animationFrameRef = useRef(null);
-  const fillCompleteRef = useRef(false);
+  const scrollAccumulator = useRef(0);
+  const isSnapping = useRef(false);
 
-  // Handler for when card fill animation completes
-  const handleFillComplete = () => {
-    fillCompleteRef.current = true;
-  };
-
-  // Reset function to scroll back to start
-  const resetTimeline = () => {
+  // Skip animation and allow vertical scrolling
+  const skipAnimation = () => {
+    // Mark timeline as complete to allow vertical scrolling
+    setTimelineComplete(true);
+    setScrollHijackActive(false);
+    setIsAnimationSkipped(true);
+    
+    // Scroll to last card
     const scrollContainer = scrollContainerRef.current;
-    if (!scrollContainer) return;
-
-    // Cancel any ongoing animations
-    if (animationFrameRef.current) {
-      cancelAnimationFrame(animationFrameRef.current);
+    if (scrollContainer) {
+      const lastCardPosition = cardPositions[lastCardIndex];
+      const containerWidth = scrollContainer.clientWidth;
+      scrollContainer.scrollTo({
+        left: lastCardPosition - (containerWidth / 2) + (cardWidth / 2),
+        behavior: 'smooth'
+      });
+      setCurrentCardIndex(lastCardIndex);
     }
-    if (animationTimeoutRef.current) {
-      clearTimeout(animationTimeoutRef.current);
-    }
-
-    // Reset state
-    setCurrentCardIndex(0);
-    setIsAutoScrolling(false);
-    fillCompleteRef.current = false;
-
-    // Scroll back to first card
-    scrollContainer.scrollTo({
-      left: 0,
-      behavior: 'smooth'
-    });
   };
 
   // Dynamic timeline cards data - easily add more cards in the future
@@ -124,155 +115,111 @@ export default function Timeline() {
 
       setIntroDone(true); // unlock card scrolling logic
       hasShownInitialPaddingRef.current = true;
+      setScrollHijackActive(true); // Enable scroll hijacking after intro
+      
+      // Center on first card after intro
+      const scrollContainer = scrollContainerRef.current;
+      if (scrollContainer) {
+        const containerWidth = scrollContainer.clientWidth;
+        const firstCardLeft = cardPositions[0];
+        const centerPosition = Math.max(0, firstCardLeft - (containerWidth / 2) + (cardWidth / 2));
+        scrollContainer.scrollTo({
+          left: centerPosition,
+          behavior: 'smooth'
+        });
+      }
     }
 
     runIntro();
   }, [timelineControls]);
 
-  // Phase 2: Existing scroll logic (only runs after intro completes)
+  // Scroll hijacking with snap-to-card behavior
   useEffect(() => {
-    if (!introDone) return;
+    if (!scrollHijackActive || timelineComplete) return;
 
-    const scrollContainer = scrollContainerRef.current;
-    const innerContainer = innerContainerRef.current;
-    if (!scrollContainer || !innerContainer) return;
+    const SCROLL_THRESHOLD = 100; // Amount of scroll needed to trigger next card
 
-    // Calculate max scroll width based on last card
-    const containerWidth = scrollContainer.clientWidth;
-    const maxScrollLeft = Math.max(0, lastCardPosition - (containerWidth / 2) + (cardWidth / 2));
+    const snapToCard = (targetIndex) => {
+      const scrollContainer = scrollContainerRef.current;
+      if (!scrollContainer || isSnapping.current) return;
 
-    // Prevent scrolling past the last card and prevent scrolling back to padding area
-    let isScrolling = false;
-    const handleScroll = () => {
-      if (isScrolling) return;
-
-      const currentScroll = scrollContainer.scrollLeft;
-      // Calculate min scroll position dynamically (prevent scrolling back to padding area after initial mount)
-      const minScrollLeft = hasShownInitialPaddingRef.current
-        ? Math.max(0, firstCardPosition - (containerWidth / 2) + (cardWidth / 2))
-        : 0;
-
-      // Prevent scrolling right past the last card
-      if (currentScroll > maxScrollLeft) {
-        isScrolling = true;
-        requestAnimationFrame(() => {
-          scrollContainer.scrollLeft = maxScrollLeft;
-          isScrolling = false;
-        });
-      }
-      // Prevent scrolling left back to padding area (after initial mount)
-      else if (hasShownInitialPaddingRef.current && currentScroll < minScrollLeft) {
-        isScrolling = true;
-        requestAnimationFrame(() => {
-          scrollContainer.scrollLeft = minScrollLeft;
-          isScrolling = false;
-        });
-      }
-    };
-
-    // Use wheel event to prevent overscroll bounce
-    const handleWheel = (e) => {
-      const currentScroll = scrollContainer.scrollLeft;
-      // Calculate min scroll position dynamically
-      const minScrollLeft = hasShownInitialPaddingRef.current
-        ? Math.max(0, firstCardPosition - (containerWidth / 2) + (cardWidth / 2))
-        : 0;
-
-      // Prevent scrolling right past the last card
-      if (currentScroll >= maxScrollLeft && e.deltaX > 0) {
-        e.preventDefault();
-        e.stopPropagation();
-      }
-      // Prevent scrolling left back to padding area (after initial mount)
-      else if (hasShownInitialPaddingRef.current && currentScroll <= minScrollLeft && e.deltaX < 0) {
-        e.preventDefault();
-        e.stopPropagation();
-      }
-    };
-
-    scrollContainer.addEventListener('scroll', handleScroll, { passive: true });
-    scrollContainer.addEventListener('wheel', handleWheel, { passive: false });
-
-    const scrollToCardCenter = (cardIndex) => {
-      if (cardIndex >= cardPositions.length) return;
-
-      const cardLeft = cardPositions[cardIndex];
-      const centerPosition = Math.max(0, cardLeft - (containerWidth / 2) + (cardWidth / 2));
+      isSnapping.current = true;
+      const containerWidth = scrollContainer.clientWidth;
+      const cardLeft = cardPositions[targetIndex];
+      const targetScroll = cardLeft - (containerWidth / 2) + (cardWidth / 2);
 
       scrollContainer.scrollTo({
-        left: centerPosition,
+        left: targetScroll,
         behavior: 'smooth'
       });
+
+      // Update current card index
+      setCurrentCardIndex(targetIndex);
+      scrollAccumulator.current = 0;
+
+      // Check if this is the last card
+      if (targetIndex >= lastCardIndex) {
+        setTimeout(() => {
+          setTimelineComplete(true);
+          setScrollHijackActive(false);
+          isSnapping.current = false;
+        }, 500);
+      } else {
+        setTimeout(() => {
+          isSnapping.current = false;
+        }, 500);
+      }
     };
 
-    const slideCardRight = (cardIndex) => {
-      if (cardIndex >= cardPositions.length) return;
+    const handleWheel = (e) => {
+      const scrollContainer = scrollContainerRef.current;
+      if (!scrollContainer || isSnapping.current) return;
 
-      setIsAutoScrolling(true);
-      fillCompleteRef.current = false;
+      const section = sectionRef.current;
+      if (!section) return;
 
-      const cardLeft = cardPositions[cardIndex];
-      const startPosition = cardLeft - (containerWidth / 2) + (cardWidth / 2); // Center position
-      const endPosition = cardLeft + (containerWidth / 2); // Slide to right edge
-      const distance = endPosition - startPosition;
-      const duration = 5000; // 5 seconds for slow slide with fill animation
-      const startTime = performance.now();
+      const rect = section.getBoundingClientRect();
+      const isInView = rect.top <= 0 && rect.bottom > window.innerHeight;
 
-      const animateScroll = (currentTime) => {
-        const elapsed = currentTime - startTime;
-        const progress = Math.min(elapsed / duration, 1);
+      if (isInView) {
+        e.preventDefault();
         
-        // Linear easing for consistent fill animation
-        scrollContainer.scrollLeft = startPosition + (distance * progress);
+        // Accumulate scroll delta
+        scrollAccumulator.current += e.deltaY;
 
-        if (progress < 1 && !fillCompleteRef.current) {
-          animationFrameRef.current = requestAnimationFrame(animateScroll);
-        } else {
-          setIsAutoScrolling(false);
-          animationFrameRef.current = null;
-          
-          // Move to next card after fill complete
-          if (cardIndex < lastCardIndex) {
-            setTimeout(() => {
-              setCurrentCardIndex(cardIndex + 1);
-            }, 500); // Small delay before next card
+        // Snap to next card when threshold reached
+        if (scrollAccumulator.current > SCROLL_THRESHOLD) {
+          const nextIndex = Math.min(currentCardIndex + 1, lastCardIndex);
+          if (nextIndex !== currentCardIndex) {
+            snapToCard(nextIndex);
+          } else {
+            scrollAccumulator.current = 0;
+          }
+        } 
+        // Snap to previous card when scrolling up
+        else if (scrollAccumulator.current < -SCROLL_THRESHOLD) {
+          const prevIndex = Math.max(currentCardIndex - 1, 0);
+          if (prevIndex !== currentCardIndex) {
+            snapToCard(prevIndex);
+          } else {
+            scrollAccumulator.current = 0;
           }
         }
-      };
-
-      // Clear any existing animation
-      if (animationFrameRef.current) {
-        cancelAnimationFrame(animationFrameRef.current);
       }
-
-      animationFrameRef.current = requestAnimationFrame(animateScroll);
     };
 
-    // Start card-by-card progression after intro
-    if (!isAnimationSkipped && hasShownInitialPaddingRef.current) {
-      // First, center the card
-      scrollToCardCenter(currentCardIndex);
-      
-      // Then after centering, start the slide-right animation
-      animationTimeoutRef.current = setTimeout(() => {
-        slideCardRight(currentCardIndex);
-      }, 1000); // Wait for centering to complete
-    }
-
+    window.addEventListener('wheel', handleWheel, { passive: false });
+    
     return () => {
-      scrollContainer.removeEventListener('scroll', handleScroll);
-      scrollContainer.removeEventListener('wheel', handleWheel);
-      if (animationTimeoutRef.current) {
-        clearTimeout(animationTimeoutRef.current);
-      }
-      if (animationFrameRef.current) {
-        cancelAnimationFrame(animationFrameRef.current);
-      }
+      window.removeEventListener('wheel', handleWheel);
     };
-  }, [introDone, currentCardIndex, cardPositions, cardWidth, lastCardIndex, lastCardPosition, firstCardPosition]);
+  }, [scrollHijackActive, timelineComplete, currentCardIndex, cardPositions, cardWidth, lastCardIndex]);
 
   return (
-    <section className="relative min-h-screen w-full mb-0 overflow-hidden">
+    <section 
+      ref={sectionRef}
+      className="relative min-h-screen w-full mb-0 overflow-hidden"
+    >
       {/* Background SVG */}
       <div className="absolute inset-0 w-full h-full">
         <Image
@@ -389,7 +336,6 @@ export default function Timeline() {
                   position={adjustedPosition}
                   scrollContainerRef={scrollContainerRef}
                   isActive={index === currentCardIndex}
-                  onFillComplete={handleFillComplete}
                 />
               );
             })}
@@ -397,22 +343,24 @@ export default function Timeline() {
         </div>
       </div>
 
-      {/* Reset Button - Positioned within section layout */}
-      <div className="absolute bottom-8 right-8 top-200">
-        <button
-          onClick={resetTimeline}
-          className="box-border flex flex-row justify-center items-center px-6 py-4 gap-3 isolate w-[196px] h-14 bg-[rgba(167,185,255,0.2)] rounded-lg font-satoshi text-[#1F2024] hover:bg-[rgba(167,185,255,0.3)] transition-colors duration-200"
-        >
-          <span>Skip Animation</span>
-          <Image
-            src="/skip.svg"
-            alt="Reset icon"
-            width={20}
-            height={20}
-            className="flex-shrink-0"
-          />
-        </button>
-      </div>
+      {/* Skip Animation Button - Positioned within section layout */}
+      {!timelineComplete && (
+        <div className="absolute bottom-8 right-8 top-200">
+          <button
+            onClick={skipAnimation}
+            className="box-border flex flex-row justify-center items-center px-6 py-4 gap-3 isolate w-[196px] h-14 bg-[rgba(167,185,255,0.2)] rounded-lg font-satoshi text-[#1F2024] hover:bg-[rgba(167,185,255,0.3)] transition-colors duration-200"
+          >
+            <span>Skip Animation</span>
+            <Image
+              src="/skip.svg"
+              alt="Skip icon"
+              width={20}
+              height={20}
+              className="flex-shrink-0"
+            />
+          </button>
+        </div>
+      )}
     </section>
   );
 }

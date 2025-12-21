@@ -30,19 +30,19 @@ const LOCATION_POSITIONS = [
 ];
 
 // SignalRipple component
-function SignalRipple() {
-  return (
-    <div className="relative flex items-center justify-center" style={{ width: '57px', height: '57px' }}>
-      {/* Ripple circles */}
-      <span className="absolute w-full h-full rounded-full bg-blue-400/[0.72] animate-ripple delay-0" />
-      <span className="absolute w-full h-full rounded-full bg-blue-400/[0.72] animate-ripple delay-700" />
-      <span className="absolute w-full h-full rounded-full bg-blue-400/[0.72] animate-ripple delay-1400" />
+// function SignalRipple() {
+//   return (
+//     <div className="relative flex items-center justify-center" style={{ width: '57px', height: '57px' }}>
+//       {/* Ripple circles */}
+//       <span className="absolute w-full h-full rounded-full bg-blue-400/[0.72] animate-ripple delay-0" />
+//       <span className="absolute w-full h-full rounded-full bg-blue-400/[0.72] animate-ripple delay-700" />
+//       <span className="absolute w-full h-full rounded-full bg-blue-400/[0.72] animate-ripple delay-1400" />
 
-      {/* Center dot */}
-      <span className="relative w-2 h-2 rounded-full bg-blue-600" />
-    </div>
-  );
-}
+//       {/* Center dot */}
+//       <span className="relative w-2 h-2 rounded-full bg-blue-600" />
+//     </div>
+//   );
+// }
 
 export default function World() {
   const componentRef = useRef(null);
@@ -171,7 +171,7 @@ export default function World() {
             style={{ willChange: 'transform, opacity', maxWidth: '85%' }}
           >
             <DotLottieReact
-              src="/Map.lottie"
+              src="/World_map.lottie"
               loop
               autoplay
               className="w-full h-auto max-h-[400px] object-contain"
@@ -204,7 +204,7 @@ export default function World() {
 
           {/* Location markers - 7 SignalRipple components positioned on the map */}
           {/* Only render after map reaches original position */}
-          {showFinalLogo && LOCATION_POSITIONS.map((position, index) => (
+          {/* {showFinalLogo && LOCATION_POSITIONS.map((position, index) => (
             <div
               key={index}
               className="absolute z-10 pointer-events-none"
@@ -215,7 +215,7 @@ export default function World() {
             >
               <SignalRipple />
             </div>
-          ))}
+          ))} */}
 
           {/* Stats positioned on the map - Desktop only */}
           {showFinalLogo && (
