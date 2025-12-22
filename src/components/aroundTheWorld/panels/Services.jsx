@@ -37,7 +37,7 @@ export default function Services() {
         </p>
       </div>
   
-      <div className="opacity-100 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 w-full max-w-5xl gap-4 sm:gap-5 md:gap-6 lg:gap-4 auto-rows-fr">
+      <div className="opacity-100 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 w-full max-w-5xl gap-2 sm:gap-3 md:gap-5 lg:gap-4 auto-rows-fr">
         {services.map((service, i) => (
           <div key={i} className="w-full min-w-0">
             <ServiceCard

@@ -20,6 +20,7 @@ export default function SplashScreen({ onComplete }) {
 
   // Multi-language greetings configuration
   const greetings = [
+    "Hey",
     "Hello",      // English
     "Bonjour",    // French
     "Hallo",      // German

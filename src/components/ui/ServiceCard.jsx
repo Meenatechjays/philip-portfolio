@@ -13,7 +13,7 @@ export default function ServiceCard({
 }) {
   const content = (
     <div 
-      className={`group flex flex-col opacity-100 w-full min-w-0 rounded-lg p-3 sm:p-4 md:p-5 lg:p-6 bg-[#F3F4F5] h-full ${className}`}
+      className={`group flex flex-col opacity-100 w-full min-w-0 rounded-lg p-3 sm:p-4 md:p-5 lg:p-6 bg-[#F3F4F5]  ${className}`}
     >
       {/* Inner Content Container */}
       <div className="flex flex-col opacity-100 flex-1 min-h-0 gap-2 sm:gap-3 md:gap-4">
