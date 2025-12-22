@@ -14,8 +14,10 @@ export default function ToggleButton({ options, activeOption, onOptionChange }) 
             disabled={isDisabled}
             className={`
               box-border flex flex-row items-center justify-center
+
               font-inter font-medium text-sm font-weight-600 transition-all duration-200 
               gap-1 h-[44px] max-w-[125px] flex-1 min-w-0 self-stretch px-3 whitespace-nowrap
+
               ${isActive 
                 ? 'bg-[#454654] border border-white rounded-[24px] text-white' 
                 : 'bg-white rounded-lg text-[#454654]'

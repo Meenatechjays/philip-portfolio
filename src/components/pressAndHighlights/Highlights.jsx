@@ -46,7 +46,9 @@ export default function Highlights() {
       </div>
 
       {/* Main Content Container */}
+
       <div className="relative z-5 min-h-screen flex flex-col items-center justify-start px-4  pb-32">
+
         {/* Header Section */}
         <div className="w-full max-w-[671px] flex flex-col gap-4 items-center mb-6 pt-4">
           {/* Main Heading */}
