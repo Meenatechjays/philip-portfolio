@@ -16,6 +16,10 @@
   --foreground: #171717;
   --investment-bg: #F7F7F7;
   --font-sparkling-mellow: 'Sparkling Mellow Demo';
+  --font-heading: 'Satoshi', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  --heading-color: #1F2024;
+  --heading-h2-size: clamp(28px, 4vw, 44px);
+  --heading-h2-line-height: 1.2;
 }
 
 @theme inline {
@@ -52,6 +56,16 @@ body {
 
 .font-satoshi {
   font-family: 'Satoshi', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+}
+
+.heading-h2 {
+  font-family: var(--font-heading);
+  font-weight: 700;
+  font-style: normal;
+  font-size: var(--heading-h2-size);
+  line-height: var(--heading-h2-line-height);
+  letter-spacing: 0;
+  color: var(--heading-color);
 }
 
 .investment-section-bg {

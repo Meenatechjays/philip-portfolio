@@ -146,9 +146,9 @@ export default function World() {
       <div 
         className="opacity-100 flex flex-col gap-2 md:gap-4 md:ml-[4.6vw] mt-4 md:mt-8 w-full md:w-[clamp(300px,38.8vw,671px)]"
       >
-        <h1 className="text-2xl md:text-3xl lg:text-4xl font-satoshi font-bold text-[#1F2024]">
+        <h2 className="heading-h2">
           Around the World with AI
-        </h1>
+        </h2>
         <p 
           className="font-satoshi font-normal text-base md:text-lg leading-normal tracking-[0%] opacity-100 text-[#454654] w-full"
         >

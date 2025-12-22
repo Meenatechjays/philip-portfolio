@@ -57,7 +57,6 @@ export default function InvestmentCard({
   return (
     <motion.div
       className={`relative w-[500px] h-[576px] overflow-hidden rounded-[28px] shadow-[0_20px_50px_rgba(0,0,0,0.18)] ${className}`}
-      style={{ backgroundColor: 'rgb(247, 247, 247)' }}
       initial="initial"
       whileHover="hover"
     >
@@ -138,7 +137,7 @@ export default function InvestmentCard({
 
         {/* Description */}
         {description && (
-          <p className="text-lg leading-relaxed text-[#475569] relative z-20">
+          <p className="text-lg sm:text-base md:text-lg lg:text-xl font-satoshi  text-[#454654] relative z-20">
             {description}
           </p>
         )}

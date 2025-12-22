@@ -27,7 +27,7 @@ export default function RightStacks({ stacks, active, onChange }) {
                   background: "linear-gradient(180deg, #DBECF6 0%, #93CDEB 100%)",
                 }}
               >
-              <div className="text-2xl sm:text-3xl font-bold text-[#1F2024] flex-shrink-0">
+              <div className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold  text-center font-heading tracking-tight leading-none font-sathoshi text-[#1F2024]  flex-shrink-0">
                 {stack.number}
               </div>
 
@@ -36,9 +36,9 @@ export default function RightStacks({ stacks, active, onChange }) {
                 className="flex-1 flex items-center justify-center"
                 style={{ writingMode: 'vertical-rl', textOrientation: 'mixed' }}
               >
-                <h3 className="text-base sm:text-lg font-semibold text-[#1F2024] whitespace-nowrap transform rotate-180">
+                <h4 className=" sm:text-lg md:text-xl lg:text-2xl font-bold text-[#1F2024] font-heading tracking-tight leading-none font-sathoshi  whitespace-nowrap transform rotate-180">
                   {stack.title}
-                </h3>
+                </h4>
               </div>
             </button>
           ))}
@@ -56,7 +56,7 @@ export default function RightStacks({ stacks, active, onChange }) {
               background: "linear-gradient(180deg, #DBECF6 0%, #93CDEB 100%)",
             }}
           >
-            <div className="text-2xl sm:text-3xl font-bold text-[#1F2024] flex-shrink-0">
+            <div className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold text-[#1F2024] text-center font-heading tracking-tight leading-none font-sathoshi text-[#1F2024]  flex-shrink-0">
               {stack.number}
             </div>
 
@@ -64,10 +64,10 @@ export default function RightStacks({ stacks, active, onChange }) {
             <div 
               className="flex-1 flex items-center justify-center"
               style={{ writingMode: 'vertical-rl', textOrientation: 'mixed' }}
-            >
-              <h3 className="text-base sm:text-lg font-semibold text-[#1F2024] whitespace-nowrap transform rotate-180">
-                {stack.title}
-              </h3>
+            > 
+                 <h4 className=" sm:text-lg md:text-xl lg:text-2xl font-bold text-[#1F2024] font-heading tracking-tight leading-none font-sathoshi  whitespace-nowrap transform rotate-180">
+                  {stack.title}
+                </h4>
             </div>
           </button>
         ))}

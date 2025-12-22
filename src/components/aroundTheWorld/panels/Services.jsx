@@ -32,7 +32,7 @@ export default function Services() {
     <div className="w-full h-full flex flex-col">
       {/* Header Section */}
       <div className="flex flex-col items-start opacity-100 mb-6 sm:mb-8 lg:mb-10 gap-3 sm:gap-4 w-full">
-        <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold text-[#1F2024] font-satoshi">
+        <h2 className="heading-h2">
           Our Services
         </h2>
         <p className="text-gray-600 font-satoshi text-sm sm:text-base md:text-lg max-w-3xl">
