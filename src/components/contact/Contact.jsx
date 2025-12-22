@@ -1,7 +1,7 @@
 'use client';
 
 import Image from 'next/image';
-import { useState } from 'react';
+import { useState, useEffect, useRef } from 'react';
 
 export default function Contact() {
   const [formData, setFormData] = useState({
@@ -15,6 +15,8 @@ export default function Contact() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitStatus, setSubmitStatus] = useState(null); // 'success' | 'error'
   const [submitMessage, setSubmitMessage] = useState('');
+  const [iconPositions, setIconPositions] = useState([]);
+  const animationFrameRef = useRef(null);
 
   const buttonStyle = isSubmitting
     ? {
@@ -58,6 +60,125 @@ export default function Contact() {
       setErrors({ email: validateEmail(value) });
     }
   };
+
+  // Smooth continuous loop animation for icons
+  useEffect(() => {
+    const icons = [
+      {
+        href: 'https://twitter.com',
+        src: '/twitter.svg',
+        alt: 'X',
+      },
+      {
+        href: 'https://linkedin.com',
+        src: '/linkedin.svg',
+        alt: 'LinkedIn',
+      },
+      {
+        href: 'https://instagram.com',
+        src: '/instagram.svg',
+        alt: 'Instagram',
+      },
+    ];
+
+    // Arc configuration
+    const startAngle = 222; // Top-right (in degrees)
+    const endAngle = 143;   // Bottom-left
+    const totalArcDegrees = startAngle - endAngle; // 79 degrees visible arc
+    
+    // Spacing between icons along the arc (based on original spacing)
+    // Original icons were at 222°, 185°, 143° = 37° and 42° spacing
+    // Average spacing ~39.5°, using 40° for consistent spacing
+    const iconSpacing = 40; // degrees between icons
+    
+    // Animation settings
+    // Calculate speed for 5 second duration: 79 degrees arc in 5000ms
+    // At 60fps: speed = (arcDegrees * 16.67) / duration = (79 * 16.67) / 5000 ≈ 0.263
+    const speed = 0.263; // degrees per frame for 5 second completion
+    const startTime = Date.now();
+    
+    // Calculate constants for position calculation
+    const centerX = 260;
+    const centerY = 260;
+    const radius = 255;
+    const size = 64;
+    
+    const animate = () => {
+      const elapsed = Date.now() - startTime;
+      // Continuous offset - never resets, just keeps increasing
+      // Normalize to ~60fps for consistent speed
+      const offset = (elapsed * speed) / 16.67;
+      
+      // Create continuous stream of icons
+      const visibleIcons = [];
+      
+      // Calculate how many full cycles of icons we need to show
+      // to ensure continuous coverage of the visible arc plus buffer
+      const cycleLength = icons.length * iconSpacing; // One complete cycle = 3 icons * 40° = 120°
+      const cyclesNeeded = Math.ceil((totalArcDegrees + iconSpacing * 3) / cycleLength) + 1;
+      
+      // Calculate the current cycle offset within the cycle length
+      const currentCycleOffset = offset % cycleLength;
+      
+      // Generate multiple cycles of icons
+      for (let cycle = -1; cycle <= cyclesNeeded; cycle++) {
+        icons.forEach((icon, idx) => {
+          // Calculate angle for this icon in this cycle
+          const iconOffset = (cycle * cycleLength) + (idx * iconSpacing);
+          const angle = startAngle - currentCycleOffset - iconOffset;
+          
+          // Only render icons within the visible arc range (plus extra 40° buffer for full arc completion)
+          const extraBuffer = 40; // Extra 40 degrees before hiding and after appearing
+          const buffer = iconSpacing * 1.5 + extraBuffer; // Combined buffer for fade in/out
+          if (angle >= endAngle - buffer && angle <= startAngle + buffer) {
+            // Convert angle to radians for position calculation
+            const rad = (angle * Math.PI) / 180;
+            const x = centerX + radius * Math.cos(rad) - size / 2;
+            const y = centerY + radius * Math.sin(rad) - size / 2;
+            
+            // Calculate opacity based on position (fade at edges for smoothness)
+            // Icons stay fully visible through the entire arc, then fade after extra 40°
+            let opacity = 1;
+            const fadeRange = 15; // degrees for fade effect
+            // Icons appear 40° before startAngle (at 222° + 40 = 262°)
+            const fadeStartTop = startAngle + extraBuffer - fadeRange;
+            // Icons disappear 40° after endAngle (at 143° - 40 = 103°)
+            const fadeStartBottom = endAngle - extraBuffer + fadeRange;
+            
+            if (angle > fadeStartTop) {
+              // Fade in from top (icons appearing)
+              opacity = Math.max(0, (startAngle + extraBuffer - angle) / fadeRange);
+            } else if (angle < fadeStartBottom) {
+              // Fade out at bottom (icons disappearing after completing full arc)
+              opacity = Math.max(0, (angle - (endAngle - extraBuffer)) / fadeRange);
+            } else {
+              // Fully visible through the entire arc
+              opacity = 1;
+            }
+            
+            visibleIcons.push({
+              ...icon,
+              x,
+              y,
+              opacity: Math.max(0, Math.min(1, opacity)),
+              key: `${icon.alt}-${cycle}-${idx}`,
+            });
+          }
+        });
+      }
+      
+      setIconPositions(visibleIcons);
+      animationFrameRef.current = requestAnimationFrame(animate);
+    };
+
+    animationFrameRef.current = requestAnimationFrame(animate);
+
+    return () => {
+      if (animationFrameRef.current) {
+        cancelAnimationFrame(animationFrameRef.current);
+      }
+    };
+  }, []); // Empty dependency array - only run once on mount
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -242,61 +363,25 @@ export default function Contact() {
                 </svg>
               </div>
 
-              {/* SOCIAL ICONS - positioned on the curve */}
-              {(() => {
-                const icons = [
-                  {
-                    href: 'https://twitter.com',
-                    src: '/twitter.svg',
-                    alt: 'X',
-                    angle: 222,
-                  },
-                  {
-                    href: 'https://linkedin.com',
-                    src: '/linkedin.svg',
-                    alt: 'LinkedIn',
-                    angle: 185,
-                  },
-                  {
-                    href: 'https://instagram.com',
-                    src: '/instagram.svg',
-                    alt: 'Instagram',
-                    angle: 143,
-                  },
-                ];
-
-                const centerX = 260;
-                const centerY = 260;
-                const radius = 255;
-                const size = 64;
-
-                const getPosition = (deg) => {
-                  const rad = (deg * Math.PI) / 180;
-                  const x = centerX + radius * Math.cos(rad) - size / 2;
-                  const y = centerY + radius * Math.sin(rad) - size / 2;
-                  return { left: `${x}px`, top: `${y}px` };
-                };
-
-                return (
-                  <div className="absolute top-1/2 -translate-y-1/2 -left-[140px] w-[520px] h-[520px] z-10">
-                    {icons.map((icon) => {
-                      const position = getPosition(icon.angle);
-                      return (
-                        <a
-                          key={icon.alt}
-                          href={icon.href}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="absolute hover:scale-110 transition-transform duration-200"
-                          style={position}
-                        >
-                          <Image src={icon.src} alt={icon.alt} width={size} height={size} />
-                        </a>
-                      );
-                    })}
-                  </div>
-                );
-              })()}
+              {/* SOCIAL ICONS - Continuous loop animation */}
+              <div className="absolute top-1/2 -translate-y-1/2 -left-[140px] w-[520px] h-[520px] z-10">
+                {iconPositions.map((icon) => (
+                  <a
+                    key={icon.key}
+                    href={icon.href}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="absolute hover:scale-110 transition-transform duration-200"
+                    style={{
+                      left: `${icon.x}px`,
+                      top: `${icon.y}px`,
+                      opacity: icon.opacity,
+                    }}
+                  >
+                    <Image src={icon.src} alt={icon.alt} width={64} height={64} />
+                  </a>
+                ))}
+              </div>
 
             </div>
           </div>

@@ -274,6 +274,6 @@ html {
 /* Scroll snap alignment for variable-height sections (like Contact) */
 .snap-section-start {
   scroll-snap-align: start;
-  scroll-snap-stop: always;
+  scroll-snap-stop: normal;
   /* Allow natural height, no minimum height requirement */
 }
