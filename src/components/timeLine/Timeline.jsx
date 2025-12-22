@@ -24,12 +24,18 @@ export default function Timeline() {
   const [isAnimationSkipped, setIsAnimationSkipped] = useState(false);
   const [scrollHijackActive, setScrollHijackActive] = useState(false);
   const [timelineComplete, setTimelineComplete] = useState(false);
+  const [isInView, setIsInView] = useState(false);
   const hasShownInitialPaddingRef = useRef(false);
   const scrollAccumulator = useRef(0);
   const isSnapping = useRef(false);
+  const hasStartedAnimationRef = useRef(false);
 
   // Skip animation and allow vertical scrolling
   const skipAnimation = () => {
+    // Immediately restore body scroll
+    document.body.style.overflow = '';
+    document.body.style.height = '';
+    
     // Mark timeline as complete to allow vertical scrolling
     setTimelineComplete(true);
     setScrollHijackActive(false);
@@ -46,6 +52,13 @@ export default function Timeline() {
       });
       setCurrentCardIndex(lastCardIndex);
     }
+    
+    // Allow a small delay to ensure state updates, then enable normal scrolling
+    setTimeout(() => {
+      // Force remove any scroll prevention
+      document.body.style.overflow = '';
+      document.body.style.height = '';
+    }, 100);
   };
 
   // Dynamic timeline cards data - easily add more cards in the future
@@ -95,14 +108,54 @@ export default function Timeline() {
   const timelineEnd = lastCardPosition + cardWidth + paddingAfterLastCard;
   const totalTimelineWidth = timelineEnd;
 
-  // Phase 1: Fast intro auto-scroll animation (2000 → 2014)
+  // Intersection Observer to detect when Timeline component enters viewport
   useEffect(() => {
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting && !hasStartedAnimationRef.current) {
+            setIsInView(true);
+          }
+        });
+      },
+      {
+        threshold: 0.5, // Trigger when 50% of the component is visible (user is actually in the timeline)
+        rootMargin: '0px',
+      }
+    );
+
+    if (sectionRef.current) {
+      observer.observe(sectionRef.current);
+    }
+
+    return () => {
+      if (sectionRef.current) {
+        observer.unobserve(sectionRef.current);
+      }
+    };
+  }, []);
+
+  // Set initial position before component enters viewport
+  useEffect(() => {
+    if (!isInView && !hasStartedAnimationRef.current) {
+      const startX = typeof window !== 'undefined' ? window.innerWidth : 1920;
+      timelineControls.set({ x: startX });
+    }
+  }, [isInView, timelineControls]);
+
+  // Phase 1: Fast intro auto-scroll animation (2000 → 2014)
+  // Only starts when component enters viewport
+  useEffect(() => {
+    if (!isInView || hasStartedAnimationRef.current) return;
+
     async function runIntro() {
+      hasStartedAnimationRef.current = true;
+      
       // Start timeline off-screen to the right, then animate to left
       const startX = typeof window !== 'undefined' ? window.innerWidth : 1920;
       
       // Set initial position off-screen to the right
-      await timelineControls.set({ x: startX  });
+      await timelineControls.set({ x: startX });
       
       // Fast animation from right to left (3 seconds instead of 6)
       await timelineControls.start({
@@ -131,11 +184,11 @@ export default function Timeline() {
     }
 
     runIntro();
-  }, [timelineControls]);
+  }, [isInView, timelineControls, cardPositions, cardWidth]);
 
-  // Lock body scroll when timeline is active
+  // Lock body scroll only when scroll hijacking is active (after intro animation)
   useEffect(() => {
-    if (!timelineComplete) {
+    if (scrollHijackActive && !timelineComplete) {
       document.body.style.overflow = 'hidden';
       document.body.style.height = '100vh';
     } else {
@@ -147,11 +200,11 @@ export default function Timeline() {
       document.body.style.overflow = '';
       document.body.style.height = '';
     };
-  }, [timelineComplete]);
+  }, [scrollHijackActive, timelineComplete]);
 
   // Scroll hijacking with snap-to-card behavior
   useEffect(() => {
-    if (!scrollHijackActive || timelineComplete) return;
+    if (!isInView || !scrollHijackActive || timelineComplete) return;
 
     const SCROLL_THRESHOLD = 50; // Lower threshold for more responsive snapping
 
@@ -188,13 +241,18 @@ export default function Timeline() {
     };
 
     const handleWheel = (e) => {
-      if (isSnapping.current || timelineComplete) {
+      // Allow normal scrolling if timeline is complete
+      if (timelineComplete) {
+        return;
+      }
+
+      if (isSnapping.current) {
         e.preventDefault();
         e.stopPropagation();
         return;
       }
 
-      // Always prevent default to lock scroll
+      // Prevent default to lock scroll only when timeline is active
       e.preventDefault();
       e.stopPropagation();
 
@@ -249,11 +307,13 @@ export default function Timeline() {
       }
     };
 
-    // Prevent touch scroll on mobile
+    // Prevent touch scroll on mobile only when timeline is active
     const handleTouchMove = (e) => {
-      if (!timelineComplete) {
-        e.preventDefault();
+      // Allow normal scrolling if timeline is complete
+      if (timelineComplete) {
+        return;
       }
+      e.preventDefault();
     };
 
     window.addEventListener('wheel', handleWheel, { passive: false });
@@ -263,7 +323,7 @@ export default function Timeline() {
       window.removeEventListener('wheel', handleWheel);
       window.removeEventListener('touchmove', handleTouchMove);
     };
-  }, [scrollHijackActive, timelineComplete, currentCardIndex, cardPositions, cardWidth, lastCardIndex]);
+  }, [isInView, scrollHijackActive, timelineComplete, currentCardIndex, cardPositions, cardWidth, lastCardIndex]);
 
   return (
     <section 
@@ -396,7 +456,7 @@ export default function Timeline() {
 
       {/* Skip Animation Button - Positioned within section layout */}
       {!timelineComplete && (
-        <div className="absolute bottom-8 right-8 top-200">
+        <div className="absolute bottom-48 right-8 z-30">
           <button
             onClick={skipAnimation}
             className="box-border flex flex-row justify-center items-center px-6 py-4 gap-3 isolate w-[196px] h-14 bg-[rgba(167,185,255,0.2)] rounded-lg font-satoshi text-[#1F2024] hover:bg-[rgba(167,185,255,0.3)] transition-colors duration-200"

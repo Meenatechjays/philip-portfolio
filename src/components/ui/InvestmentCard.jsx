@@ -56,7 +56,8 @@ export default function InvestmentCard({
 
   return (
     <motion.div
-      className={`relative w-[500px] h-[576px] overflow-hidden rounded-[28px] bg-white shadow-[0_20px_50px_rgba(0,0,0,0.18)] ${className}`}
+      className={`relative w-[500px] h-[576px] overflow-hidden rounded-[28px] shadow-[0_20px_50px_rgba(0,0,0,0.18)] ${className}`}
+      style={{ backgroundColor: 'rgb(247, 247, 247)' }}
       initial="initial"
       whileHover="hover"
     >

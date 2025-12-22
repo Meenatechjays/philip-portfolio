@@ -61,27 +61,8 @@ export default function Investors() {
 
   return (
     <section 
-      className="relative w-full min-h-screen overflow-hidden investment-section pb-16" 
-      style={{ 
-        backgroundColor: 'rgb(247, 247, 247)',
-        background: 'rgb(247, 247, 247)',
-      }}
+      className="relative w-full min-h-screen overflow-hidden investment-section pb-16"
     >
-      {/* Investment Section Background */}
-      <div
-        className="absolute investment-section-bg"
-        style={{
-          width: '1728px',
-          height: '1016px',
-          left: 'calc(50% - 1728px/2 - 1990px)',
-          top: '20px',
-          backgroundColor: 'rgb(247, 247, 247)',
-          background: 'rgb(247, 247, 247)',
-          zIndex: 0,
-          isolation: 'isolate',
-          willChange: 'auto',
-        }}
-      />
       
       {/* Investment Header */}
       <div
@@ -116,7 +97,7 @@ export default function Investors() {
         style={{ marginTop: '300px' }}
       >
         <motion.div 
-          className="flex gap-8 px-10"
+          className="flex gap-8 px-10 investment-section investment-section-bg"
           variants={containerVariants}
           initial="hidden"
           whileInView="visible"
