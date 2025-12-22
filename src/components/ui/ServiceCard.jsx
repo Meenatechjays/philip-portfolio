@@ -13,7 +13,7 @@ export default function ServiceCard({
 }) {
   const content = (
     <div 
-      className={`flex flex-col opacity-100 w-full min-w-0 rounded-lg p-3 sm:p-4 md:p-5 lg:p-6 bg-[#F3F4F5] h-full ${className}`}
+      className={`group flex flex-col opacity-100 w-full min-w-0 rounded-lg p-3 sm:p-4 md:p-5 lg:p-6 bg-[#F3F4F5] h-full ${className}`}
     >
       {/* Inner Content Container */}
       <div className="flex flex-col opacity-100 flex-1 min-h-0 gap-2 sm:gap-3 md:gap-4">
@@ -38,7 +38,7 @@ export default function ServiceCard({
                 alt="Service icon"
                 width={48}
                 height={48}
-                className="object-contain w-8 h-8 sm:w-10 sm:h-10 md:w-12 md:h-12"
+                className="object-contain w-8 h-8 sm:w-10 sm:h-10 md:w-12 md:h-12 transition-transform duration-300 ease-in-out group-hover:rotate-180"
               />
             )}
           </div>

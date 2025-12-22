@@ -111,7 +111,7 @@ export default function Investors() {
       
       {/* Investment Cards Container */}
       <div
-        className="relative z-10 w-full overflow-x-auto pb-32"
+        className="relative z-10 w-full overflow-x-auto pb-32 hide-scrollbar"
         style={{ marginTop: '300px' }}
       >
         <motion.div 

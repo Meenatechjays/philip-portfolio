@@ -9,8 +9,8 @@ export default function AroundTheWorld() {
   const [active, setActive] = useState("world");
 
   return (
-    <section className="relative bg-white mt-0">
-      <div className="flex h-screen max-h-screen overflow-hidden relative">
+    <section className="relative bg-white mt-0 min-h-screen">
+      <div className="flex relative">
 
         {/* LEFT – sliding content */}
         <SlidingPanels

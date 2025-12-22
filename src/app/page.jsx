@@ -27,7 +27,7 @@ export default function Home() {
           showSplash ? 'opacity-0 translate-y-16' : 'opacity-100 translate-y-0'
         }`}
       >
-        <div className="relative">
+        <div className="relative snap-section">
           <About isVisible={!showSplash} />
           <div className="absolute bottom-0 left-0 right-0 w-full z-30 pointer-events-none translate-y-1/2">
             <Image
@@ -40,11 +40,21 @@ export default function Home() {
             />
           </div>
         </div>
-        <Timeline />
-        <AroundTheWorld />
-        <Highlights/>
-        <Investors/>
-        <Contact />
+        <div className="snap-section">
+          <Timeline />
+        </div>
+        <div className="snap-section">
+          <AroundTheWorld />
+        </div>
+        <div className="snap-section">
+          <Highlights/>
+        </div>
+        <div className="snap-section">
+          <Investors/>
+        </div>
+        <div className="snap-section-start">
+          <Contact />
+        </div>
       </main>
       
     </>
