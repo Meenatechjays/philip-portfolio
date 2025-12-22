@@ -27,8 +27,7 @@ export default function Clients() {
           Our clients
         </h2>
         <p className="font-satoshi text-sm sm:text-base md:text-lg text-[#454654] max-w-3xl">
-          Lorem ipsum dolor sit amet consectetur. Aliquam mattis tortor magna nisl.
-          Non risus semper vel est amet leo non
+        Strategic investments in emerging technologies and high-growth ventures
         </p>
       </div>
   

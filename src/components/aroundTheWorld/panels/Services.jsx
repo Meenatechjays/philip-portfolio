@@ -3,29 +3,26 @@ import ServiceCard from '../../ui/ServiceCard';
 export default function Services() {
   const services = [
     {
-      title: "Artificial Intelligence & Data",
-      description: "Exploring the innovative AI solutions and technology leadership that sets..."
+      title: "Product Development",
+      description: "From concept to launch, we guide your product journey with agile methodologies and innovative development practices."
+    },
+    {
+      title: "Quality Assurance",
+      description: "Ensure flawless performance with comprehensive testing strategies, automated workflows, and continuous quality monitoring."
+    },
+    {
+      title: "Cloud Solutions",
+      description: "Migrate and optimize your infrastructure with modern cloud architectures for enhanced scalability, security, and performance."
     },
     {
       title: "Artificial Intelligence & Data",
-      description: "Exploring the innovative AI solutions and technology leadership that sets..."
+      description: "Leverage cutting-edge AI and data analytics to transform your business insights and automate intelligent decision-making processes."
     },
     {
-      title: "Artificial Intelligence & Data",
-      description: "Exploring the innovative AI solutions and technology leadership that sets..."
+      title: "Custom Software Development",
+      description: "Build tailored software solutions that perfectly match your business requirements with scalable and maintainable architectures."
     },
-    {
-      title: "Artificial Intelligence & Data",
-      description: "Exploring the innovative AI solutions and technology leadership that sets..."
-    },
-    {
-      title: "Artificial Intelligence & Data",
-      description: "Exploring the innovative AI solutions and technology leadership that sets..."
-    },
-    {
-      title: "Artificial Intelligence & Data",
-      description: "Exploring the innovative AI solutions and technology leadership that sets..."
-    }
+   
   ];
 
   return (

@@ -130,7 +130,7 @@ export default function InvestmentCard({
 
         {/* Title */}
         {title && (
-          <h3 className="mb-3 text-[28px] font-semibold leading-tight text-[#0F172A] relative z-20">
+          <h3 className="mb-3 text-[28px] font-semibold leading-tight text-[#1F2024] relative z-20">
             {title}
           </h3>
         )}

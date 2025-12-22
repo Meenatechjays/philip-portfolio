@@ -65,10 +65,10 @@ export default function Investors() {
     >
       {/* Investment Header */}
       <div className="relative z-10 flex flex-col items-center text-center gap-4 px-6 max-w-3xl mx-auto">
-        <h2 className="heading-h2 text-center">
+        <h2 className="section-heading text-center">
           Investment portfolio
         </h2>
-        <p className="font-satoshi font-normal text-base sm:text-lg leading-[130%] tracking-[0%] text-center text-[#454654]">
+        <p className="section-body text-center">
           Lorem ipsum dolor sit amet consectetur. Aliquam mattis tortor magna nisl. Non risus semper vel est amet leo non
         </p>
       </div>

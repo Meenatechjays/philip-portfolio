@@ -348,12 +348,12 @@ export default function Timeline() {
         {/* Timeline Container */}
         <div className="w-[671px] opacity-100 flex flex-col gap-4 items-center">
           {/* Timeline Heading */}
-          <h2 className="w-[428px] h-[65px] opacity-100 font-satoshi font-bold text-4xl leading-[100%] tracking-[0%] text-center text-[#1F2024]">
+          <h2 className="w-[428px] h-[65px] opacity-100 section-heading text-center">
             Timeline & Journey
           </h2>
 
           {/* Timeline Paragraph Content */}
-          <p className="w-[671px] opacity-100 font-satoshi font-normal text-lg leading-[100%] tracking-[0%] text-center text-[#454654] pb-5">
+          <p className="w-[671px] opacity-100 section-body text-center pb-5">
             Lorem ipsum dolor sit amet consectetur. Aliquam mattis tortor magna nisl. Non risus semper vel est amet leo non
           </p>
         </div>
