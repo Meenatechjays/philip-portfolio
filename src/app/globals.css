@@ -127,6 +127,22 @@ section .investment-section-bg {
   animation: fade-in 0.3s ease-out;
 }
 
+/* Logo fade-in animation with scale effect */
+@keyframes logoFadeIn {
+  0% {
+    opacity: 0;
+    transform: scale(0.8);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+.animate-logo-fade-in {
+  animation: logoFadeIn 0.8s ease-out forwards;
+}
+
 /* Slide-up animation for About section after splash */
 @keyframes slide-up {
   0% {
@@ -141,6 +157,22 @@ section .investment-section-bg {
 
 .animate-slide-up {
   animation: slide-up 2s ease-out forwards;
+}
+
+/* Slide-in from right animation for stack bars */
+@keyframes slide-in-from-right {
+  0% {
+    transform: translateX(100%);
+    opacity: 0;
+  }
+  100% {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+.animate-slide-in-from-right {
+  animation: slide-in-from-right 2s ease-in-out forwards;
 }
 
 /* Splash Screen Greeting Text Typography */
@@ -208,4 +240,40 @@ section .investment-section-bg {
   .splash-sky-text {
     font-size: 80px;
   }
+}
+
+/* Hide scrollbar utility class */
+.hide-scrollbar {
+  -ms-overflow-style: none;  /* IE and Edge */
+  scrollbar-width: none;  /* Firefox */
+}
+
+.hide-scrollbar::-webkit-scrollbar {
+  display: none;  /* Chrome, Safari and Opera */
+}
+
+/* Scroll Snap Configuration - Midpoint-based snapping */
+html {
+  scroll-snap-type: y proximity;
+  scroll-behavior: smooth;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  html {
+    scroll-snap-type: y mandatory;
+  }
+}
+
+/* Scroll snap alignment for full-height sections */
+.snap-section {
+  scroll-snap-align: center;
+  scroll-snap-stop: always;
+  min-height: 100vh;
+}
+
+/* Scroll snap alignment for variable-height sections (like Contact) */
+.snap-section-start {
+  scroll-snap-align: start;
+  scroll-snap-stop: always;
+  /* Allow natural height, no minimum height requirement */
 }

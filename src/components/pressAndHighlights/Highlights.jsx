@@ -14,6 +14,13 @@ export default function Highlights() {
 
   const toggleOptions = ['Media Mentions', 'Podcasts'];
 
+  const handleOptionChange = (option) => {
+    // Prevent switching to Podcasts for now
+    if (option !== 'Podcasts') {
+      setActiveOption(option);
+    }
+  };
+
   useEffect(() => {
     if (isInView) {
       // Wait for all entrance animations to complete (longest delay 0.6s + duration 0.8s = 1.4s)
@@ -39,7 +46,7 @@ export default function Highlights() {
       </div>
 
       {/* Main Content Container */}
-      <div className="relative z-5 min-h-screen flex flex-col items-center justify-start px-4 pt-24 pb-32">
+      <div className="relative z-5 min-h-screen flex flex-col items-center justify-start px-4 pt-6 pb-32">
         {/* Header Section */}
         <div className="w-full max-w-[671px] flex flex-col gap-4 items-center mb-16">
           {/* Main Heading */}
@@ -58,7 +65,7 @@ export default function Highlights() {
           <ToggleButton
             options={toggleOptions}
             activeOption={activeOption}
-            onOptionChange={setActiveOption}
+            onOptionChange={handleOptionChange}
           />
         </div>
 

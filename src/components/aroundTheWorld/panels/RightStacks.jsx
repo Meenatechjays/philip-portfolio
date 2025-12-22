@@ -18,15 +18,15 @@ export default function RightStacks({ stacks, active, onChange }) {
       {/* Left Side - Stacks from start to active (always shown) */}
       {leftStacks.length > 0 && (
         <div className="absolute left-0 top-0 bottom-0 flex z-[5]">
-          {leftStacks.map((stack) => (
+          {leftStacks.map((stack, idx) => (
             <button
               key={stack.id}
               onClick={() => onChange(stack.id)}
-              className="w-[60px] sm:w-[70px] md:w-[80px] lg:w-[90px] h-full py-8 px-2 sm:px-3 border-l transition-all duration-300 flex flex-col items-center justify-between"
-              style={{
-                background: "linear-gradient(180deg, #DBECF6 0%, #93CDEB 100%)",
-              }}
-            >
+              className="w-[60px] sm:w-[70px] md:w-[80px] lg:w-[90px] h-full py-8 px-2 sm:px-3 border-l flex flex-col items-center justify-between animate-slide-in-from-right"
+                style={{
+                  background: "linear-gradient(180deg, #DBECF6 0%, #93CDEB 100%)",
+                }}
+              >
               <div className="text-2xl sm:text-3xl font-bold text-[#1F2024] flex-shrink-0">
                 {stack.number}
               </div>
@@ -46,7 +46,7 @@ export default function RightStacks({ stacks, active, onChange }) {
       )}
 
       {/* Right Side - Remaining Stacks */}
-      <div className="flex h-full">
+      <div className="flex self-stretch">
         {rightStacks.map((stack) => (
           <button
             key={stack.id}

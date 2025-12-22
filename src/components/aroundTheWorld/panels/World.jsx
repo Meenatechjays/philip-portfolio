@@ -48,6 +48,7 @@ export default function World() {
   const componentRef = useRef(null);
   const mapContainerRef = useRef(null);
   const mapRef = useRef(null);
+  const logoFinalRef = useRef(null);
   const logoScrollControls = useAnimation();
   const mapScrollControls = useAnimation();
   const logoFinalControls = useAnimation();
@@ -96,9 +97,9 @@ export default function World() {
         }),
       ]);
 
-      // Task 3: Logo appears only after map reaches its original position (0%)
-      // Wait a bit to ensure map is fully in position
-      await new Promise(resolve => setTimeout(resolve, 100));
+      // Task 3: Logo appears only after map animation completes and Lottie is fully rendered
+      // TEST: Show logo after 5 seconds for testing (change back to 300ms after testing)
+      await new Promise(resolve => setTimeout(resolve, 5000));
       
       setShowFinalLogo(true);
       logoFinalControls.start({
@@ -143,7 +144,7 @@ export default function World() {
     <div ref={componentRef} className="relative w-full flex flex-col">
       {/* Header Section - Responsive */}
       <div 
-        className="opacity-100 flex flex-col gap-2 md:gap-4 ml-4 md:ml-[4.6vw] mt-4 md:mt-8 w-full md:w-[clamp(300px,38.8vw,671px)]"
+        className="opacity-100 flex flex-col gap-2 md:gap-4 md:ml-[4.6vw] mt-4 md:mt-8 w-full md:w-[clamp(300px,38.8vw,671px)]"
       >
         <h1 className="text-2xl md:text-3xl lg:text-4xl font-satoshi font-bold text-[#1F2024]">
           Around the World with AI
@@ -201,6 +202,17 @@ export default function World() {
               />
             </motion.div>
           )}
+           {showFinalLogo && (
+              <div className="absolute top-40 right-30 animate-logo-fade-in">
+                <Image
+                  src="/techjays-logo.svg"
+                  alt="Techjays Logo"
+                  width={150}
+                  height={150}
+                  className="object-contain"
+                />
+              </div>
+            )}
 
           {/* Location markers - 7 SignalRipple components positioned on the map */}
           {/* Only render after map reaches original position */}
@@ -227,29 +239,10 @@ export default function World() {
           )}
         </div>
 
-        {/* Task 3: Final logo position - appears only after map reaches original position, to the right of map */}
-        {showFinalLogo && (
-          <motion.div
-            animate={logoFinalControls}
-            initial={{ opacity: 0, scale: 0.8 }}
-            className="absolute z-20 hidden md:block"
-            style={{
-              width: 'clamp(60px, 8.7vh, 89px)',
-              height: 'clamp(60px, 8.7vh, 89px)',
-              top: '50%',
-              left: 'calc(100% + clamp(16px, 2vw, 48px))',
-              transform: 'translateY(-50%)',
-            }}
-          >
-            <Image
-              src="/techjays-logo.svg"
-              alt="Techjays Logo"
-              width={91}
-              height={83}
-              className="object-contain w-full h-full"
-            />
-          </motion.div>
-        )}
+        {/* Task 3: Final logo position - appears only after map animation completes, to the right of map */}
+        
+          
+        
       </div>
 
         {/* Bottom Section - Content only (Stats moved to map) */}
@@ -285,8 +278,8 @@ export default function World() {
           </div>
 
           {/* Desktop Layout - Content only */}
-          <div className="hidden md:flex justify-center">
-            <p className="font-satoshi font-normal text-base lg:text-lg leading-relaxed text-[#454654] max-w-4xl text-center">
+          <div className="hidden md:flex justify-start">
+            <p className="font-satoshi font-normal text-base lg:text-lg leading-relaxed text-[#454654] max-w-4xl">
               Lorem ipsum dolor sit amet consectetur. Aliquam mattis tortor magna nisl.
               Non risus semper vel est amet leo non Lorem ipsum dolor sit amet consectetur. Aliquam mattis tortor magna nisl.
               Non risus semper vel est amet leo non Lorem ipsum dolor sit amet consectetur.

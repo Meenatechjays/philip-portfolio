@@ -56,7 +56,7 @@ export default function Timeline() {
       title: 'Early Beginnings',
       description: 'The foundation of my journey in technology and cybersecurity began with innovative approaches to digital security challenges.',
       year: '2015',
-      position: { left: '200px', top: '185px' }
+      position: { left: '200px', top: '0px' }
     },
     {
       imageSrc: '/time-line-2016.jpg',
@@ -64,7 +64,7 @@ export default function Timeline() {
       title: 'Growth Phase',
       description: 'Expanding cutting-edge security solutions and establishing key partnerships in the technology sector.',
       year: '2016',
-      position: { left: '1700px', top: '185px' }
+      position: { left: '1700px', top: '0px' }
     },
     {
       imageSrc: '/timeLine-2017.jpg',
@@ -72,7 +72,7 @@ export default function Timeline() {
       title: 'Innovation Phase',
       description: 'Pioneering new methods and tools in cybersecurity and establishing key partnerships in the technology sector.',
       year: '2017',
-      position: { left: '3200px', top: '185px' }
+      position: { left: '3200px', top: '0px' }
     },
     {
       imageSrc: '/time-line-2018.jpg',
@@ -80,7 +80,7 @@ export default function Timeline() {
       title: 'Expansion Phase',
       description: 'Scaling operations and reaching new milestones in technology and cybersecurity innovation.',
       year: '2018',
-      position: { left: '4700px', top: '185px' }
+      position: { left: '4700px', top: '0px' }
     }
   ];
 
@@ -133,11 +133,27 @@ export default function Timeline() {
     runIntro();
   }, [timelineControls]);
 
+  // Lock body scroll when timeline is active
+  useEffect(() => {
+    if (!timelineComplete) {
+      document.body.style.overflow = 'hidden';
+      document.body.style.height = '100vh';
+    } else {
+      document.body.style.overflow = '';
+      document.body.style.height = '';
+    }
+
+    return () => {
+      document.body.style.overflow = '';
+      document.body.style.height = '';
+    };
+  }, [timelineComplete]);
+
   // Scroll hijacking with snap-to-card behavior
   useEffect(() => {
     if (!scrollHijackActive || timelineComplete) return;
 
-    const SCROLL_THRESHOLD = 100; // Amount of scroll needed to trigger next card
+    const SCROLL_THRESHOLD = 50; // Lower threshold for more responsive snapping
 
     const snapToCard = (targetIndex) => {
       const scrollContainer = scrollContainerRef.current;
@@ -172,22 +188,24 @@ export default function Timeline() {
     };
 
     const handleWheel = (e) => {
-      const scrollContainer = scrollContainerRef.current;
-      if (!scrollContainer || isSnapping.current) return;
-
-      const section = sectionRef.current;
-      if (!section) return;
-
-      const rect = section.getBoundingClientRect();
-      const isInView = rect.top <= 0 && rect.bottom > window.innerHeight;
-
-      if (isInView) {
+      if (isSnapping.current || timelineComplete) {
         e.preventDefault();
-        
-        // Accumulate scroll delta
+        e.stopPropagation();
+        return;
+      }
+
+      // Always prevent default to lock scroll
+      e.preventDefault();
+      e.stopPropagation();
+
+      const scrollContainer = scrollContainerRef.current;
+      if (!scrollContainer) return;
+
+      // Handle vertical scroll (down = next card, up = previous card)
+      if (Math.abs(e.deltaY) > Math.abs(e.deltaX)) {
         scrollAccumulator.current += e.deltaY;
 
-        // Snap to next card when threshold reached
+        // Snap to next card when scrolling down
         if (scrollAccumulator.current > SCROLL_THRESHOLD) {
           const nextIndex = Math.min(currentCardIndex + 1, lastCardIndex);
           if (nextIndex !== currentCardIndex) {
@@ -206,19 +224,52 @@ export default function Timeline() {
           }
         }
       }
+      // Handle horizontal scroll (right = next card, left = previous card)
+      else if (Math.abs(e.deltaX) > 0) {
+        scrollAccumulator.current += e.deltaX;
+
+        // Scrolling right (positive deltaX) = next card
+        if (scrollAccumulator.current > SCROLL_THRESHOLD) {
+          const nextIndex = Math.min(currentCardIndex + 1, lastCardIndex);
+          if (nextIndex !== currentCardIndex) {
+            snapToCard(nextIndex);
+          } else {
+            scrollAccumulator.current = 0;
+          }
+        }
+        // Scrolling left (negative deltaX) = previous card
+        else if (scrollAccumulator.current < -SCROLL_THRESHOLD) {
+          const prevIndex = Math.max(currentCardIndex - 1, 0);
+          if (prevIndex !== currentCardIndex) {
+            snapToCard(prevIndex);
+          } else {
+            scrollAccumulator.current = 0;
+          }
+        }
+      }
+    };
+
+    // Prevent touch scroll on mobile
+    const handleTouchMove = (e) => {
+      if (!timelineComplete) {
+        e.preventDefault();
+      }
     };
 
     window.addEventListener('wheel', handleWheel, { passive: false });
+    window.addEventListener('touchmove', handleTouchMove, { passive: false });
     
     return () => {
       window.removeEventListener('wheel', handleWheel);
+      window.removeEventListener('touchmove', handleTouchMove);
     };
   }, [scrollHijackActive, timelineComplete, currentCardIndex, cardPositions, cardWidth, lastCardIndex]);
 
   return (
     <section 
       ref={sectionRef}
-      className="relative min-h-screen w-full mb-0 overflow-hidden"
+      className="relative min-h-screen w-full overflow-hidden"
+      style={{  position: 'relative' }}
     >
       {/* Background SVG */}
       <div className="absolute inset-0 w-full h-full">
@@ -233,16 +284,16 @@ export default function Timeline() {
       </div>
 
       {/* Fixed Header */}
-      <div className="relative z-10 w-full flex items-start justify-center pt-[100px]">
+      <div className="relative z-10 w-full flex items-start justify-center pt-[50px]">
         {/* Timeline Container */}
-        <div className="w-[671px] h-[145px] opacity-100 flex flex-col gap-4 items-center">
+        <div className="w-[671px] opacity-100 flex flex-col gap-4 items-center">
           {/* Timeline Heading */}
           <h2 className="w-[428px] h-[65px] opacity-100 font-satoshi font-bold text-4xl leading-[100%] tracking-[0%] text-center text-[#1F2024]">
             Timeline & Journey
           </h2>
 
           {/* Timeline Paragraph Content */}
-          <p className="w-[671px] h-[64px] opacity-100 font-satoshi font-normal text-lg leading-[100%] tracking-[0%] text-center text-[#454654]">
+          <p className="w-[671px] opacity-100 font-satoshi font-normal text-lg leading-[100%] tracking-[0%] text-center text-[#454654] pb-5">
             Lorem ipsum dolor sit amet consectetur. Aliquam mattis tortor magna nisl. Non risus semper vel est amet leo non
           </p>
         </div>
@@ -251,8 +302,8 @@ export default function Timeline() {
       {/* Scrollable Timeline Container */}
       <div
         ref={scrollContainerRef}
-        className="relative z-20 w-full overflow-x-auto overflow-y-visible -mt-[60px] scroll-smooth overscroll-x-none [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]"
-        style={{ overscrollBehaviorX: 'none' }}
+        className="relative z-20 w-full overflow-x-auto overflow-y-visible scroll-smooth overscroll-x-none [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]"
+        style={{ overscrollBehaviorX: 'none', marginTop: '20px' }}
       >
         <div
           ref={innerContainerRef}
@@ -261,7 +312,7 @@ export default function Timeline() {
         >
           {/* Main Timeline Line - Horizontal line spanning the scrollable width */}
           <motion.div 
-            className="absolute left-[2000px] top-[380px] z-[10]"
+            className="absolute left-[2000px] top-[195px] z-[10]"
             style={{ width: `${totalTimelineWidth}px` }}
             animate={timelineControls}
             initial={{ x: 1920 }}
@@ -273,7 +324,7 @@ export default function Timeline() {
 
           {/* Vertical Timeline Markers - Evenly spaced along the horizontal line */}
           <motion.div 
-            className="absolute left-[2000px] top-[380px] z-[15] h-[68px] pointer-events-none transform -translate-y-1/2"
+            className="absolute left-[2000px] top-[195px] z-[15] h-[68px] pointer-events-none transform -translate-y-1/2"
             style={{ width: `${totalTimelineWidth}px` }}
             animate={timelineControls}
             initial={{ x: 1920 }}
@@ -296,7 +347,7 @@ export default function Timeline() {
 
           {/* Year Labels - Display years below the timeline, evenly distributed */}
           <motion.div 
-            className="absolute left-0 top-[380px] z-[15] pointer-events-none"
+            className="absolute left-0 top-[195px] z-[15] pointer-events-none"
             style={{ width: `${totalTimelineWidth}px`, paddingTop: '40px' }}
             animate={timelineControls}
             initial={{ x: 1920 }}

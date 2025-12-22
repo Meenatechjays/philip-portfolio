@@ -70,11 +70,11 @@ export default function SlidingPanels({ stacks, active }) {
       )}
       <div 
         id={styleId}
-        className="overflow-x-hidden overflow-hidden min-h-screen relative z-10 transition-all duration-700 ease-in-out"
+        className="overflow-x-hidden relative z-10 transition-all duration-[2000ms] ease-in-out"
         style={leftStackCount === 0 ? { width: '100%' } : {}}
       >
         <div
-          className="flex transition-transform duration-700 ease-in-out min-h-screen"
+          className="flex transition-transform duration-[2000ms] ease-in-out"
           style={{
             transform: `translateX(-${index * 100}%)`,
           }}
@@ -82,10 +82,10 @@ export default function SlidingPanels({ stacks, active }) {
           {stacks.map((stack) => (
             <div
               key={stack.id}
-              className="w-full flex-shrink-0 min-h-screen relative"
+              className="w-full flex-shrink-0 relative"
               style={{ minWidth: '100%' }}
             >
-              <div className="absolute inset-0 px-4 sm:px-6 md:px-8 lg:px-10 xl:px-12 2xl:px-16 py-6 sm:py-8 md:py-10 lg:py-12 pb-16 sm:pb-20 md:pb-24 lg:pb-28">
+              <div className="w-full px-4 sm:px-6 md:px-8 lg:px-10 xl:px-12 2xl:px-16 py-6 sm:py-8 md:py-10 lg:py-12 pb-16 sm:pb-20 md:pb-24 lg:pb-28">
                 {PANELS[stack.id]}
               </div>
             </div>
