@@ -2,7 +2,7 @@
 
 export default function ToggleButton({ options, activeOption, onOptionChange }) {
   return (
-    <div className="flex flex-row items-center p-0 bg-white rounded-full gap-3 w-[248px] h-12">
+    <div className="flex flex-row items-center p-0 bg-white rounded-full gap-0 w-full max-w-[250px] h-[44px]">
       {options.map((option) => {
         const isActive = option === activeOption;
         const isDisabled = option === 'Podcasts';
@@ -14,11 +14,13 @@ export default function ToggleButton({ options, activeOption, onOptionChange }) 
             disabled={isDisabled}
             className={`
               box-border flex flex-row items-center justify-center
-              font-inter font-medium text-sm font-weight-600 transition-all duration-200
-              p-4 gap-2 h-12 flex-none self-stretch grow-0
+
+              font-inter font-medium text-sm font-weight-600 transition-all duration-200 
+              gap-1 h-[44px] max-w-[125px] flex-1 min-w-0 self-stretch px-3 whitespace-nowrap
+
               ${isActive 
-                ? 'bg-[#454654] border border-white rounded-[24px] text-white w-[141px]' 
-                : 'bg-white rounded-lg text-[#454654] w-[95px]'
+                ? 'bg-[#454654] border border-white rounded-[24px] text-white' 
+                : 'bg-white rounded-lg text-[#454654]'
               }
               ${isDisabled ? 'cursor-not-allowed opacity-60' : 'cursor-pointer'}
             `}

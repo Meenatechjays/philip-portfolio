@@ -46,9 +46,11 @@ export default function Highlights() {
       </div>
 
       {/* Main Content Container */}
-      <div className="relative z-5 min-h-screen flex flex-col items-center justify-start px-4 pt-6 pb-32">
+
+      <div className="relative z-5 min-h-screen flex flex-col items-center justify-start px-4  pb-32">
+
         {/* Header Section */}
-        <div className="w-full max-w-[671px] flex flex-col gap-4 items-center mb-16">
+        <div className="w-full max-w-[671px] flex flex-col gap-4 items-center mb-6 pt-4">
           {/* Main Heading */}
           <h2 className="w-full max-w-[428px] font-satoshi font-bold text-4xl leading-[100%] tracking-[0%] text-center text-[#1F2024] whitespace-nowrap">
             Press & Podcast Highlights
@@ -61,7 +63,7 @@ export default function Highlights() {
         </div>
 
         {/* Toggle Button */}
-        <div className="relative flex flex-col items-start bg-white p-1.5 gap-2.5 w-[260px] h-[60px] rounded-[30px] mb-12">
+        <div className="relative flex flex-col items-start bg-white p-1.5 w-full max-w-[250px] rounded-[30px] mb-4">
           <ToggleButton
             options={toggleOptions}
             activeOption={activeOption}
