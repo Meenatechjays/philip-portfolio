@@ -61,7 +61,7 @@ export default function Investors() {
 
   return (
     <section 
-      className="relative w-full min-h-screen overflow-hidden investment-section pb-32" 
+      className="relative w-full min-h-screen overflow-hidden investment-section pb-16" 
       style={{ 
         backgroundColor: 'rgb(247, 247, 247)',
         background: 'rgb(247, 247, 247)',
@@ -110,8 +110,8 @@ export default function Investors() {
       </div>
       
       {/* Investment Cards Container */}
-      <div
-        className="relative z-10 w-full overflow-x-auto pb-32 hide-scrollbar"
+        className="relative z-10 w-full overflow-x-auto pb-16 hide-scrollbar"
+
         style={{ marginTop: '300px' }}
       >
         <motion.div 
