@@ -11,19 +11,19 @@ export default function PortfolioHero({ isVisible = true }) {
 
   const rightContentItems = [
     {
-      title: 'Investor',
+      title: 'Innovator',
       description:
-        'Lorem ipsum dolor sit amet consectetur. Aliquam mattis tortor magna nisl. Non risus semper vel est amet leo non'
+        'Philip is known for combining strategic insight with hands on execution. He brings structure to creativity by using data, market sensing, AI and rapid prototyping. Whether it is a new digital product or a process overhaul, he builds innovation that is both ambitious and impactful.'
     },
     {
       title: 'Leader',
       description:
-        'Lorem ipsum dolor sit amet consectetur. Aliquam mattis tortor magna nisl. Non risus semper vel est amet leo non'
+        'Philip leads with a combination of strategic discipline and human understanding. His leadership is defined by clear communication, and a focus on outcomes over noise. He empowers people to grow while keeping the organization aligned and resilient.'
     },
     {
-      title: 'Entrepreneur',
+      title: 'Investor',
       description:
-        'Lorem ipsum dolor sit amet consectetur. Aliquam mattis tortor magna nisl. Non risus semper vel est amet leo non'
+        'As an investor, Philip focuses on early stage ideas that solve real world inefficiencies. He brings more than capital. He brings mentorship, strategic clarity, and operational rigor. His investment style is analytical yet empathetic. He backs people as much as ideas.'
     }
   ];
 
@@ -114,7 +114,7 @@ export default function PortfolioHero({ isVisible = true }) {
         >
           <a
             href="/"
-            className="text-xl md:text-2xl font-bold text-gray-900 hover:opacity-80 transition-opacity"
+            className="text-xl md:text-2xl font-bold text-[#1F2024] hover:opacity-80 transition-opacity"
           >
             phil.in
           </a>
@@ -127,14 +127,13 @@ export default function PortfolioHero({ isVisible = true }) {
             isLeftMounted ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'
           }`}
         >
-          <h1 className="font-sans font-bold text-6xl text-gray-900 leading-tight">
+          <h1 className="font-sans font-bold text-6xl text-[#1F2024] leading-tight">
             Hey Im <br />
             Philip Samuelraj
           </h1>
 
-          <p className="text-base sm:text-lg text-gray-700 leading-relaxed">
-            Lorem ipsum dolor sit amet consectetur. Aliquam mattis tortor magna nisl.
-            Non risus semper vel est amet leo non
+          <p className="text-base sm:text-lg text-[#454654] leading-relaxed">
+          At the crossroads of technology, AI, and human behavior, I focus on building products and systems that deliver concrete value, scale predictably, and move markets toward their next evolution.
           </p>
         </div>
 
@@ -184,10 +183,10 @@ export default function PortfolioHero({ isVisible = true }) {
               exit="exit"
               className="absolute inset-0 flex flex-col gap-4"
             >
-              <h2 className="text-[clamp(1.4rem,2.2vw,1.9rem)] font-bold text-gray-800">
+              <h2 className="text-[clamp(1.4rem,2.2vw,1.9rem)] font-bold text-[#1F2024]">
                 {rightContentItems[currentIndex].title}
               </h2>
-              <p className="text-[clamp(0.9rem,1.2vw,1rem)] text-gray-600 leading-relaxed">
+              <p className="text-[clamp(0.9rem,1.2vw,1rem)] text-[#454654] leading-relaxed">
                 {rightContentItems[currentIndex].description}
               </p>
             </motion.div>

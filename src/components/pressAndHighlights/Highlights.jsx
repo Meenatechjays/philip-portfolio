@@ -52,12 +52,12 @@ export default function Highlights() {
         {/* Header Section */}
         <div className="w-full max-w-[671px] flex flex-col gap-4 items-center mb-6 pt-4">
           {/* Main Heading */}
-          <h2 className="w-full max-w-[428px] font-satoshi font-bold text-4xl leading-[100%] tracking-[0%] text-center text-[#1F2024] whitespace-nowrap">
+          <h2 className="w-full max-w-[428px] section-heading text-center whitespace-nowrap">
             Press & Podcast Highlights
           </h2>
           
           {/* Description Paragraph */}
-          <p className="w-full max-w-[671px] font-satoshi font-normal text-lg leading-normal tracking-[0%] text-center text-[#454654]">
+          <p className="w-full max-w-[671px] section-body text-center">
             Lorem ipsum dolor sit amet consectetur. Aliquam mattis tortor magna nisl. Non risus semper vel est amet leo non
           </p>
         </div>

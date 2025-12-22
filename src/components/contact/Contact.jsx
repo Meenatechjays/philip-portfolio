@@ -244,11 +244,11 @@ export default function Contact() {
 
           {/* LEFT – CONTACT FORM */}
           <div className="flex flex-col gap-4">
-            <h2 className="text-[3rem] font-bold text-[#112643] leading-none">
+            <h2 className="section-heading leading-none">
               Get In Touch
             </h2>
 
-            <p className="text-sm text-[#4a4a4a] max-w-md">
+            <p className="section-body max-w-md">
               Connect for business opportunities, partnerships, or thought leadership discussions
             </p>
 

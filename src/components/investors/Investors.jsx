@@ -61,43 +61,24 @@ export default function Investors() {
 
   return (
     <section 
-      className="relative w-full min-h-screen overflow-hidden investment-section pb-16"
+      className="investment-section investment-section-bg relative w-full overflow-hidden py-16 sm:py-20 lg:py-24"
     >
-      
       {/* Investment Header */}
-      <div
-        className="absolute z-10"
-        style={{
-          display: 'flex',
-          flexDirection: 'column',
-          alignItems: 'center',
-          padding: '0px',
-          gap: '16px',
-          width: '671px',
-          height: '145px',
-          left: 'calc(50% - 671px/2 + 0.5px)',
-          top: '100px',
-        }}
-      >
-        {/* Investment Heading */}
-        <h2 className="w-[428px] h-[65px] opacity-100 font-satoshi font-bold text-4xl leading-[100%] tracking-[0%] text-center text-[#1F2024]">
+      <div className="relative z-10 flex flex-col items-center text-center gap-4 px-6 max-w-3xl mx-auto">
+        <h2 className="section-heading text-center">
           Investment portfolio
         </h2>
-        
-        {/* Investment Paragraph Content */}
-        <p className="w-[671px] h-[64px] opacity-100 font-satoshi font-normal text-lg leading-[100%] tracking-[0%] text-center text-[#454654]">
+        <p className="section-body text-center">
           Lorem ipsum dolor sit amet consectetur. Aliquam mattis tortor magna nisl. Non risus semper vel est amet leo non
         </p>
       </div>
       
       {/* Investment Cards Container */}
       <div
-        className="relative z-10 w-full overflow-x-auto pb-16 hide-scrollbar"
-
-        style={{ marginTop: '300px' }}
+         className=" overflow-x-auto hide-scrollbar mt-6  "
       >
         <motion.div 
-          className="flex gap-8 px-10 investment-section investment-section-bg"
+          className="flex gap-6 sm:gap-8 px-6 sm:px-10  "
           variants={containerVariants}
           initial="hidden"
           whileInView="visible"
@@ -123,7 +104,6 @@ export default function Investors() {
           ))}
         </motion.div>
       </div>
-
     </section>
   );
 }
