@@ -2,8 +2,11 @@
 
 import InvestmentCard from '../ui/InvestmentCard';
 import { motion } from 'framer-motion';
+import { useRef } from 'react';
 
 export default function Investors() {
+  const scrollContainerRef = useRef(null);
+  const cardRefs = useRef({});
   const containerVariants = {
     hidden: {
       opacity: 1,
@@ -26,7 +29,7 @@ export default function Investors() {
       x: 0,
       opacity: 1,
       transition: {
-        duration: 1.2,
+        duration: 1.8,
         ease: [0.25, 0.1, 0.25, 1],
       },
     },
@@ -59,30 +62,62 @@ export default function Investors() {
     },
   ];
 
+  // Generic handler to scroll card into full view when partially visible
+  const handleCardHover = (index) => {
+    if (scrollContainerRef.current && cardRefs.current[index]) {
+      const container = scrollContainerRef.current;
+      const card = cardRefs.current[index];
+      
+      // Get positions
+      const containerRect = container.getBoundingClientRect();
+      const cardRect = card.getBoundingClientRect();
+      
+      // Check if card is partially visible on left side (left edge is cut off)
+      const isLeftCutOff = cardRect.left < containerRect.left;
+      // Check if card is partially visible on right side (right edge is cut off)
+      const isRightCutOff = cardRect.right > containerRect.right;
+      
+      // Only scroll if card is partially hidden
+      if (!isLeftCutOff && !isRightCutOff) {
+        return;
+      }
+      
+      // Calculate card's position relative to scroll container content
+      const cardLeftRelativeToContent = cardRect.left - containerRect.left + container.scrollLeft;
+      const cardWidth = cardRect.width;
+      const containerWidth = containerRect.width;
+      let scrollPosition;
+      
+      if (isLeftCutOff) {
+        // Card is partially hidden on left, scroll to show full card from left with padding
+        scrollPosition = cardLeftRelativeToContent - 40; // 40px padding from left
+      } else if (isRightCutOff) {
+        // Card is partially hidden on right
+        if (cardWidth > containerWidth) {
+          // Card is wider than container, align right edge
+          const cardRightRelativeToContent = cardLeftRelativeToContent + cardWidth;
+          scrollPosition = cardRightRelativeToContent - containerWidth + 40; // 40px padding from right
+        } else {
+          // Card fits in container, align left edge with padding
+          scrollPosition = cardLeftRelativeToContent - 40; // 40px padding from left
+        }
+      }
+      
+      container.scrollTo({
+        left: scrollPosition,
+        behavior: 'smooth',
+      });
+    }
+  };
+
   return (
     <section 
-      className="relative w-full min-h-screen overflow-hidden investment-section pb-32" 
+      className="relative w-full min-h-screen overflow-hidden investment-section pb-32 md:pb-40 lg:pb-48" 
       style={{ 
         backgroundColor: 'rgb(247, 247, 247)',
         background: 'rgb(247, 247, 247)',
       }}
     >
-      {/* Investment Section Background */}
-      <div
-        className="absolute investment-section-bg"
-        style={{
-          width: '1728px',
-          height: '1016px',
-          left: 'calc(50% - 1728px/2 - 1990px)',
-          top: '20px',
-          backgroundColor: 'rgb(247, 247, 247)',
-          background: 'rgb(247, 247, 247)',
-          zIndex: 0,
-          isolation: 'isolate',
-          willChange: 'auto',
-        }}
-      />
-      
       {/* Investment Header */}
       <div
         className="absolute z-10"
@@ -111,6 +146,7 @@ export default function Investors() {
       
       {/* Investment Cards Container */}
       <div
+        ref={scrollContainerRef}
         className="relative z-10 w-full overflow-x-auto pb-32"
         style={{ marginTop: '300px' }}
       >
@@ -124,9 +160,13 @@ export default function Investors() {
           {cards.map((card, index) => (
             <motion.div
               key={`card-${index}`}
+              ref={(el) => {
+                if (el) cardRefs.current[index] = el;
+              }}
+              onMouseEnter={() => handleCardHover(index)}
               variants={cardVariants}
               style={{
-                minWidth: '500px',
+                minWidth: '400px',
                 flexShrink: 0,
                 willChange: 'transform, opacity',
               }}

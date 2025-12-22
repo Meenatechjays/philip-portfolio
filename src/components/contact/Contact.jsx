@@ -112,8 +112,8 @@ export default function Contact() {
   };
 
   return (
-    <section
-      className="relative w-full flex items-center overflow-hidden"
+    <section 
+      className="relative w-full pt-20 md:pt-24 lg:pt-28 pb-16 px-6 md:px-12 lg:px-24"
       style={{
         background: 'linear-gradient(180deg, #89BBDD 0%, #FFFFFF 100%)',
       }}
@@ -303,41 +303,6 @@ export default function Contact() {
 
         </div>
       </div>
-      <style jsx>{`
-        @keyframes sheen {
-          0% {
-            transform: translateX(-150%) rotate(20deg);
-          }
-          100% {
-            transform: translateX(150%) rotate(20deg);
-          }
-        }
-
-        .btn-sheen {
-          position: relative;
-          overflow: hidden;
-        }
-
-        .btn-sheen::after {
-          content: '';
-          position: absolute;
-          top: -50%;
-          left: -50%;
-          width: 200%;
-          height: 200%;
-          background: linear-gradient(
-            120deg,
-            transparent 0%,
-            rgba(255, 255, 255, 0.18) 45%,
-            rgba(255, 255, 255, 0.35) 50%,
-            rgba(255, 255, 255, 0.18) 55%,
-            transparent 70%
-          );
-          transform: translateX(-150%) rotate(20deg);
-          animation: sheen 2.2s linear infinite;
-          pointer-events: none;
-        }
-      `}</style>
     </section>
   );
 }

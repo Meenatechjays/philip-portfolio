@@ -25,19 +25,7 @@ export default function Highlights() {
   }, [isInView]);
 
   return (
-    <section className="relative min-h-screen w-full overflow-hidden">
-      {/* Background - Media Mentions Image */}
-      <div className="absolute inset-0 w-full h-full">
-        <Image
-          src="/media mentions.png"
-          alt="Media Mentions Background"
-          fill
-          className="object-cover"
-          priority
-          quality={90}
-        />
-      </div>
-
+    <section className="relative min-h-screen w-full overflow-hidden bg-white">
       {/* Main Content Container */}
       <div className="relative z-5 min-h-screen flex flex-col items-center justify-start px-4 pt-24 pb-32">
         {/* Header Section */}
