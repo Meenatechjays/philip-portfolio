@@ -100,13 +100,19 @@ export default function Timeline() {
   const cardWidth = 1013.84; // Width of each timeline card
   const paddingBeforeFirstCard = 2000; // Add space before first card for more lines
   const paddingAfterLastCard = 2000; // Extra padding after last card for more timeline lines
+  const TIMELINE_LINE_START = 600; // Timeline line starts at 600px (changed from 2000px)
   const cardPositions = timelineCards.map(card => parseInt(card.position.left) + paddingBeforeFirstCard);
   const firstCardPosition = cardPositions[0];
   const lastCardIndex = timelineCards.length - 1;
   const lastCardPosition = cardPositions[lastCardIndex];
   const timelineStart = 2000; // Start timeline from 0
   const timelineEnd = lastCardPosition + cardWidth + paddingAfterLastCard;
-  const totalTimelineWidth = timelineEnd;
+  // Since timeline line starts at 600px instead of 2000px (paddingBeforeFirstCard), 
+  // reduce total width by the difference to eliminate extra scroll
+  const widthReduction = paddingBeforeFirstCard - TIMELINE_LINE_START; // 2000 - 600 = 1400
+  const totalTimelineWidth = timelineEnd - widthReduction;
+  // Timeline line SVG width: since line starts at TIMELINE_LINE_START (600px), width should match container
+  const timelineLineWidth = totalTimelineWidth;
 
   // Intersection Observer to detect when Timeline component enters viewport
   useEffect(() => {
@@ -372,26 +378,26 @@ export default function Timeline() {
         >
           {/* Main Timeline Line - Horizontal line spanning the scrollable width */}
           <motion.div 
-            className="absolute left-[2000px] top-[195px] z-[10]"
-            style={{ width: `${totalTimelineWidth}px` }}
+            className="absolute left-[1600px] top-[195px] z-[10]"
+            style={{ width: `${timelineLineWidth}px` }}
             animate={timelineControls}
             initial={{ x: 1920 }}
           >
-            <svg width={totalTimelineWidth} height="1" viewBox={`0 0 ${totalTimelineWidth} 1`} fill="none" xmlns="http://www.w3.org/2000/svg" className="w-full h-[1px]">
-              <line x1="0" y1="0.5" x2={totalTimelineWidth} y2="0.5" stroke="#112643" strokeWidth="1" />
+            <svg width={timelineLineWidth} height="1" viewBox={`0 0 ${timelineLineWidth} 1`} fill="none" xmlns="http://www.w3.org/2000/svg" className="w-full h-[1px]">
+              <line x1="0" y1="0.5" x2={timelineLineWidth} y2="0.5" stroke="#112643" strokeWidth="1" />
             </svg>
           </motion.div>
 
           {/* Vertical Timeline Markers - Evenly spaced along the horizontal line */}
           <motion.div 
-            className="absolute left-[2000px] top-[195px] z-[15] h-[68px] pointer-events-none transform -translate-y-1/2"
-            style={{ width: `${totalTimelineWidth}px` }}
+            className="absolute left-[1600px] top-[195px] z-[15] h-[68px] pointer-events-none transform -translate-y-1/2"
+            style={{ width: `${timelineLineWidth}px` }}
             animate={timelineControls}
             initial={{ x: 1920 }}
           >
-            <svg width={totalTimelineWidth} height="68" viewBox={`0 0 ${totalTimelineWidth} 68`} fill="none" xmlns="http://www.w3.org/2000/svg" className="w-full h-full">
+            <svg width={timelineLineWidth} height="68" viewBox={`0 0 ${timelineLineWidth} 68`} fill="none" xmlns="http://www.w3.org/2000/svg" className="w-full h-full">
               {/* Generate evenly spaced vertical lines every 50px for dense grid pattern */}
-              {Array.from({ length: Math.ceil(totalTimelineWidth / 50) }, (_, i) => (
+              {Array.from({ length: Math.ceil(timelineLineWidth / 50) }, (_, i) => (
                 <line
                   key={i}
                   x1={i * 50}
@@ -456,10 +462,10 @@ export default function Timeline() {
 
       {/* Skip Animation Button - Positioned within section layout */}
       {!timelineComplete && (
-        <div className="absolute bottom-48 right-8 z-30">
+        <div className="absolute bottom-60 right-8 z-30">
           <button
             onClick={skipAnimation}
-            className="box-border flex flex-row justify-center items-center px-6 py-4 gap-3 isolate w-[196px] h-14 bg-[rgba(167,185,255,0.2)] rounded-lg font-satoshi text-[#1F2024] hover:bg-[rgba(167,185,255,0.3)] transition-colors duration-200"
+            className="box-border cursor-pointer flex flex-row justify-center items-center px-6 py-4 gap-3 isolate w-[196px] h-14 bg-[rgba(167,185,255,0.2)] rounded-lg font-satoshi text-[#1F2024] hover:bg-[rgba(167,185,255,0.3)] transition-colors duration-200"
           >
             <span>Skip Animation</span>
             <Image

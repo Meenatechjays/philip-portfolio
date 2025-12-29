@@ -68,7 +68,6 @@ export default function PortfolioHero({ isVisible = true }) {
 
   return (
     <div className="min-h-screen relative overflow-hidden">
-
       {/* ================= BACKGROUND ================= */}
       <div className="absolute inset-0">
         <Image
@@ -90,107 +89,112 @@ export default function PortfolioHero({ isVisible = true }) {
           />
         </div>
 
-        {/* Font SVG */}
-        {/* Font SVG Overlay - size preserved */}
-        <div className="absolute pointer-events-none z-[5] top-[340px] left-[76px] max-xl:left-[60px] max-lg:left-[40px]">
-          <div className="relative w-[1350px] h-[640px]">
+        {/* Font SVG Overlay */}
+        <div className="absolute pointer-events-none z-[5] top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2">
+          <div className="relative w-[90vw] max-w-[1350px] h-auto aspect-[1350/640]">
             <Image
               src="/font.svg"
               alt="Font Overlay"
               fill
-              className="object-contain object-left-top"
+              className="object-contain object-center"
               priority
               style={{ opacity: 1, filter: 'contrast(5) brightness(2)' }}
             />
           </div>
         </div>
+      </div>
 
-
-        {/* Logo - Shows immediately */}
-        <div 
-          className={`absolute top-[32px] left-[76px] z-20 transition-all duration-700 ease-out ${
-            isLeftMounted ? 'opacity-100 translate-y-0' : 'opacity-0 -translate-y-4'
-          }`}
-        >
-          <a
-            href="/"
-            className="text-xl md:text-2xl font-bold text-[#1F2024] hover:opacity-80 transition-opacity"
+      {/* ================= MAIN CONTENT ================= */}
+      <div className="relative z-10 min-h-screen flex flex-col">
+        {/* Logo - Header Section */}
+        <div className="pt-8 md:pt-12 lg:pt-16 px-4 sm:px-6 md:px-8 lg:px-[76px]">
+          <div 
+            className={`transition-all duration-700 ease-out ${
+              isLeftMounted ? 'opacity-100 translate-y-0' : 'opacity-0 -translate-y-4'
+            }`}
           >
-            phil.in
-          </a>
-        </div>
-
-
-        {/* Left Content - Shows immediately */}
-        <div 
-          className={`absolute w-[529px] top-[150px] left-[76px] flex flex-col gap-4 transition-all duration-700 ease-out delay-100 ${
-            isLeftMounted ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'
-          }`}
-        >
-          <h1 className="font-sans font-bold text-6xl text-[#1F2024] leading-tight">
-            Hey Im <br />
-            Philip Samuelraj
-          </h1>
-
-          <p className="text-base sm:text-lg text-[#454654] leading-relaxed">
-          At the crossroads of technology, AI, and human behavior, I focus on building products and systems that deliver concrete value, scale predictably, and move markets toward their next evolution.
-          </p>
-        </div>
-
-
-        {/* Center Image - Shows immediately */}
-<div 
-  className={`absolute top-1/2 left-[52%] -translate-x-1/2 -translate-y-1/2 transition-all duration-700 ease-out delay-200 ${
-    isLeftMounted ? 'opacity-100 scale-100' : 'opacity-0 scale-95'
-  }`}
->
-  <div
-    className="relative"
-    style={{
-      WebkitMaskImage:
-        'linear-gradient(to bottom, black 75%, transparent 100%)',
-      maskImage:
-        'linear-gradient(to bottom, black 75%, transparent 100%)'
-    }}
-  >
-    <Image
-      src="/header-img.svg"
-      alt="Philip Samuelraj"
-      width={815}
-      height={831}
-      className="object-contain"
-      priority
-    />
-  </div>
-</div>
-
-
-
-        {/* ================= RIGHT CONTENT - Delayed 2000ms, Slides from Bottom ================= */}
-        <div
-          className={`absolute w-[500px] left-[980px] cursor-pointer z-10 transition-all duration-1000 ease-out ${
-            isRightMounted ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-16'
-          }`}
-          style={{ top: '230px' }}
-          onClick={handleContentClick}
-        >
-          <AnimatePresence mode="wait">
-            <motion.div
-              key={currentIndex}
-              variants={contentVariants}
-              initial="initial"
-              animate="animate"
-              exit="exit"
-              className="absolute inset-0 flex flex-col gap-4"
+            <a
+              href="/"
+              className="inline-block text-xl md:text-2xl font-bold text-[#1F2024] hover:opacity-80 transition-opacity"
             >
-              <h2 className="text-[clamp(1.4rem,2.2vw,1.9rem)] font-bold text-[#1F2024]">
-                {rightContentItems[currentIndex].title}
-              </h2>
-              <p className="text-[clamp(0.9rem,1.2vw,1rem)] text-[#454654] leading-relaxed">
-                {rightContentItems[currentIndex].description}
-              </p>
-            </motion.div>
-          </AnimatePresence>
+              phil.in
+            </a>
+          </div>
+        </div>
+
+        {/* 3-Column Grid Layout */}
+        <div className="flex-1 grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-6 lg:gap-8 px-4 sm:px-6 md:px-8 lg:px-[76px] pb-8 md:pb-12 relative items-center">
+          {/* Left Content Column */}
+          <div 
+            className={`flex flex-col gap-4 md:order-1 relative z-20 transition-all duration-700 ease-out delay-100 ${
+              isLeftMounted ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'
+            }`}
+          >
+            <h1 className="font-sans font-bold text-3xl sm:text-3xl md:text-4xl lg:text-5xl text-[#1F2024] leading-tight">
+              Hey Im <br />
+              Philip Samuelraj
+            </h1>
+
+            <p className="text-sm sm:text-base md:text-lg text-[#454654] leading-relaxed">
+              At the crossroads of technology, AI, and human behavior, I focus on building products and systems that deliver concrete value, scale predictably, and move markets toward their next evolution.
+            </p>
+          </div>
+
+          {/* Center Image Column */}
+          <div className="flex items-end justify-end relative z-10 md:order-2 md:-mx-4 lg:-mx-8">
+            <div 
+              className={`w-full max-w-[815px] transition-all duration-700 ease-out delay-200 ${
+                isLeftMounted ? 'opacity-100 scale-100' : 'opacity-0 scale-95'
+              }`}
+            >
+              <div
+                className="relative w-full h-auto"
+                style={{
+                  WebkitMaskImage:
+                    'linear-gradient(to bottom, black 75%, transparent 100%)',
+                  maskImage:
+                    'linear-gradient(to bottom, black 75%, transparent 100%)'
+                }}
+              >
+                <Image
+                  src="/header-img.svg"
+                  alt="Philip Samuelraj"
+                  width={815}
+                  height={831}
+                  className="object-contain w-full h-auto"
+                  priority
+                />
+              </div>
+            </div>
+          </div>
+
+          {/* Right Content Column */}
+          <div 
+            className={`flex flex-col gap-4 cursor-pointer md:order-3 relative z-20 transition-all duration-1000 ease-out ${
+              isRightMounted ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-16'
+            }`}
+            onClick={handleContentClick}
+          >
+            <div className="relative min-h-[120px]">
+              <AnimatePresence mode="wait">
+                <motion.div
+                  key={currentIndex}
+                  variants={contentVariants}
+                  initial="initial"
+                  animate="animate"
+                  exit="exit"
+                  className="absolute inset-0 flex flex-col gap-4"
+                >
+                  <h2 className="text-[clamp(1.4rem,2.2vw,1.9rem)] font-bold text-[#1F2024]">
+                    {rightContentItems[currentIndex].title}
+                  </h2>
+                  <p className="text-[clamp(0.9rem,1.2vw,1rem)] text-[#454654] leading-relaxed">
+                    {rightContentItems[currentIndex].description}
+                  </p>
+                </motion.div>
+              </AnimatePresence>
+            </div>
+          </div>
         </div>
       </div>
     </div>

@@ -1,9 +1,13 @@
 'use client';
 
+import { useRef } from 'react';
 import InvestmentCard from '../ui/InvestmentCard';
-import { motion } from 'framer-motion';
+import { motion, useInView } from 'framer-motion';
 
 export default function Investors() {
+  const ref = useRef(null);
+  const isInView = useInView(ref, { once: true, amount: 0.1 });
+
   const containerVariants = {
     hidden: {
       opacity: 1,
@@ -11,7 +15,8 @@ export default function Investors() {
     visible: {
       opacity: 1,
       transition: {
-        staggerChildren: 0.15,
+        delay: 1.5,
+        staggerChildren: 0.4,
         delayChildren: 0,
       },
     },
@@ -61,7 +66,7 @@ export default function Investors() {
 
   return (
     <section 
-      className="investment-section investment-section-bg relative w-full overflow-hidden py-16 sm:py-20 lg:py-24"
+      className="investment-section investment-section-bg relative w-full overflow-hidden lg:pt-12"
     >
       {/* Investment Header */}
       <div className="relative z-10 flex flex-col items-center text-center gap-4 px-6 max-w-3xl mx-auto">
@@ -75,14 +80,14 @@ export default function Investors() {
       
       {/* Investment Cards Container */}
       <div
-         className=" overflow-x-auto hide-scrollbar mt-6  "
+         className="overflow-x-auto hide-scrollbar mt-6 investment-section-bg w-full"
       >
         <motion.div 
-          className="flex gap-6 sm:gap-8 px-6 sm:px-10  "
+          ref={ref}
+          className="flex gap-6 sm:gap-8 px-6 sm:px-10 py-12 min-w-max"
           variants={containerVariants}
           initial="hidden"
-          whileInView="visible"
-          viewport={{ once: true, amount: 0.1 }}
+          animate={isInView ? "visible" : "hidden"}
         >
           {cards.map((card, index) => (
             <motion.div
