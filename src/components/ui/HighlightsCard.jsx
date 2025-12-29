@@ -63,7 +63,7 @@ export default function HighlightsCard({
 
           {/* Title */}
           {title && (
-            <h3 className="font-satoshi font-bold text-xl leading-tight text-[#1F2024]">
+            <h3 className="font-satoshi font-semibold text-xl leading-tight text-[#1F2024]">
               {title}
             </h3>
           )}
@@ -78,7 +78,7 @@ export default function HighlightsCard({
           {/* Read More Link */}
           <a 
             href={readMoreLink}
-            className="flex items-center gap-2 font-satoshi font-medium text-sm text-[#1F2024] hover:opacity-80 transition-opacity mt-auto"
+            className="flex items-center font-satoshi font-medium text-sm text-[#1F2024] hover:opacity-80 transition-opacity mt-auto"
           >
             Read more
             <Image
@@ -86,7 +86,7 @@ export default function HighlightsCard({
               alt="Arrow icon"
               width={16}
               height={16}
-              className="inline-block"
+              className="inline-block mt-1 font-semibold"
             />
           </a>
         </div>

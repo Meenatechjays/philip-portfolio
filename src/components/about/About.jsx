@@ -130,7 +130,7 @@ export default function PortfolioHero({ isVisible = true }) {
               isLeftMounted ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'
             }`}
           >
-            <h1 className="font-sans font-bold text-3xl sm:text-3xl md:text-4xl lg:text-5xl text-[#1F2024] leading-tight">
+            <h1 className="font-sans font-semibold text-3xl sm:text-3xl md:text-4xl lg:text-5xl text-[#1F2024] leading-tight">
               Hey Im <br />
               Philip Samuelraj
             </h1>

@@ -48,7 +48,7 @@ export default function Investors() {
       imageSrc: '/belongy.png',
       imageAlt: 'Belongly',
       title: 'Belongly',
-      description: 'A HIPAA-compliant AI matching solution that streamlines therapist connections, enhances',
+      description: 'A HIPAA-compliant AI matching solution that streamlines therapist connections, enhances, A HIPAA-compliant AI matching solution that streamlines therapist connections, enhances, A HIPAA-compliant AI matching solution that streamlines therapist connections, enhances',
     },
     {
       imageSrc: '/decerna.png',

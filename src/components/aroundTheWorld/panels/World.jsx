@@ -144,7 +144,7 @@ export default function World() {
     <div ref={componentRef} className="relative w-full flex flex-col">
       {/* Header Section - Responsive */}
       <div 
-        className="opacity-100 flex flex-col gap-2 md:gap-4 md:ml-[4.6vw] mt-4 md:mt-8 w-full md:w-[clamp(300px,38.8vw,671px)]"
+        className="opacity-100 flex flex-col gap-2 md:gap-4 mt-4 md:mt-8 w-full md:w-[clamp(300px,38.8vw,671px)]"
       >
         <h2 className="heading-h2">
           Around the World with AI
@@ -231,7 +231,7 @@ export default function World() {
 
           {/* Stats positioned on the map - Desktop only */}
           {showFinalLogo && (
-            <div className="hidden md:flex absolute bottom-2 left-1/2 -translate-x-[60%] flex-row items-center gap-3 z-20">
+            <div className="hidden md:flex flex-row items-center justify-center gap-3 z-20">
               <Stat value="7+" label="Countries" />
               <Stat value="150+" label="Projects" />
               <Stat value="170+" label="People" />
@@ -270,20 +270,24 @@ export default function World() {
             {/* Mobile Content */}
             <div className="flex flex-col items-start mt-4">
               <p className="font-satoshi font-normal text-sm text-[#454654] w-full">
-                Lorem ipsum dolor sit amet consectetur. Aliquam mattis tortor magna nisl.
-                Non risus semper vel est amet leo non Lorem ipsum dolor sit amet consectetur. Aliquam mattis tortor magna nisl.
-                Non risus semper vel est amet leo non Lorem ipsum dolor sit amet consectetur.
+                
               </p>
             </div>
           </div>
 
           {/* Desktop Layout - Content only */}
           <div className="hidden md:flex justify-start">
-            <p className="font-satoshi font-normal text-base lg:text-lg leading-relaxed text-[#454654] max-w-4xl">
-              Lorem ipsum dolor sit amet consectetur. Aliquam mattis tortor magna nisl.
-              Non risus semper vel est amet leo non Lorem ipsum dolor sit amet consectetur. Aliquam mattis tortor magna nisl.
-              Non risus semper vel est amet leo non Lorem ipsum dolor sit amet consectetur.
-            </p>
+            <div className="font-satoshi font-normal text-base lg:text-lg leading-relaxed text-[#454654] max-w-4xl space-y-4">
+              <p>
+                Founded in 2020 in Menlo Park, California, Techjays is on a bold mission to build the world's best AI products, apps, and solutions. With over 150 projects delivered across 7 countries, they've rapidly grown to serve 65+ clients spanning 15+ verticals in just a few years.
+              </p>
+              <p>
+                Their team of 170+ professionals specializes in Gen AI, Web & Mobile development, Edge/Cloud Computing, AI Quality Engineering, and Digital Transformation. This expertise is backed by partnerships with industry leaders like Google Cloud, AWS, and IBM, along with ISO 27001 and 9001 certifications.
+              </p>
+              <p>
+                At Techjays, they combine cutting-edge technical capabilities with deep industry knowledge to deliver solutions that drive real business impact. Their client-centric approach and commitment to excellence have established them as trusted partners for organizations looking to harness the power of AI and digital technologies in an increasingly competitive landscape.
+              </p>
+            </div>
           </div>
         </div>
       </div>

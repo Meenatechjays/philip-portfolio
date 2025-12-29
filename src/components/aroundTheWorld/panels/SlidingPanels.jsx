@@ -85,7 +85,7 @@ export default function SlidingPanels({ stacks, active }) {
               className="w-full flex-shrink-0 relative"
               style={{ minWidth: '100%' }}
             >
-              <div className="w-full px-4 sm:px-6 md:px-8 lg:px-10 xl:px-12 2xl:px-16 py-6 sm:py-8 md:py-10 lg:py-12 pb-16 sm:pb-20 md:pb-24 lg:pb-28">
+              <div className="w-full px-4 sm:px-6 md:px-8 lg:px-10 xl:px-12 2xl:px-16 py-1">
                 {PANELS[stack.id]}
               </div>
             </div>

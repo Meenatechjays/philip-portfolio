@@ -18,6 +18,20 @@ export default function Contact() {
   const [iconPositions, setIconPositions] = useState([]);
   const animationFrameRef = useRef(null);
 
+  const buttonStyle = isSubmitting
+    ? {
+        border: '1px solid',
+        borderImageSource: 'linear-gradient(180deg, #FFFFFF 0%, #999999 100%)',
+        borderImageSlice: 1,
+        background: '#9ca3af',
+      }
+    : {
+        border: '1px solid',
+        borderImageSource: 'linear-gradient(180deg, #FFFFFF 0%, #999999 100%)',
+        borderImageSlice: 1,
+        background: 'var(--Colors-Surface-Buttons-Button-normal, #112643)',
+      };
+
   const validateEmail = (email) => {
     if (email && !email.includes('@')) {
       return 'Email must contain @ symbol';
@@ -225,7 +239,7 @@ export default function Contact() {
         background: 'linear-gradient(180deg, #89BBDD 0%, #FFFFFF 100%)',
       }}
     >
-      <div className="mx-auto w-full px-2 md:px-4 lg:px-8">
+      <div className="mx-auto w-full px-2 md:px-4 lg:px-10">
         <div className="grid grid-cols-1 lg:grid-cols-2 items-center gap-12">
 
           {/* LEFT – CONTACT FORM */}
@@ -289,10 +303,10 @@ export default function Contact() {
               <button
                 type="submit"
                 disabled={isSubmitting}
-                aria-busy={isSubmitting}
-                className={`btn-sheen contact-button text-white text-sm px-6 py-2.5 rounded-lg w-fit transition-colors ${
-                  isSubmitting ? 'is-disabled' : 'hover:brightness-110'
+                className={`btn-sheen text-white text-sm px-6 py-2.5 rounded-lg w-fit transition-colors ${
+                  isSubmitting ? 'cursor-not-allowed' : 'hover:brightness-110'
                 }`}
+                style={buttonStyle}
               >
                 {isSubmitting ? 'Sending…' : 'Send form'}
               </button>
@@ -375,36 +389,6 @@ export default function Contact() {
         </div>
       </div>
       <style jsx>{`
-        .contact-button {
-          position: relative;
-          overflow: hidden;
-          border: 1px solid;
-          border-image: linear-gradient(180deg, #ffffff 0%, #999999 100%) 1;
-          background: linear-gradient(180deg, #132f56 0%, #0b1c33 100%);
-          box-shadow: 0 12px 24px rgba(17, 38, 67, 0.22);
-          transition: transform 0.2s ease, box-shadow 0.2s ease, filter 0.2s ease;
-        }
-
-        .contact-button:hover:not(.is-disabled) {
-          transform: translateY(-1px);
-          filter: brightness(1.06);
-          box-shadow: 0 14px 30px rgba(17, 38, 67, 0.28);
-        }
-
-        .contact-button.is-disabled {
-          background: #9ca3af;
-          color: #e5e7eb;
-          box-shadow: none;
-          border-image: none;
-          border-color: #d1d5db;
-          cursor: not-allowed;
-        }
-
-        .contact-button.is-disabled::after {
-          animation-play-state: paused;
-          opacity: 0.2;
-        }
-
         @keyframes sheen {
           0% {
             transform: translateX(-150%) rotate(20deg);
