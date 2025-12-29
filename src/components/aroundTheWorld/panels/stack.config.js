@@ -3,7 +3,7 @@ export const STACKS = [
   {
     id: "world",
     number: "01",
-    title: "Around the World",
+    title: "Around the World with AI",
     description:
       "Lorem ipsum dolor sit amet consectetur. Aliquam mattis tortor magna nisl.",
   },

@@ -42,25 +42,25 @@ export default function Investors() {
       imageSrc: '/pepcare.png',
       imageAlt: 'PepCare',
       title: 'Pepcare',
-      description: 'Built a web HIPPA-compliant platform to streamline scheduling.',
+      description: 'Built a web HIPPA-compliant platform to streamline scheduling, referral, and consultation services for dental practitioners.',
     },
     {
       imageSrc: '/belongy.png',
       imageAlt: 'Belongly',
       title: 'Belongly',
-      description: 'A HIPAA-compliant AI matching solution that streamlines therapist connections, enhances, A HIPAA-compliant AI matching solution that streamlines therapist connections, enhances, A HIPAA-compliant AI matching solution that streamlines therapist connections, enhances',
+      description: 'A HIPAA-compliant AI matching solution that streamlines therapist connections, enhances accuracy, and accelerates user onboarding.',
     },
     {
       imageSrc: '/decerna.png',
       imageAlt: 'Decerna',
       title: 'Decerna',
-      description: 'Our team created a cutting-edge emission calculation tool with multiple data interface',
+      description: 'Our team created a cutting-edge emission calculation tool with multiple data interface options and instant shareability.',
     },
     {
       imageSrc: '/ameya.png',
       imageAlt: 'Ameya',
       title: 'Ameya',
-      description: 'Ameya is a du designed to o',
+      description: 'Ameya is a dual-platform healthcare application designed to connect healthcare providers with patients through an integrated digital platform.',
     },
   ];
 
