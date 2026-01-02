@@ -53,10 +53,14 @@ export default function ServiceCard({
 
         {/* Description */}
         {description && (
-          <p className="text-xs sm:text-sm md:text-base text-[#454654] flex-grow font-satoshi leading-relaxed break-words overflow-hidden">
+          <p className="text-xs sm:text-sm md:text-base text-[#454654] flex-grow font-satoshi leading-relaxed break-words overflow-hidden line-clamp-2">
             {description}
           </p>
         )}
+
+        <div className="h-12">
+
+        </div>
 
         {/* Learn More Link */}
         <div className="flex items-center gap-2 mt-auto flex-shrink-0">

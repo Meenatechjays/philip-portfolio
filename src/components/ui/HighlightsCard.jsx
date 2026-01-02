@@ -29,7 +29,7 @@ export default function HighlightsCard({
       <div className="w-full h-full bg-white rounded-2xl overflow-visible relative">
         {/* Image Section */}
         {imageSrc && (
-          <div className="box-border w-full h-[267px] flex justify-between rounded-[24px] p-4 border-2 border-white relative overflow-hidden">
+          <div className="box-border w-full h-[267px] flex justify-between rounded-[16px] p-4 border-2 border-white relative overflow-hidden">
     
               <Image
                 src={imageSrc}

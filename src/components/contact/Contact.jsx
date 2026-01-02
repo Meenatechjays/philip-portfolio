@@ -252,7 +252,7 @@ export default function Contact() {
               Connect for business opportunities, partnerships, or thought leadership discussions
             </p>
 
-            <form onSubmit={handleSubmit} className="flex flex-col gap-3 max-w-md">
+            <form onSubmit={handleSubmit} className="flex flex-col gap-3 max-w-lg">
               <div className="grid grid-cols-2 gap-3">
                 <input
                   name="name"
@@ -311,6 +311,11 @@ export default function Contact() {
                 {isSubmitting ? 'Sending…' : 'Send form'}
               </button>
             </form>
+
+            {/* Copyright notice */}
+            <p className="text-xs text-[#454654] mt-4 font-satoshi">
+              © 2025 Philip Samuelraj
+            </p>
           </div>
 
           {/* RIGHT – IMAGE + SVG CURVE */}

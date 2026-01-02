@@ -15,7 +15,7 @@ const DotLottieReact = dynamic(
 );
 
 // Animation constants
-const ANIMATION_DURATION = 3; // seconds for scroll animations
+const ANIMATION_DURATION = 4; // seconds for scroll animations
 const FADE_DURATION = 0.8; // seconds for fade transitions
 
 // Location marker positions - initially placed in orderly fashion (will be positioned later)
@@ -55,7 +55,50 @@ export default function World() {
   const [showFinalLogo, setShowFinalLogo] = useState(false);
   const [hasAnimated, setHasAnimated] = useState(false);
 
+  // Set hasAnimated to true after 5 seconds when component is visible
   useEffect(() => {
+    let timer = null;
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting && !hasAnimated) {
+            // Clear any existing timer
+            if (timer) {
+              clearTimeout(timer);
+            }
+            // Start the 5-second timer when component becomes visible
+            timer = setTimeout(() => {
+              setHasAnimated(true);
+            }, 200);
+          }
+        });
+      },
+      {
+        threshold: 0.1, // Trigger when 10% of component is visible
+        rootMargin: '0px',
+      }
+    );
+
+    const currentRef = componentRef.current;
+    if (currentRef) {
+      observer.observe(currentRef);
+    }
+
+    return () => {
+      if (timer) {
+        clearTimeout(timer);
+      }
+      if (currentRef) {
+        observer.unobserve(currentRef);
+      }
+    };
+  }, [hasAnimated]);
+
+  // Start animations when hasAnimated becomes true
+  useEffect(() => {
+    if (!hasAnimated) return;
+
     const startAnimations = async () => {
       // Wait a bit before starting animations
       await new Promise(resolve => setTimeout(resolve, 500));
@@ -98,8 +141,7 @@ export default function World() {
       ]);
 
       // Task 3: Logo appears only after map animation completes and Lottie is fully rendered
-      // TEST: Show logo after 5 seconds for testing (change back to 300ms after testing)
-      await new Promise(resolve => setTimeout(resolve, 5000));
+      await new Promise(resolve => setTimeout(resolve, 300));
       
       setShowFinalLogo(true);
       logoFinalControls.start({
@@ -112,33 +154,8 @@ export default function World() {
       });
     };
 
-    // Intersection Observer to detect when component enters viewport
-    const observer = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
-          if (entry.isIntersecting && !hasAnimated) {
-            setHasAnimated(true);
-            startAnimations();
-          }
-        });
-      },
-      {
-        threshold: 0.2, // Trigger when 20% of component is visible
-        rootMargin: '0px',
-      }
-    );
-
-    const currentRef = componentRef.current;
-    if (currentRef) {
-      observer.observe(currentRef);
-    }
-
-    return () => {
-      if (currentRef) {
-        observer.unobserve(currentRef);
-      }
-    };
-  }, [logoScrollControls, mapScrollControls, logoFinalControls, hasAnimated]);
+    startAnimations();
+  }, [hasAnimated, logoScrollControls, mapScrollControls, logoFinalControls]);
 
   return (
     <div ref={componentRef} className="relative w-full flex flex-col">
@@ -179,11 +196,27 @@ export default function World() {
             />
           </motion.div>
 
+          {/* Horizontal center line - visible during logo animation */}
+          {!showFinalLogo && hasAnimated && (
+            <div
+              className="absolute z-10 pointer-events-none"
+              style={{
+                left: 0,
+                right: 0,
+                top: '60%',
+                height: '1px',
+                backgroundColor: '#454654',
+                opacity: 0.3,
+                transform: 'translateY(-60%)',
+              }}
+            />
+          )}
+
           {/* Task 1: Logo scrolling across center of map (vertically centered on map) */}
           {!showFinalLogo && hasAnimated && (
             <motion.div
               animate={logoScrollControls}
-              initial={{ x: 0, opacity: 1 }}
+              initial={{ x: 0, opacity: 1, rotate: 60 }}
               className="absolute z-20 pointer-events-none"
               style={{
                 width: '91px',
@@ -203,12 +236,12 @@ export default function World() {
             </motion.div>
           )}
            {showFinalLogo && (
-              <div className="absolute top-40 right-30 animate-logo-fade-in">
+              <div className="absolute top-40 right-40 animate-logo-fade-in">
                 <Image
                   src="/techjays-logo.svg"
                   alt="Techjays Logo"
-                  width={150}
-                  height={150}
+                  width={130}
+                  height={130}
                   className="object-contain"
                 />
               </div>
@@ -230,13 +263,13 @@ export default function World() {
           ))} */}
 
           {/* Stats positioned on the map - Desktop only */}
-          {showFinalLogo && (
+          
             <div className="hidden md:flex flex-row items-center justify-center gap-3 z-20">
               <Stat value="7+" label="Countries" />
               <Stat value="150+" label="Projects" />
               <Stat value="170+" label="People" />
             </div>
-          )}
+         
         </div>
 
         {/* Task 3: Final logo position - appears only after map animation completes, to the right of map */}

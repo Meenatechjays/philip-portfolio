@@ -51,7 +51,7 @@ export default function RightStacks({ stacks, active, onChange }) {
           <button
             key={stack.id}
             onClick={() => onChange(stack.id)}
-            className="w-[60px] sm:w-[70px] md:w-[80px] lg:w-[90px] h-full py-8 px-2 sm:px-3 border-l transition-all duration-300 flex flex-col items-center justify-between cursor-pointer"
+            className="w-[60px] sm:w-[70px] md:w-[80px] lg:w-[90px] h-full py-8 px-2 sm:px-3 border-l border-white transition-all duration-300 flex flex-col items-center justify-between cursor-pointer"
             style={{
               background: "linear-gradient(180deg, #DBECF6 0%, #93CDEB 100%)",
             }}
