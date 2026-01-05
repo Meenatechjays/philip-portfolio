@@ -314,12 +314,7 @@ export default function World() {
               <p>
                 Founded in 2020 in Menlo Park, California, Techjays is on a bold mission to build the world's best AI products, apps, and solutions. With over 150 projects delivered across 7 countries, they've rapidly grown to serve 65+ clients spanning 15+ verticals in just a few years.
               </p>
-              <p>
-                Their team of 170+ professionals specializes in Gen AI, Web & Mobile development, Edge/Cloud Computing, AI Quality Engineering, and Digital Transformation. This expertise is backed by partnerships with industry leaders like Google Cloud, AWS, and IBM, along with ISO 27001 and 9001 certifications.
-              </p>
-              <p>
-                At Techjays, they combine cutting-edge technical capabilities with deep industry knowledge to deliver solutions that drive real business impact. Their client-centric approach and commitment to excellence have established them as trusted partners for organizations looking to harness the power of AI and digital technologies in an increasingly competitive landscape.
-              </p>
+              
             </div>
           </div>
         </div>

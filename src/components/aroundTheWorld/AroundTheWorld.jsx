@@ -9,7 +9,7 @@ export default function AroundTheWorld() {
   const [active, setActive] = useState("world");
 
   return (
-    <section className="relative bg-white mt-0 min-h-screen">
+    <section className="relative bg-white mt-0 min-h-screen overflow-hidden">
       <div className="flex relative">
 
         {/* LEFT – sliding content */}

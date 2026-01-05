@@ -32,7 +32,7 @@ export default function Highlights() {
   }, [isInView]);
 
   return (
-    <section className="relative min-h-screen w-full overflow-hidden">
+    <section className="relative h-screen w-full overflow-visible">
       {/* Background - Media Mentions Image */}
       <div className="absolute inset-0 w-full h-full">
         <Image
@@ -47,10 +47,10 @@ export default function Highlights() {
 
       {/* Main Content Container */}
 
-      <div className="relative z-5 min-h-screen flex flex-col items-center justify-start px-4  pb-32">
+      <div className="relative z-5 h-screen flex flex-col items-center justify-start px-4 pt-4 pb-4">
 
         {/* Header Section */}
-        <div className="w-full max-w-[671px] flex flex-col gap-4 items-center mb-6 pt-4">
+        <div className="w-full max-w-[671px] flex flex-col gap-2 md:gap-4 items-center mb-2 md:mb-4">
           {/* Main Heading */}
           <h2 className="w-full max-w-[428px] section-heading text-center whitespace-nowrap">
             Press & Podcast Highlights
@@ -63,7 +63,7 @@ export default function Highlights() {
         </div>
 
         {/* Toggle Button */}
-        <div className="relative flex flex-col items-start bg-white p-1.5 w-full max-w-[250px] rounded-[30px] mb-4">
+        <div className="relative flex flex-col items-start bg-white p-1.5 w-full max-w-[250px] rounded-[30px] mb-2 md:mb-4">
           <ToggleButton
             options={toggleOptions}
             activeOption={activeOption}
@@ -72,7 +72,7 @@ export default function Highlights() {
         </div>
 
         {/* Content Area - Highlights Cards */}
-        <div ref={cardsRef} className="relative w-full mt-8 flex flex-row items-start justify-center gap-6 flex-nowrap px-4">
+        <div ref={cardsRef} className="relative w-full mt-2 md:mt-4 flex flex-row items-start justify-center gap-3 md:gap-4 lg:gap-6 flex-nowrap px-2 md:px-4 overflow-visible">
           {/* Card 1 - Press One Image - Highest */}
           <motion.div
             className="w-full max-w-[341px] flex-shrink-0"
@@ -173,7 +173,7 @@ export default function Highlights() {
               description="Discover how cutting-edge technology solutions are transforming industries and driving digital transformation."
               readMoreLink="/article"
               position={{ left: '0', top: '0' }}
-              className="relative translate-y-20"
+              className="relative translate-y-2 md:translate-y-4"
             />
           </motion.div>
 
@@ -279,7 +279,7 @@ export default function Highlights() {
               description="A look back at the milestones and achievements that have shaped the technology landscape over the years."
               readMoreLink="/article"
               position={{ left: '0', top: '0' }}
-              className="relative translate-y-20"
+              className="relative translate-y-2 md:translate-y-4"
             />
           </motion.div>
         </div>
