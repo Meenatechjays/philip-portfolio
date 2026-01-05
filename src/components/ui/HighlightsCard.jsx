@@ -19,17 +19,17 @@ export default function HighlightsCard({
   
   return (
     <div 
-      className={`${positionClass} flex flex-col items-start p-0 w-full max-w-[341px] h-[497px] flex-shrink-0 ${className}`}
+      className={`${positionClass} flex flex-col items-start p-0 w-full max-w-[280px] h-[400px] flex-shrink-0 ${className}`}
       style={!isRelative ? {
         left: position.left,
         top: position.top
       } : {}}
     >
       {/* Card Container with rounded corners */}
-      <div className="w-full h-full bg-white rounded-2xl overflow-visible relative">
+      <div className="w-full h-full bg-white rounded-2xl overflow-hidden relative">
         {/* Image Section */}
         {imageSrc && (
-          <div className="box-border w-full h-[267px] flex justify-between rounded-[16px] p-4 border-2 border-white relative overflow-hidden">
+          <div className="box-border w-full h-[215px] flex justify-between rounded-[16px] border-2 border-white relative overflow-hidden">
     
               <Image
                 src={imageSrc}
@@ -42,18 +42,18 @@ export default function HighlightsCard({
         )}
 
         {/* Content Section - Overlapping the image */}
-        <div className="box-border absolute bottom-0 left-0 right-0 flex flex-col items-start p-4 gap-4 w-full h-[270px] bg-[#F4F6FF] border-2 border-white rounded-[24px] z-10">
+        <div className="box-border absolute bottom-0 left-0 right-0 flex flex-col items-start p-4 gap-2 w-full h-[220px] bg-[#F4F6FF] border-2 border-white rounded-[24px] z-10 overflow-hidden">
           {/* Star Icon */}
           <div 
-            className="w-12 h-12 flex-shrink-0 relative cursor-pointer"
+            className="w-8 h-8 flex-shrink-0 relative cursor-pointer"
             onMouseEnter={() => setIsHovered(true)}
             onMouseLeave={() => setIsHovered(false)}
           >
             <Image
               src="/star.svg"
               alt="Star Icon"
-              width={48}
-              height={48}
+              width={32}
+              height={32}
               className="w-full h-full object-contain transition-transform duration-1000"
               style={{
                 transform: isHovered ? 'rotate(360deg)' : 'rotate(0deg)',
@@ -63,14 +63,14 @@ export default function HighlightsCard({
 
           {/* Title */}
           {title && (
-            <h3 className="font-satoshi font-semibold text-xl leading-tight text-[#1F2024]">
+            <h3 className="font-satoshi font-semibold text-base leading-tight text-[#1F2024] line-clamp-2">
               {title}
             </h3>
           )}
 
           {/* Description */}
           {description && (
-            <p className="font-satoshi font-normal text-base leading-relaxed text-[#454654] flex-grow">
+            <p className="font-satoshi font-normal text-xs leading-relaxed text-[#454654] flex-grow overflow-hidden line-clamp-3">
               {description}
             </p>
           )}
@@ -78,14 +78,14 @@ export default function HighlightsCard({
           {/* Read More Link */}
           <a 
             href={readMoreLink}
-            className="flex items-center font-satoshi font-medium text-sm text-[#1F2024] hover:opacity-80 transition-opacity mt-auto"
+            className="flex items-center font-satoshi font-medium text-xs text-[#1F2024] hover:opacity-80 transition-opacity mt-auto"
           >
             Read more
             <Image
               src="/Arrow up.svg"
               alt="Arrow icon"
-              width={16}
-              height={16}
+              width={14}
+              height={14}
               className="inline-block mt-1 font-semibold"
             />
           </a>

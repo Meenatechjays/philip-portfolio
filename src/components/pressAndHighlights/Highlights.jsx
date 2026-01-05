@@ -47,17 +47,17 @@ export default function Highlights() {
 
       {/* Main Content Container */}
 
-      <div className="relative z-5 h-screen flex flex-col items-center justify-start px-4 pt-4 pb-4">
+      <div className="relative z-5 h-screen flex flex-col items-center justify-start px-4 pt-8 md:pt-12 pb-0">
 
         {/* Header Section */}
         <div className="w-full max-w-[671px] flex flex-col gap-2 md:gap-4 items-center mb-2 md:mb-4">
           {/* Main Heading */}
-          <h2 className="w-full max-w-[428px] section-heading text-center whitespace-nowrap">
+          <h2 className="w-full max-w-[428px] section-heading text-center whitespace-nowrap mx-auto">
             Press & Podcast Highlights
           </h2>
           
           {/* Description Paragraph */}
-          <p className="w-full max-w-[671px] section-body text-center">
+          <p className="w-full max-w-[671px] section-body text-center mx-auto">
             Lorem ipsum dolor sit amet consectetur. Aliquam mattis tortor magna nisl. Non risus semper vel est amet leo non
           </p>
         </div>
@@ -72,10 +72,10 @@ export default function Highlights() {
         </div>
 
         {/* Content Area - Highlights Cards */}
-        <div ref={cardsRef} className="relative w-full mt-2 md:mt-4 flex flex-row items-start justify-center gap-3 md:gap-4 lg:gap-6 flex-nowrap px-2 md:px-4 overflow-visible">
+        <div ref={cardsRef} className="relative w-full mt-2 md:mt-4 flex flex-row items-start justify-center gap-2 md:gap-3 lg:gap-4 flex-nowrap px-2 md:px-4 overflow-visible">
           {/* Card 1 - Press One Image - Highest */}
           <motion.div
-            className="w-full max-w-[341px] flex-shrink-0"
+            className="w-full max-w-[280px] flex-shrink-0"
             initial={{ y: 100, opacity: 0 }}
             animate={
               !isInView
@@ -120,13 +120,13 @@ export default function Highlights() {
               description="Exploring the innovative AI solutions and technology leadership that sets Techjays apart in the industry."
               readMoreLink="/article"
               position={{ left: '0', top: '0' }}
-              className="relative -translate-y-4"
+              className="relative -translate-y-2"
             />
           </motion.div>
 
           {/* Card 2 - Press Two Image - Lower than Card 1 */}
           <motion.div
-            className="w-full max-w-[341px] flex-shrink-0"
+            className="w-full max-w-[280px] flex-shrink-0"
             initial={{ y: 100, opacity: 0 }}
             animate={
               !isInView
@@ -173,13 +173,13 @@ export default function Highlights() {
               description="Discover how cutting-edge technology solutions are transforming industries and driving digital transformation."
               readMoreLink="/article"
               position={{ left: '0', top: '0' }}
-              className="relative translate-y-2 md:translate-y-4"
+              className="relative translate-y-1 md:translate-y-16"
             />
           </motion.div>
 
           {/* Card 3 - Philip Header Image - Higher than Card 2 */}
           <motion.div
-            className="w-full max-w-[341px] flex-shrink-0"
+            className="w-full max-w-[280px] flex-shrink-0"
             initial={{ y: 100, opacity: 0 }}
             animate={
               !isInView
@@ -226,13 +226,13 @@ export default function Highlights() {
               description="Insights into strategic leadership and vision that drives successful technology ventures and innovation."
               readMoreLink="/article"
               position={{ left: '0', top: '0' }}
-              className="relative -translate-y-2 "
+              className="relative -translate-y-1"
             />
           </motion.div>
 
           {/* Card 4 - Timeline 2018 Image - Lower than Card 3 */}
           <motion.div
-            className="w-full max-w-[341px] flex-shrink-0"
+            className="w-full max-w-[280px] flex-shrink-0"
             initial={{ y: 100, opacity: 0 }}
             animate={
               !isInView
@@ -279,7 +279,7 @@ export default function Highlights() {
               description="A look back at the milestones and achievements that have shaped the technology landscape over the years."
               readMoreLink="/article"
               position={{ left: '0', top: '0' }}
-              className="relative translate-y-2 md:translate-y-4"
+              className="relative translate-y-1 md:translate-y-16"
             />
           </motion.div>
         </div>

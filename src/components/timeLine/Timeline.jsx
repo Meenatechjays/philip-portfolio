@@ -97,7 +97,7 @@ export default function Timeline() {
     }
   ];
 
-  const cardWidth = 1013.84; // Width of each timeline card
+  const cardWidth = 810; // Width of each timeline card
   const paddingBeforeFirstCard = 2000; // Add space before first card for more lines
   const paddingAfterLastCard = 2000; // Extra padding after last card for more timeline lines
   const TIMELINE_LINE_START = 600; // Timeline line starts at 600px (changed from 2000px)
@@ -354,12 +354,12 @@ export default function Timeline() {
         {/* Timeline Container */}
         <div className="w-[671px] opacity-100 flex flex-col gap-4 items-center">
           {/* Timeline Heading */}
-          <h2 className="w-[428px] h-[65px] opacity-100 section-heading text-center">
+          <h2 className="w-[428px] h-[65px] opacity-100 section-heading text-center mx-auto">
             Timeline & Journey
           </h2>
 
           {/* Timeline Paragraph Content */}
-          <p className="w-[671px] opacity-100 section-body text-center pb-5">
+          <p className="w-[671px] opacity-100 section-body text-center mx-auto pb-5">
             Lorem ipsum dolor sit amet consectetur. Aliquam mattis tortor magna nisl. Non risus semper vel est amet leo non
           </p>
         </div>

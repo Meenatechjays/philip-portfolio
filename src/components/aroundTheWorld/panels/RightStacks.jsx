@@ -22,7 +22,7 @@ export default function RightStacks({ stacks, active, onChange }) {
             <button
               key={stack.id}
               onClick={() => onChange(stack.id)}
-              className="w-[60px] sm:w-[70px] md:w-[80px] lg:w-[90px] h-full py-8 px-2 sm:px-3 border-l flex flex-col items-center justify-between animate-slide-in-from-right cursor-pointer overflow-hidden"
+              className="w-[80px] sm:w-[90px] md:w-[100px] lg:w-[110px] h-full py-8 px-2 sm:px-3 border-l border-white flex flex-col items-center justify-between animate-slide-in-from-right cursor-pointer overflow-hidden"
                 style={{
                   background: "linear-gradient(180deg, #DBECF6 0%, #93CDEB 100%)",
                 }}
@@ -51,7 +51,7 @@ export default function RightStacks({ stacks, active, onChange }) {
           <button
             key={stack.id}
             onClick={() => onChange(stack.id)}
-            className="w-[60px] sm:w-[70px] md:w-[80px] lg:w-[90px] h-full py-8 px-2 sm:px-3 border-l border-white transition-all duration-300 flex flex-col items-center justify-between cursor-pointer"
+            className="w-[80px] sm:w-[90px] md:w-[100px] lg:w-[110px] h-full py-8 px-2 sm:px-3 border-l border-white transition-all duration-300 flex flex-col items-center justify-between cursor-pointer"
             style={{
               background: "linear-gradient(180deg, #DBECF6 0%, #93CDEB 100%)",
             }}
