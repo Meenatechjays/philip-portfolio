@@ -92,14 +92,14 @@ export default function TimeLineCard({
   return (
     <div 
       ref={cardRef}
-      className="absolute flex flex-row items-center p-0 z-30 w-[1013.84px] h-[390px]"
+      className="absolute flex flex-row items-center p-0 z-30 w-[810px] h-[312px]"
       style={{
         left: position.left,
         top: position.top,
       }}
     >
       {/* Event Image */}
-      <div className="relative w-[637.84px] h-[390px] z-20">
+      <div className="relative w-[510px] h-[312px] z-20">
         <div className="relative w-full h-full rounded-[28.8889px] overflow-hidden bg-black/10">
           <Image
             src={imageSrc}
@@ -111,7 +111,7 @@ export default function TimeLineCard({
           />
           {/* Year Overlay - Bottom Left Corner */}
           {year && (
-            <div className="absolute w-[265px] h-[156px] top-[233.52px] left-[26.48px] font-satoshi font-bold text-white opacity-100 z-30 text-[115.56px] leading-[100%] tracking-[0%]">
+            <div className="absolute w-[212px] h-[125px] top-[187px] left-[21px] font-satoshi font-bold text-white opacity-100 z-30 text-[92px] leading-[100%] tracking-[0%]">
               {year}
             </div>
           )}
@@ -120,7 +120,7 @@ export default function TimeLineCard({
 
       {/* Event Description - At the right end of the image with progressive image reveal */}
       <div 
-        className="absolute right-0 top-1/2 transform -translate-y-1/2 w-[496px] h-[203px] rounded-3xl z-20 overflow-hidden"
+        className="absolute right-0 top-1/2 transform -translate-y-1/2 w-[397px] h-[162px] rounded-3xl z-20 overflow-hidden"
       >
         {/* Solid white background - always visible, never changes */}
         <div className="absolute inset-0 bg-white/86 rounded-3xl" />
@@ -143,12 +143,12 @@ export default function TimeLineCard({
         
         {/* Content overlay - always visible on top of white background */}
         <div 
-          className="relative flex flex-col items-start p-6 gap-4 h-full z-10"
+          className="relative flex flex-col items-start p-5 gap-3 h-full z-10"
         >
-          <h3 className="font-satoshi font-bold text-2xl text-[#1F2024]">
+          <h3 className="font-satoshi font-bold text-xl text-[#1F2024]">
             {title}
           </h3>
-          <p className="font-satoshi font-normal text-base text-[#454654] leading-relaxed">
+          <p className="font-satoshi font-normal text-sm text-[#454654] leading-relaxed">
             {description}
           </p>
         </div>

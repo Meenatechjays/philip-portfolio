@@ -56,7 +56,7 @@ export default function InvestmentCard({
 
   return (
     <motion.div
-      className={`relative w-[400px] h-[500px] md:h-[540px] lg:h-[576px] overflow-hidden rounded-[28px] shadow-[0_20px_50px_rgba(0,0,0,0.18)] ${className}`}
+      className={`relative w-[320px] h-[400px] md:h-[420px] lg:h-[440px] overflow-hidden rounded-[28px] shadow-[0_20px_50px_rgba(0,0,0,0.18)] ${className}`}
       initial="initial"
       whileHover="hover"
     >
@@ -96,48 +96,33 @@ export default function InvestmentCard({
 
       {/* Content Layer - Slides up and fades in on hover */}
       <motion.div
-        className="absolute bottom-0 left-0 right-0 z-10 px-8 pt-12 pb-10"
+        className="absolute bottom-0 left-0 right-0 z-10 px-6 pt-8 pb-6 bg-white"
         variants={contentVariants}
-        style={{
-          background: `linear-gradient(
-            to top,
-            rgba(255, 255, 255, 0.98) 0%,
-            rgba(255, 255, 255, 0.95) 15%,
-            rgba(255, 255, 255, 0.88) 30%,
-            rgba(255, 255, 255, 0.75) 45%,
-            rgba(255, 255, 255, 0.6) 60%,
-            rgba(255, 255, 255, 0.4) 75%,
-            rgba(255, 255, 255, 0.2) 85%,
-            transparent 100%
-          )`,
-          backdropFilter: 'blur(12px) saturate(150%)',
-          WebkitBackdropFilter: 'blur(12px) saturate(150%)',
-        }}
       >
         {/* Star Icon - Rotates smoothly to -180deg on hover */}
         <motion.div
-          className="mb-4 h-10 w-10 relative z-20"
+          className="mb-3 h-8 w-8 relative z-20"
           variants={starVariants}
         >
           <Image
             src="/star.svg"
             alt="Icon"
-            width={40}
-            height={40}
+            width={32}
+            height={32}
             className="h-full w-full object-contain"
           />
         </motion.div>
 
         {/* Title */}
         {title && (
-          <h3 className="mb-3 text-[28px] font-semibold leading-tight text-[#1F2024] relative z-20">
+          <h3 className="mb-2 text-xl md:text-2xl font-semibold leading-tight text-[#1F2024] relative z-20">
             {title}
           </h3>
         )}
 
         {/* Description */}
         {description && (
-          <p className="text-lg sm:text-base md:text-lg lg:text-xl font-satoshi  text-[#454654] relative z-20">
+          <p className="text-sm md:text-base font-satoshi text-[#454654] relative z-20">
             {description}
           </p>
         )}

@@ -12,7 +12,7 @@ export default function SlidingPanels({ stacks, active }) {
   const index = stacks.findIndex(s => s.id === active);
   
   // Calculate left margin based on active stack
-  // Stack width: w-[60px] sm:w-[70px] md:w-[80px] lg:w-[90px]
+  // Stack width: w-[80px] sm:w-[90px] md:w-[100px] lg:w-[110px]
   // When world is active: 1 left stack (world itself)
   // When services is active: 2 left stacks (world + services)
   // When clients is active: 3 left stacks (world + services + clients)
@@ -22,13 +22,13 @@ export default function SlidingPanels({ stacks, active }) {
   const styleId = `sliding-panels-${leftStackCount}`;
   
   // Calculate exact margins for each breakpoint
-  // Stack widths: 60px (base), 70px (sm), 80px (md), 90px (lg)
+  // Stack widths: 80px (base), 90px (sm), 100px (md), 110px (lg)
   const margins = {
-    base: leftStackCount * 60,   // < 640px
-    sm: leftStackCount * 70,     // >= 640px
-    md: leftStackCount * 80,     // >= 768px
-    lg: leftStackCount * 90,     // >= 1024px
-    xl: leftStackCount * 90      // >= 1200px
+    base: leftStackCount * 80,   // < 640px
+    sm: leftStackCount * 90,     // >= 640px
+    md: leftStackCount * 100,     // >= 768px
+    lg: leftStackCount * 110,     // >= 1024px
+    xl: leftStackCount * 110      // >= 1200px
   };
 
   return (
@@ -85,7 +85,11 @@ export default function SlidingPanels({ stacks, active }) {
               className="w-full flex-shrink-0 relative"
               style={{ minWidth: '100%' }}
             >
-              <div className="w-full px-4 sm:px-6 md:px-8 lg:px-10 xl:px-12 2xl:px-16 py-1">
+              <div className={`w-full py-1 ${
+                stack.id === 'world' 
+                  ? 'pl-4 sm:pl-6 md:pl-8 lg:pl-10 xl:pl-12 2xl:pl-16 pr-0' 
+                  : 'px-4 sm:px-6 md:px-8 lg:px-10 xl:px-12 2xl:px-16'
+              }`}>
                 {PANELS[stack.id]}
               </div>
             </div>

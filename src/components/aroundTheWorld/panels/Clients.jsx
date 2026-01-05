@@ -33,7 +33,7 @@ export default function Clients() {
   
       {/* Clients Grid Container */}
       <div className="flex flex-col items-start opacity-100 w-full">
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 w-full max-w-5xl auto-rows-fr gap-0">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 w-full max-w-4xl auto-rows-fr gap-0">
           {clients.map((client, index) => (
             <div
               key={index}

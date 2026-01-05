@@ -13,10 +13,10 @@ export default function ServiceCard({
 }) {
   const content = (
     <div 
-      className={`group flex flex-col opacity-100 w-full min-w-0 rounded-lg p-3 sm:p-4 md:p-5 lg:p-6 bg-[#F3F4F5]  ${className}`}
+      className={`group flex flex-col opacity-100 w-full h-full min-h-[200px] min-w-0 rounded-lg p-3 sm:p-4 md:p-4 lg:p-5 bg-[#F3F4F5] ${className}`}
     >
       {/* Inner Content Container */}
-      <div className="flex flex-col opacity-100 flex-1 min-h-0 gap-2 sm:gap-3 md:gap-4">
+      <div className="flex flex-col opacity-100 flex-1 min-h-0 gap-2 sm:gap-2 md:gap-3 h-full">
         {/* Logo - Default to star icon if no logo provided */}
         {(logo || showStarIcon) && (
           <div className="flex-shrink-0">
@@ -25,9 +25,9 @@ export default function ServiceCard({
                 <Image
                   src={logo}
                   alt={logoAlt}
-                  width={48}
-                  height={48}
-                  className="object-contain w-8 h-8 sm:w-10 sm:h-10 md:w-12 md:h-12"
+                  width={40}
+                  height={40}
+                  className="object-contain w-7 h-7 sm:w-8 sm:h-8 md:w-10 md:h-10"
                 />
               ) : (
                 logo
@@ -36,9 +36,9 @@ export default function ServiceCard({
               <Image
                 src="/star.svg"
                 alt="Service icon"
-                width={48}
-                height={48}
-                className="object-contain w-8 h-8 sm:w-10 sm:h-10 md:w-12 md:h-12 transition-transform duration-300 ease-in-out group-hover:rotate-180"
+                width={40}
+                height={40}
+                className="object-contain w-7 h-7 sm:w-8 sm:h-8 md:w-10 md:h-10 transition-transform duration-300 ease-in-out group-hover:rotate-180"
               />
             )}
           </div>
@@ -46,24 +46,20 @@ export default function ServiceCard({
 
         {/* Title */}
         {title && (
-          <h3 className="text-lg sm:text-xl md:text-2xl lg:text-2xl font-bold text-[#1F2024] font-satoshi leading-tight flex-shrink-0 break-words">
+          <h3 className="text-base sm:text-lg md:text-xl lg:text-xl font-bold text-[#1F2024] font-satoshi leading-tight flex-shrink-0 break-words">
             {title}
           </h3>
         )}
 
         {/* Description */}
         {description && (
-          <p className="text-xs sm:text-sm md:text-base text-[#454654] flex-grow font-satoshi leading-relaxed break-words overflow-hidden line-clamp-2">
+          <p className="text-xs sm:text-sm md:text-sm text-[#454654] flex-grow font-satoshi leading-relaxed break-words overflow-hidden line-clamp-3">
             {description}
           </p>
         )}
 
-        <div className="h-12">
-
-        </div>
-
         {/* Learn More Link */}
-        <div className="flex items-center gap-2 mt-auto flex-shrink-0">
+        <div className="flex items-center gap-2 mt-2 flex-shrink-0">
           <span className="font-satoshi font-bold text-sm sm:text-base text-[#2A2A2A] whitespace-nowrap">
             {linkText}
           </span>
