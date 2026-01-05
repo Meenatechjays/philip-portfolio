@@ -66,25 +66,25 @@ export default function Investors() {
 
   return (
     <section 
-      className="investment-section investment-section-bg relative w-full overflow-hidden lg:pt-12"
+      className="investment-section investment-section-bg relative w-full h-screen overflow-visible pt-4 pb-2"
     >
       {/* Investment Header */}
-      <div className="relative z-10 flex flex-col items-center text-center gap-4 px-6 max-w-3xl mx-auto">
-        <h2 className="section-heading text-center">
+      <div className="relative z-10 w-full max-w-[671px] flex flex-col gap-2 md:gap-4 items-center mb-2 md:mb-4 px-4 md:px-6 mx-auto">
+        <h2 className="w-full max-w-[428px] section-heading text-center">
           Investment portfolio
         </h2>
-        <p className="section-body text-center">
+        <p className="w-full max-w-[671px] section-body text-center">
           Lorem ipsum dolor sit amet consectetur. Aliquam mattis tortor magna nisl. Non risus semper vel est amet leo non
         </p>
       </div>
       
       {/* Investment Cards Container */}
       <div
-         className="overflow-x-auto hide-scrollbar mt-6 investment-section-bg w-full"
+         className="overflow-x-auto hide-scrollbar mt-2 md:mt-4 investment-section-bg w-full"
       >
         <motion.div 
           ref={ref}
-          className="flex gap-6 sm:gap-8 px-6 sm:px-10 py-12 min-w-max"
+          className="flex gap-4 md:gap-6 lg:gap-8 px-4 md:px-6 lg:px-10 py-2 md:py-4 lg:py-6 min-w-max"
           variants={containerVariants}
           initial="hidden"
           animate={isInView ? "visible" : "hidden"}
@@ -94,7 +94,7 @@ export default function Investors() {
               key={`card-${index}`}
               variants={cardVariants}
               style={{
-                minWidth: '500px',
+                minWidth: '400px',
                 flexShrink: 0,
                 willChange: 'transform, opacity',
               }}

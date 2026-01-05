@@ -17,12 +17,12 @@ export default function RightStacks({ stacks, active, onChange }) {
     <>
       {/* Left Side - Stacks from start to active (always shown) */}
       {leftStacks.length > 0 && (
-        <div className="absolute left-0 top-0 bottom-0 flex z-[5] cursor-pointer">
+        <div className="absolute left-0 top-0 h-screen flex z-[5] cursor-pointer overflow-hidden">
           {leftStacks.map((stack, idx) => (
             <button
               key={stack.id}
               onClick={() => onChange(stack.id)}
-              className="w-[60px] sm:w-[70px] md:w-[80px] lg:w-[90px] h-full py-8 px-2 sm:px-3 border-l flex flex-col items-center justify-between animate-slide-in-from-right cursor-pointer"
+              className="w-[60px] sm:w-[70px] md:w-[80px] lg:w-[90px] h-full py-8 px-2 sm:px-3 border-l flex flex-col items-center justify-between animate-slide-in-from-right cursor-pointer overflow-hidden"
                 style={{
                   background: "linear-gradient(180deg, #DBECF6 0%, #93CDEB 100%)",
                 }}
