@@ -78,7 +78,7 @@ export default function Contact() {
       centerX: 260,
       centerY: 260,
       radius: 255,
-      iconSize: 64,
+      iconSize: 80,
       durationMs: 1400,          // animation duration per icon
       staggerMs: 120,            // slight delay between icons
       travelDeg: 30,             // how far each icon travels along the arc
@@ -312,21 +312,9 @@ export default function Contact() {
 
           {/* RIGHT – IMAGE + SVG CURVE */}
           <div className="relative flex justify-end items-center">
-            <div className="relative w-full max-w-[420px]">
+            <div className="relative w-full max-w-[460px]">
 
-              {/* Person Image - using regular img positioning */}
-              <div className="relative w-full">
-                <Image
-                  src="/Phil contact fr.png"
-                  alt="Philip"
-                  width={420}
-                  height={560}
-                  className="w-full h-auto object-contain"
-                  priority
-                />
-              </div>
-
-              {/* SVG CURVED LINE - positioned to create arc on left side */}
+              {/* SVG CURVED LINE - positioned to create arc on left side (behind image) */}
               <div className="absolute top-1/2 -translate-y-1/2 -left-[140px] w-[520px] h-[520px] pointer-events-none z-0">
                 <svg width="520" height="520" viewBox="0 0 520 520" fill="none">
                   <defs>
@@ -360,22 +348,36 @@ export default function Contact() {
                 </svg>
               </div>
 
+              {/* Person Image - using regular img positioning (above SVG line) */}
+              <div className="relative w-full z-10">
+                <Image
+                  src="/Phil contact fr.png"
+                  alt="Philip"
+                  width={460}
+                  height={614}
+                  className="w-full h-auto object-contain relative z-10"
+                  priority
+                />
+              </div>
+
               {/* SOCIAL ICONS - quarter-arc, one-time animation on enter */}
-              <div className="absolute top-1/2 -translate-y-1/2 -left-[140px] w-[520px] h-[520px] z-10">
+              <div className="absolute top-1/2 -translate-y-1/2 -left-[140px] w-[520px] h-[520px] z-20">
                 {iconPositions.map((icon) => (
                   <a
                     key={icon.key}
                     href={icon.href}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="absolute hover:scale-110 transition-transform duration-200"
+                    className="absolute hover:scale-110 transition-transform duration-200 flex items-center justify-center"
                     style={{
                       left: `${icon.x}px`,
                       top: `${icon.y}px`,
+                      width: '80px',
+                      height: '80px',
                       opacity: icon.opacity,
                     }}
                   >
-                    <Image src={icon.src} alt={icon.alt} width={64} height={64} />
+                    <Image src={icon.src} alt={icon.alt} width={80} height={80} className="object-contain" />
                   </a>
                 ))}
               </div>

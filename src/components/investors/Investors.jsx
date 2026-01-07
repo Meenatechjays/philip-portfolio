@@ -84,7 +84,7 @@ export default function Investors() {
       >
         <motion.div 
           ref={ref}
-          className="flex gap-2 md:gap-3 lg:gap-4 px-6 md:px-8 lg:px-12 py-2 md:py-3 lg:py-4 min-w-max bg-none"
+          className="flex gap-6 md:gap-8 lg:gap-10 px-6 md:px-8 lg:px-12 py-2 md:py-3 lg:py-4 min-w-max bg-none"
           variants={containerVariants}
           initial="hidden"
           animate={isInView ? "visible" : "hidden"}

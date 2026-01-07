@@ -386,8 +386,8 @@ export default function Timeline() {
   return (
     <section 
       ref={sectionRef}
-      className="relative min-h-screen w-full overflow-hidden"
-      style={{  position: 'relative' }}
+      className="relative h-screen w-full overflow-hidden snap-section-start"
+      style={{ position: 'relative' }}
     >
       {/* Background SVG */}
       <div className="absolute inset-0 w-full h-full">
@@ -402,16 +402,16 @@ export default function Timeline() {
       </div>
 
       {/* Fixed Header */}
-      <div className="relative z-10 w-full flex items-start justify-center pt-[50px]">
+      <div className="relative z-10 w-full flex items-start justify-center pt-8 md:pt-12 pb-2">
         {/* Timeline Container */}
-        <div className="w-[671px] opacity-100 flex flex-col gap-4 items-center">
+        <div className="w-full max-w-[671px] opacity-100 flex flex-col gap-3 items-center px-4 mb-6">
           {/* Timeline Heading */}
-          <h2 className="w-[428px] h-[65px] opacity-100 section-heading text-center mx-auto">
+          <h2 className="w-full max-w-[428px] opacity-100 section-heading text-center mx-auto">
             Timeline & Journey
           </h2>
 
           {/* Timeline Paragraph Content */}
-          <p className="w-[671px] opacity-100 section-body text-center mx-auto pb-5">
+          <p className="w-full max-w-[671px] opacity-100 section-body text-center mx-auto">
             Lorem ipsum dolor sit amet consectetur. Aliquam mattis tortor magna nisl. Non risus semper vel est amet leo non
           </p>
         </div>
@@ -420,13 +420,13 @@ export default function Timeline() {
       {/* Scrollable Timeline Container */}
       <div
         ref={scrollContainerRef}
-        className="relative z-20 w-full overflow-x-auto overflow-y-visible scroll-smooth overscroll-x-none [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]"
-        style={{ overscrollBehaviorX: 'none', marginTop: '20px' }}
+        className="relative z-20 w-full h-[calc(100vh-200px)] overflow-x-auto overflow-y-hidden scroll-smooth overscroll-x-none [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]"
+        style={{ overscrollBehaviorX: 'none' }}
       >
         <div
           ref={innerContainerRef}
-          className="relative h-screen"
-          style={{ width: `${totalTimelineWidth}px` }}
+          className="relative h-full"
+          style={{ width: `${totalTimelineWidth}px`, minHeight: '100%' }}
         >
           {/* Main Timeline Line - Horizontal line spanning the scrollable width */}
           <motion.div 
