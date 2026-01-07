@@ -42,7 +42,7 @@ export default function HighlightsCard({
         )}
 
         {/* Content Section - Overlapping the image */}
-        <div className="box-border absolute bottom-0 left-0 right-0 flex flex-col items-start p-4 gap-2 w-full h-[220px] bg-[#F4F6FF] border-2 border-white rounded-[24px] z-10 overflow-hidden">
+        <div className="box-border absolute bottom-0 left-0 right-0 flex flex-col items-start p-4 gap-2 w-full h-[220px] bg-[#F4F6FF] border-2 border-white rounded-t-[24px] rounded-b-2xl z-10 overflow-hidden">
           {/* Star Icon */}
           <div 
             className="w-8 h-8 flex-shrink-0 relative cursor-pointer"

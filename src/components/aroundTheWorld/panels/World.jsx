@@ -163,7 +163,7 @@ export default function World() {
       <div 
         className="opacity-100 flex flex-col gap-2 md:gap-4 mt-4 md:mt-8 w-full md:w-[clamp(300px,38.8vw,671px)]"
       >
-        <h2 className="heading-h2">
+        <h2 className="section-heading">
           Around the World with AI
         </h2>
         <p 

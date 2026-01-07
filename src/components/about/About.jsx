@@ -268,7 +268,7 @@ export default function PortfolioHero({ isVisible = true }) {
               isLeftMounted ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'
             }`}
           >
-            <h1 className="font-sans font-semibold text-3xl sm:text-3xl md:text-4xl lg:text-5xl text-[#1F2024] leading-tight">
+            <h1 className="font-satoshi font-semibold text-3xl sm:text-3xl md:text-4xl lg:text-5xl text-[#1F2024] leading-tight">
               Hey Im <br />
               Philip Samuelraj
             </h1>
@@ -325,7 +325,7 @@ export default function PortfolioHero({ isVisible = true }) {
                   exit="exit"
                   className="absolute inset-0 flex flex-col gap-4"
                 >
-                  <h2 className="text-[clamp(1.4rem,2.2vw,1.9rem)] font-bold text-[#1F2024]">
+                  <h2 className="text-[clamp(1.4rem,2.2vw,1.9rem)] font-bold font-satoshi text-[#1F2024]">
                     {rightContentItems[currentIndex].title}
                   </h2>
                   <p className="text-[clamp(0.9rem,1.2vw,1rem)] text-[#454654] leading-relaxed">
