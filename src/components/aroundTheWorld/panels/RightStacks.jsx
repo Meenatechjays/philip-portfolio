@@ -1,75 +1,96 @@
-export default function RightStacks({ stacks, active, onChange }) {
-  const activeIndex = stacks.findIndex(s => s.id === active);
-  
-  // Left side: Show all stacks from start up to and including the active one
-  // When world is active: show world (01) on left
-  // When services is active: show world (01) and services (02) on left
-  // When clients is active: show world (01), services (02), and clients (03) on left
-  const leftStacks = stacks.slice(0, activeIndex + 1); // Always show from start to active (inclusive)
-  
-  // Right side: Show only stacks after the active one
-  // When world is active: show services (02) and clients (03)
-  // When services is active: show only clients (03)
-  // When clients is active: show nothing
-  const rightStacks = stacks.slice(activeIndex + 1);
+export default function RightStacks({ stacks, active, onChange, activeIndex }) {
+  // Calculate stack widths for responsive positioning
+  const getStackWidth = (breakpoint = 'base') => {
+    const widths = {
+      base: 80,
+      sm: 90,
+      md: 100,
+      lg: 110,
+    };
+    return widths[breakpoint] || widths.base;
+  };
 
   return (
     <>
-      {/* Left Side - Stacks from start to active (always shown) */}
-      {leftStacks.length > 0 && (
-        <div className="absolute left-0 top-0 h-screen flex z-[5] cursor-pointer overflow-hidden">
-          {leftStacks.map((stack, idx) => (
+      {/* Consolidated style tag for all stacks - synchronized with content */}
+      <style dangerouslySetInnerHTML={{
+        __html: stacks.map((stack, index) => {
+          const isLeftSide = index <= activeIndex;
+          const rightIndex = isLeftSide ? null : index - (activeIndex + 1);
+          const totalRightStacks = stacks.length - (activeIndex + 1);
+          const positionFromRight = isLeftSide ? 0 : (totalRightStacks - 1 - rightIndex);
+          const styleId = `stack-${stack.id}-${activeIndex}`;
+          
+          const baseWidth = getStackWidth('base');
+          const smWidth = getStackWidth('sm');
+          const mdWidth = getStackWidth('md');
+          const lgWidth = getStackWidth('lg');
+          
+          return `
+            #${styleId} {
+              left: ${isLeftSide ? `${index * baseWidth}px` : `calc(100vw - ${(positionFromRight + 1) * baseWidth}px)`};
+              transition: left 2000ms cubic-bezier(0.4, 0, 0.2, 1);
+            }
+            @media (min-width: 640px) {
+              #${styleId} {
+                left: ${isLeftSide ? `${index * smWidth}px` : `calc(100vw - ${(positionFromRight + 1) * smWidth}px)`};
+              }
+            }
+            @media (min-width: 768px) {
+              #${styleId} {
+                left: ${isLeftSide ? `${index * mdWidth}px` : `calc(100vw - ${(positionFromRight + 1) * mdWidth}px)`};
+              }
+            }
+            @media (min-width: 1024px) {
+              #${styleId} {
+                left: ${isLeftSide ? `${index * lgWidth}px` : `calc(100vw - ${(positionFromRight + 1) * lgWidth}px)`};
+              }
+            }
+          `;
+        }).join('')
+      }} />
+      
+      {/* All stacks in one container - moves as rigid group with content */}
+      <div className="absolute left-0 top-0 w-full h-screen pointer-events-none z-[20]">
+        {stacks.map((stack, index) => {
+          const styleId = `stack-${stack.id}-${activeIndex}`;
+
+          return (
             <button
               key={stack.id}
+              id={styleId}
               onClick={() => onChange(stack.id)}
-              className="w-[80px] sm:w-[90px] md:w-[100px] lg:w-[110px] h-full py-8 px-2 sm:px-3 border-l border-white flex flex-col items-center justify-between animate-slide-in-from-right cursor-pointer overflow-hidden"
-                style={{
-                  background: "linear-gradient(180deg, #DBECF6 0%, #93CDEB 100%)",
-                }}
-              >
-              <div className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold  text-center font-heading tracking-tight leading-none font-satoshi text-[#1F2024]  flex-shrink-0">
+              className="absolute top-0 h-full py-8 px-2 sm:px-3 border-l border-white flex flex-col items-center justify-between cursor-pointer w-[80px] sm:w-[90px] md:w-[100px] lg:w-[110px] pointer-events-auto will-change-[left]"
+              style={{
+                background: "linear-gradient(180deg, #DBECF6 0%, #93CDEB 100%)",
+                backfaceVisibility: 'hidden',
+                WebkitBackfaceVisibility: 'hidden',
+              }}
+            >
+              <div className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold text-center font-heading tracking-tight leading-none font-satoshi text-[#1F2024] flex-shrink-0">
                 {stack.number}
               </div>
 
-              {/* Vertical title from bottom to top */}
               <div 
                 className="flex-1 flex items-center justify-center"
                 style={{ writingMode: 'vertical-rl', textOrientation: 'mixed' }}
               >
-                <h4 className=" sm:text-lg md:text-xl lg:text-2xl font-bold text-[#1F2024] font-heading tracking-tight leading-none font-satoshi  whitespace-nowrap transform rotate-180 cursor-pointer">
+                <h4 className="sm:text-lg md:text-xl lg:text-2xl font-bold text-[#1F2024] font-heading tracking-tight leading-none font-satoshi whitespace-nowrap transform rotate-180 cursor-pointer">
                   {stack.title}
                 </h4>
               </div>
             </button>
-          ))}
-        </div>
-      )}
-
-      {/* Right Side - Remaining Stacks */}
-      <div className="flex self-stretch cursor-pointer">
-        {rightStacks.map((stack) => (
-          <button
-            key={stack.id}
-            onClick={() => onChange(stack.id)}
-            className="w-[80px] sm:w-[90px] md:w-[100px] lg:w-[110px] h-full py-8 px-2 sm:px-3 border-l border-white transition-all duration-300 flex flex-col items-center justify-between cursor-pointer"
-            style={{
-              background: "linear-gradient(180deg, #DBECF6 0%, #93CDEB 100%)",
-            }}
-          >
-            <div className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold text-[#1F2024] text-center font-heading tracking-tight leading-none font-satoshi text-[#1F2024]  flex-shrink-0">
-              {stack.number}
-            </div>
-
-            {/* Vertical title from bottom to top */}
-            <div 
-              className="flex-1 flex items-center justify-center"
-              style={{ writingMode: 'vertical-rl', textOrientation: 'mixed' }}
-            > 
-                 <h4 className=" sm:text-lg md:text-xl lg:text-2xl font-bold text-[#1F2024] font-heading tracking-tight leading-none font-satoshi  whitespace-nowrap transform rotate-180 cursor-pointer">
-                  {stack.title}
-                </h4>
-            </div>
-          </button>
+          );
+        })}
+      </div>
+      
+      {/* Spacer to maintain layout - same width as right-side stacks */}
+      <div className="flex self-stretch h-screen pointer-events-none">
+        {stacks.slice(activeIndex + 1).map((_, idx) => (
+          <div
+            key={`spacer-${idx}`}
+            className="w-[80px] sm:w-[90px] md:w-[100px] lg:w-[110px] h-full"
+          />
         ))}
       </div>
     </>

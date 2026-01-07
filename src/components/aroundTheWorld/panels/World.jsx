@@ -186,7 +186,7 @@ export default function World() {
             animate={hasAnimated ? mapScrollControls : {}}
             initial={{ x: '0%', opacity: 1 }}
             className="relative w-full"
-            style={{ willChange: 'transform, opacity', maxWidth: '85%' }}
+            style={{ willChange: 'transform, opacity', maxWidth: '55%' }}
           >
             <DotLottieReact
               src="/World_map.lottie"
@@ -236,12 +236,12 @@ export default function World() {
             </motion.div>
           )}
            {showFinalLogo && (
-              <div className="absolute top-40 right-40 animate-logo-fade-in">
+              <div className="absolute top-40 left-[calc(50%+100px)] animate-logo-fade-in">
                 <Image
                   src="/techjays-logo.svg"
                   alt="Techjays Logo"
-                  width={130}
-                  height={130}
+                  width={100}
+                  height={100}
                   className="object-contain"
                 />
               </div>

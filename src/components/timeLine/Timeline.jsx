@@ -114,13 +114,16 @@ export default function Timeline() {
   // Timeline line SVG width: since line starts at TIMELINE_LINE_START (600px), width should match container
   const timelineLineWidth = totalTimelineWidth;
 
-  // Intersection Observer to detect when Timeline component enters viewport
+  // Intersection Observer to detect when Timeline component enters/leaves viewport
   useEffect(() => {
     const observer = new IntersectionObserver(
       (entries) => {
         entries.forEach((entry) => {
           if (entry.isIntersecting && !hasStartedAnimationRef.current) {
             setIsInView(true);
+          } else if (!entry.isIntersecting) {
+            // Unlock scroll when section leaves viewport
+            setIsInView(false);
           }
         });
       },
@@ -192,9 +195,9 @@ export default function Timeline() {
     runIntro();
   }, [isInView, timelineControls, cardPositions, cardWidth]);
 
-  // Lock body scroll only when scroll hijacking is active (after intro animation)
+  // Lock body scroll only when scroll hijacking is active (after intro animation) AND section is in view
   useEffect(() => {
-    if (scrollHijackActive && !timelineComplete) {
+    if (scrollHijackActive && !timelineComplete && isInView) {
       document.body.style.overflow = 'hidden';
       document.body.style.height = '100vh';
     } else {
@@ -206,7 +209,7 @@ export default function Timeline() {
       document.body.style.overflow = '';
       document.body.style.height = '';
     };
-  }, [scrollHijackActive, timelineComplete]);
+  }, [scrollHijackActive, timelineComplete, isInView]);
 
   // Scroll hijacking with snap-to-card behavior
   useEffect(() => {
@@ -267,6 +270,12 @@ export default function Timeline() {
 
       // Handle vertical scroll (down = next card, up = previous card)
       if (Math.abs(e.deltaY) > Math.abs(e.deltaX)) {
+        // Prevent scrolling forward if already on last card
+        if (currentCardIndex >= lastCardIndex && e.deltaY > 0) {
+          scrollAccumulator.current = 0;
+          return;
+        }
+
         scrollAccumulator.current += e.deltaY;
 
         // Snap to next card when scrolling down
@@ -290,6 +299,12 @@ export default function Timeline() {
       }
       // Handle horizontal scroll (right = next card, left = previous card)
       else if (Math.abs(e.deltaX) > 0) {
+        // Prevent scrolling right if already on last card
+        if (currentCardIndex >= lastCardIndex && e.deltaX > 0) {
+          scrollAccumulator.current = 0;
+          return;
+        }
+
         scrollAccumulator.current += e.deltaX;
 
         // Scrolling right (positive deltaX) = next card
@@ -322,12 +337,49 @@ export default function Timeline() {
       e.preventDefault();
     };
 
+    // Prevent manual scrolling past the last card
+    const handleScroll = () => {
+      if (isSnapping.current || timelineComplete || !scrollHijackActive) return;
+      
+      const scrollContainer = scrollContainerRef.current;
+      if (!scrollContainer) return;
+
+      // If on last card, prevent scrolling past it
+      if (currentCardIndex >= lastCardIndex) {
+        const containerWidth = scrollContainer.clientWidth;
+        const lastCardLeft = cardPositions[lastCardIndex];
+        const lastCardCenteredPosition = lastCardLeft - (containerWidth / 2) + (cardWidth / 2);
+        const currentScroll = scrollContainer.scrollLeft;
+        
+        // If scrolled past the last card's centered position, snap it back
+        if (currentScroll > lastCardCenteredPosition) {
+          isSnapping.current = true;
+          scrollContainer.scrollTo({
+            left: lastCardCenteredPosition,
+            behavior: 'smooth'
+          });
+          setTimeout(() => {
+            isSnapping.current = false;
+          }, 500);
+        }
+      }
+    };
+
     window.addEventListener('wheel', handleWheel, { passive: false });
     window.addEventListener('touchmove', handleTouchMove, { passive: false });
+    
+    const scrollContainer = scrollContainerRef.current;
+    if (scrollContainer) {
+      scrollContainer.addEventListener('scroll', handleScroll, { passive: true });
+    }
     
     return () => {
       window.removeEventListener('wheel', handleWheel);
       window.removeEventListener('touchmove', handleTouchMove);
+      const container = scrollContainerRef.current;
+      if (container) {
+        container.removeEventListener('scroll', handleScroll);
+      }
     };
   }, [isInView, scrollHijackActive, timelineComplete, currentCardIndex, cardPositions, cardWidth, lastCardIndex]);
 
@@ -381,7 +433,7 @@ export default function Timeline() {
             className="absolute left-[1600px] top-[195px] z-[10]"
             style={{ width: `${timelineLineWidth}px` }}
             animate={timelineControls}
-            initial={{ x: 1920 }}
+            initial={{ x: 1800 }}
           >
             <svg width={timelineLineWidth} height="1" viewBox={`0 0 ${timelineLineWidth} 1`} fill="none" xmlns="http://www.w3.org/2000/svg" className="w-full h-[1px]">
               <line x1="0" y1="0.5" x2={timelineLineWidth} y2="0.5" stroke="#112643" strokeWidth="1" />

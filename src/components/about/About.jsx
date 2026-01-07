@@ -1,13 +1,19 @@
 'use client';
 
 import Image from 'next/image';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 
 export default function PortfolioHero({ isVisible = true }) {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isLeftMounted, setIsLeftMounted] = useState(false);
   const [isRightMounted, setIsRightMounted] = useState(false);
+  const [isInView, setIsInView] = useState(false);
+  const [scrollHijackActive, setScrollHijackActive] = useState(false);
+  const [aboutComplete, setAboutComplete] = useState(false);
+  const sectionRef = useRef(null);
+  const isScrolling = useRef(false);
+  const scrollAccumulator = useRef(0);
 
   const rightContentItems = [
     {
@@ -27,9 +33,41 @@ export default function PortfolioHero({ isVisible = true }) {
     }
   ];
 
-  const handleContentClick = () => {
-    setCurrentIndex((prev) => (prev + 1) % rightContentItems.length);
-  };
+  const lastItemIndex = rightContentItems.length - 1;
+
+  // Intersection Observer to detect when About section enters/leaves viewport
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            setIsInView(true);
+            // Activate scroll hijacking after right content is mounted
+            if (isRightMounted) {
+              setScrollHijackActive(true);
+            }
+          } else {
+            setIsInView(false);
+            setScrollHijackActive(false);
+          }
+        });
+      },
+      {
+        threshold: 0.5, // Trigger when 50% of the component is visible
+        rootMargin: '0px',
+      }
+    );
+
+    if (sectionRef.current) {
+      observer.observe(sectionRef.current);
+    }
+
+    return () => {
+      if (sectionRef.current) {
+        observer.unobserve(sectionRef.current);
+      }
+    };
+  }, [isRightMounted]);
 
   // Mount animation effects - triggered only when component becomes visible (after splash)
   useEffect(() => {
@@ -43,13 +81,113 @@ export default function PortfolioHero({ isVisible = true }) {
     // Show right content after 2000ms
     const rightMountTimer = setTimeout(() => {
       setIsRightMounted(true);
+      // Activate scroll hijacking after right content is mounted and section is in view
+      if (isInView) {
+        setScrollHijackActive(true);
+      }
     }, 2000);
 
     return () => {
       clearTimeout(leftMountTimer);
       clearTimeout(rightMountTimer);
     };
-  }, [isVisible]);
+  }, [isVisible, isInView]);
+
+  // Lock body scroll when scroll hijacking is active
+  useEffect(() => {
+    if (scrollHijackActive && !aboutComplete && isInView) {
+      document.body.style.overflow = 'hidden';
+      document.body.style.height = '100vh';
+    } else {
+      document.body.style.overflow = '';
+      document.body.style.height = '';
+    }
+
+    return () => {
+      document.body.style.overflow = '';
+      document.body.style.height = '';
+    };
+  }, [scrollHijackActive, aboutComplete, isInView]);
+
+  // Scroll hijacking - scroll up to show next content item
+  useEffect(() => {
+    if (!isInView || !scrollHijackActive || aboutComplete) return;
+
+    const SCROLL_THRESHOLD = 50;
+
+    const moveToNextItem = (nextIndex) => {
+      if (isScrolling.current) return;
+      
+      isScrolling.current = true;
+      setCurrentIndex(nextIndex);
+      scrollAccumulator.current = 0;
+
+      // If we reached the last item (Investor), allow normal scrolling
+      if (nextIndex >= lastItemIndex) {
+        setTimeout(() => {
+          setAboutComplete(true);
+          setScrollHijackActive(false);
+          isScrolling.current = false;
+          // Restore body scroll
+          document.body.style.overflow = '';
+          document.body.style.height = '';
+        }, 500);
+      } else {
+        setTimeout(() => {
+          isScrolling.current = false;
+        }, 500);
+      }
+    };
+
+    const handleWheel = (e) => {
+      // Allow normal scrolling if about section is complete
+      if (aboutComplete) {
+        return;
+      }
+
+      if (isScrolling.current) {
+        e.preventDefault();
+        e.stopPropagation();
+        return;
+      }
+
+      // Prevent default to lock scroll
+      e.preventDefault();
+      e.stopPropagation();
+
+      // Handle vertical scroll - both up and down move to next item
+      if (Math.abs(e.deltaY) > Math.abs(e.deltaX)) {
+        // Accumulate scroll in any direction
+        scrollAccumulator.current += Math.abs(e.deltaY);
+        
+        // Move to next item when threshold is reached (regardless of scroll direction)
+        if (scrollAccumulator.current > SCROLL_THRESHOLD) {
+          const nextIndex = Math.min(currentIndex + 1, lastItemIndex);
+          if (nextIndex !== currentIndex) {
+            moveToNextItem(nextIndex);
+          } else {
+            scrollAccumulator.current = 0;
+          }
+        }
+      }
+    };
+
+    // Prevent touch scroll on mobile
+    const handleTouchMove = (e) => {
+      if (aboutComplete) {
+        return;
+      }
+      e.preventDefault();
+    };
+
+    window.addEventListener('wheel', handleWheel, { passive: false });
+    window.addEventListener('touchmove', handleTouchMove, { passive: false });
+
+    return () => {
+      window.removeEventListener('wheel', handleWheel);
+      window.removeEventListener('touchmove', handleTouchMove);
+    };
+  }, [isInView, scrollHijackActive, aboutComplete, currentIndex, lastItemIndex]);
 
   /* ❗ Animation UNCHANGED */
   const contentVariants = {
@@ -67,7 +205,7 @@ export default function PortfolioHero({ isVisible = true }) {
   };
 
   return (
-    <div className="min-h-screen relative overflow-hidden">
+    <div ref={sectionRef} className="h-screen relative overflow-hidden">
       {/* ================= BACKGROUND ================= */}
       <div className="absolute inset-0">
         <Image
@@ -90,7 +228,7 @@ export default function PortfolioHero({ isVisible = true }) {
         </div>
 
         {/* Font SVG Overlay */}
-        <div className="absolute pointer-events-none z-[5] top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2">
+        <div className="absolute pointer-events-none z-[5] top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/5">
           <div className="relative w-[90vw] max-w-[1350px] h-auto aspect-[1350/640]">
             <Image
               src="/font.svg"
@@ -105,7 +243,7 @@ export default function PortfolioHero({ isVisible = true }) {
       </div>
 
       {/* ================= MAIN CONTENT ================= */}
-      <div className="relative z-10 min-h-screen flex flex-col">
+      <div className="relative z-10 h-screen flex flex-col">
         {/* Logo - Header Section */}
         <div className="pt-8 md:pt-12 lg:pt-16 px-4 sm:px-6 md:px-8 lg:px-[76px]">
           <div 
@@ -117,16 +255,16 @@ export default function PortfolioHero({ isVisible = true }) {
               href="/"
               className="inline-block text-xl md:text-2xl font-bold text-[#1F2024] hover:opacity-80 transition-opacity"
             >
-              phil.in
+              Phil.in
             </a>
           </div>
         </div>
 
         {/* 3-Column Grid Layout */}
-        <div className="flex-1 grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-6 lg:gap-8 px-4 sm:px-6 md:px-8 lg:px-[76px] pb-8 md:pb-12 relative items-center">
+        <div className="flex-1 grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-6 lg:gap-6 px-4 sm:px-6 md:px-8 lg:px-[76px] pb-8 md:pb-12 relative overflow-hidden">
           {/* Left Content Column */}
           <div 
-            className={`flex flex-col gap-4 md:order-1 relative z-20 transition-all duration-700 ease-out delay-100 ${
+            className={`flex flex-col gap-4 md:order-1 relative translate-y-1/5 z-20 transition-all duration-700 ease-out delay-100 ${
               isLeftMounted ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'
             }`}
           >
@@ -136,32 +274,35 @@ export default function PortfolioHero({ isVisible = true }) {
             </h1>
 
             <p className="text-sm sm:text-base md:text-lg text-[#454654] leading-relaxed">
-              At the crossroads of technology, AI, and human behavior, I focus on building products and systems that deliver concrete value, scale predictably, and move markets toward their next evolution.
+              At the crossroads of technology, AI, and human behavior, I focus on building 
             </p>
           </div>
 
-          {/* Center Image Column */}
-          <div className="flex items-end justify-end relative z-10 md:order-2 md:-mx-4 lg:-mx-8">
+          {/* Center Image Column - Placeholder for grid */}
+          <div className="md:order-2 relative z-0"></div>
+
+          {/* Center Image - Absolutely positioned to not affect layout */}
+          <div className="absolute left-1/2 -translate-x-1/2 bottom-0 z-10 w-full max-w-[1000px] pointer-events-none">
             <div 
-              className={`w-full max-w-[815px] transition-all duration-700 ease-out delay-200 ${
-                isLeftMounted ? 'opacity-100 scale-100' : 'opacity-0 scale-95'
-              }`}
+              className={`transition-all duration-700 ease-out delay-200
+                // isLeftMounted ? 'opacity-100 scale-100' : 'opacity-0 scale-95'
+              `}
             >
               <div
-                className="relative w-full h-auto"
-                style={{
-                  WebkitMaskImage:
-                    'linear-gradient(to bottom, black 75%, transparent 100%)',
-                  maskImage:
-                    'linear-gradient(to bottom, black 75%, transparent 100%)'
-                }}
+                className="relative w-full h-[400px] md:h-[500px] lg:h-[600px]"
+                // style={{
+                //   WebkitMaskImage:
+                //     'linear-gradient(to bottom, black 75%, transparent 100%)',
+                //   maskImage:
+                //     'linear-gradient(to bottom, black 75%, transparent 100%)'
+                // }}
               >
                 <Image
                   src="/header-img.svg"
                   alt="Philip Samuelraj"
                   width={815}
-                  height={831}
-                  className="object-contain w-full h-auto"
+                  height={1500}
+                  className="object-contain w-full h-full"
                   priority
                 />
               </div>
@@ -170,10 +311,9 @@ export default function PortfolioHero({ isVisible = true }) {
 
           {/* Right Content Column */}
           <div 
-            className={`flex flex-col gap-4 cursor-pointer md:order-3 relative z-20 transition-all duration-1000 ease-out ${
+            className={`flex flex-col gap-4 md:order-3 relative translate-y-1/5 z-20 transition-all duration-1000 ease-out ${
               isRightMounted ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-16'
             }`}
-            onClick={handleContentClick}
           >
             <div className="relative min-h-[120px]">
               <AnimatePresence mode="wait">

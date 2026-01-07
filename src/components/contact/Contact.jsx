@@ -17,6 +17,8 @@ export default function Contact() {
   const [submitMessage, setSubmitMessage] = useState('');
   const [iconPositions, setIconPositions] = useState([]);
   const animationFrameRef = useRef(null);
+  const sectionRef = useRef(null);
+  const isAnimatingRef = useRef(false);
 
   const buttonStyle = isSubmitting
     ? {
@@ -61,124 +63,113 @@ export default function Contact() {
     }
   };
 
-  // Smooth continuous loop animation for icons
+  // One-time, on-enter quarter-arc animation for social icons
   useEffect(() => {
-    const icons = [
-      {
-        href: 'https://twitter.com',
-        src: '/twitter.svg',
-        alt: 'X',
-      },
-      {
-        href: 'https://linkedin.com',
-        src: '/linkedin.svg',
-        alt: 'LinkedIn',
-      },
-      {
-        href: 'https://instagram.com',
-        src: '/instagram.svg',
-        alt: 'Instagram',
-      },
+    const ICONS = [
+      { href: 'https://twitter.com', src: '/twitter.svg', alt: 'X' },
+      { href: 'https://linkedin.com', src: '/linkedin.svg', alt: 'LinkedIn' },
+      { href: 'https://instagram.com', src: '/instagram.svg', alt: 'Instagram' },
     ];
+    const ORBIT_CONFIG = {
+      startAngleDeg: 222,        // starting angle on left side
+      arcSpanDeg: 90,            // quarter circle
+      spreadDeg: 60,             // how much of the arc the icons occupy (smaller = closer)
+      stopAngleOffsetDeg: -15,   // move final resting position down the arc (negative = down)
+      centerX: 260,
+      centerY: 260,
+      radius: 255,
+      iconSize: 64,
+      durationMs: 1400,          // animation duration per icon
+      staggerMs: 120,            // slight delay between icons
+      travelDeg: 30,             // how far each icon travels along the arc
+    };
+    const spacingDeg =
+      ICONS.length > 1 ? ORBIT_CONFIG.spreadDeg / (ICONS.length - 1) : 0;
 
-    // Arc configuration
-    const startAngle = 222; // Top-right (in degrees)
-    const endAngle = 143;   // Bottom-left
-    const totalArcDegrees = startAngle - endAngle; // 79 degrees visible arc
-    
-    // Spacing between icons along the arc (based on original spacing)
-    // Original icons were at 222°, 185°, 143° = 37° and 42° spacing
-    // Average spacing ~39.5°, using 40° for consistent spacing
-    const iconSpacing = 40; // degrees between icons
-    
-    // Animation settings
-    // Calculate speed for 5 second duration: 79 degrees arc in 5000ms
-    // At 60fps: speed = (arcDegrees * 16.67) / duration = (79 * 16.67) / 5000 ≈ 0.263
-    const speed = 0.263; // degrees per frame for 5 second completion
-    const startTime = Date.now();
-    
-    // Calculate constants for position calculation
-    const centerX = 260;
-    const centerY = 260;
-    const radius = 255;
-    const size = 64;
-    
-    const animate = () => {
-      const elapsed = Date.now() - startTime;
-      // Continuous offset - never resets, just keeps increasing
-      // Normalize to ~60fps for consistent speed
-      const offset = (elapsed * speed) / 16.67;
-      
-      // Create continuous stream of icons
-      const visibleIcons = [];
-      
-      // Calculate how many full cycles of icons we need to show
-      // to ensure continuous coverage of the visible arc plus buffer
-      const cycleLength = icons.length * iconSpacing; // One complete cycle = 3 icons * 40° = 120°
-      const cyclesNeeded = Math.ceil((totalArcDegrees + iconSpacing * 3) / cycleLength) + 1;
-      
-      // Calculate the current cycle offset within the cycle length
-      const currentCycleOffset = offset % cycleLength;
-      
-      // Generate multiple cycles of icons
-      for (let cycle = -1; cycle <= cyclesNeeded; cycle++) {
-        icons.forEach((icon, idx) => {
-          // Calculate angle for this icon in this cycle
-          const iconOffset = (cycle * cycleLength) + (idx * iconSpacing);
-          const angle = startAngle - currentCycleOffset - iconOffset;
-          
-          // Only render icons within the visible arc range (plus extra 40° buffer for full arc completion)
-          const extraBuffer = 40; // Extra 40 degrees before hiding and after appearing
-          const buffer = iconSpacing * 1.5 + extraBuffer; // Combined buffer for fade in/out
-          if (angle >= endAngle - buffer && angle <= startAngle + buffer) {
-            // Convert angle to radians for position calculation
-            const rad = (angle * Math.PI) / 180;
-            const x = centerX + radius * Math.cos(rad) - size / 2;
-            const y = centerY + radius * Math.sin(rad) - size / 2;
-            
-            // Calculate opacity based on position (fade at edges for smoothness)
-            // Icons stay fully visible through the entire arc, then fade after extra 40°
-            let opacity = 1;
-            const fadeRange = 15; // degrees for fade effect
-            // Icons appear 40° before startAngle (at 222° + 40 = 262°)
-            const fadeStartTop = startAngle + extraBuffer - fadeRange;
-            // Icons disappear 40° after endAngle (at 143° - 40 = 103°)
-            const fadeStartBottom = endAngle - extraBuffer + fadeRange;
-            
-            if (angle > fadeStartTop) {
-              // Fade in from top (icons appearing)
-              opacity = Math.max(0, (startAngle + extraBuffer - angle) / fadeRange);
-            } else if (angle < fadeStartBottom) {
-              // Fade out at bottom (icons disappearing after completing full arc)
-              opacity = Math.max(0, (angle - (endAngle - extraBuffer)) / fadeRange);
-            } else {
-              // Fully visible through the entire arc
-              opacity = 1;
-            }
-            
-            visibleIcons.push({
-              ...icon,
-              x,
-              y,
-              opacity: Math.max(0, Math.min(1, opacity)),
-              key: `${icon.alt}-${cycle}-${idx}`,
-            });
-          }
+    const toRadians = (deg) => (deg * Math.PI) / 180;
+
+    const startAnimation = () => {
+      if (isAnimatingRef.current) return;
+      isAnimatingRef.current = true;
+
+      const startTime = performance.now();
+      const step = (now) => {
+        const elapsed = now - startTime;
+        let allDone = true;
+
+        const positions = ICONS.map((icon, idx) => {
+          // progress 0->1 for each icon with stagger
+          const localElapsed = Math.max(0, elapsed - idx * ORBIT_CONFIG.staggerMs);
+          const t = Math.min(1, localElapsed / ORBIT_CONFIG.durationMs);
+          if (t < 1) allDone = false;
+
+          // Each icon moves from an initial offset to its final spaced position
+          const baseEndDeg =
+            ORBIT_CONFIG.startAngleDeg + ORBIT_CONFIG.stopAngleOffsetDeg;
+          const startDeg = baseEndDeg + ORBIT_CONFIG.travelDeg;
+          const endDeg = baseEndDeg - idx * spacingDeg;
+          const currentAngleDeg = startDeg + (endDeg - startDeg) * t;
+          const rad = toRadians(currentAngleDeg);
+
+          const x =
+            ORBIT_CONFIG.centerX +
+            ORBIT_CONFIG.radius * Math.cos(rad) -
+            ORBIT_CONFIG.iconSize / 2;
+          const y =
+            ORBIT_CONFIG.centerY +
+            ORBIT_CONFIG.radius * Math.sin(rad) -
+            ORBIT_CONFIG.iconSize / 2;
+
+          return {
+            ...icon,
+            x,
+            y,
+            opacity: 1,
+            key: icon.alt,
+          };
         });
-      }
-      
-      setIconPositions(visibleIcons);
-      animationFrameRef.current = requestAnimationFrame(animate);
+
+        setIconPositions(positions);
+        if (!allDone) {
+          animationFrameRef.current = requestAnimationFrame(step);
+        } else {
+          isAnimatingRef.current = false;
+          if (animationFrameRef.current) {
+            cancelAnimationFrame(animationFrameRef.current);
+          }
+        }
+      };
+
+      animationFrameRef.current = requestAnimationFrame(step);
     };
 
-    animationFrameRef.current = requestAnimationFrame(animate);
+    // Observe visibility of the section to trigger once when it enters view
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            startAnimation();
+          } else {
+            // When out of view, allow re-trigger next time and stop any running frame
+            isAnimatingRef.current = false;
+            if (animationFrameRef.current) {
+              cancelAnimationFrame(animationFrameRef.current);
+            }
+          }
+        });
+      },
+      { threshold: 0.35, rootMargin: '0px 0px -10% 0px' }
+    );
+
+    if (sectionRef.current) observer.observe(sectionRef.current);
 
     return () => {
+      observer.disconnect();
       if (animationFrameRef.current) {
         cancelAnimationFrame(animationFrameRef.current);
       }
     };
-  }, []); // Empty dependency array - only run once on mount
+  }, []);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -234,6 +225,7 @@ export default function Contact() {
 
   return (
     <section
+      ref={sectionRef}
       className="relative w-full flex items-center overflow-hidden"
       style={{
         background: 'linear-gradient(180deg, #89BBDD 0%, #FFFFFF 100%)',
@@ -368,7 +360,7 @@ export default function Contact() {
                 </svg>
               </div>
 
-              {/* SOCIAL ICONS - Continuous loop animation */}
+              {/* SOCIAL ICONS - quarter-arc, one-time animation on enter */}
               <div className="absolute top-1/2 -translate-y-1/2 -left-[140px] w-[520px] h-[520px] z-10">
                 {iconPositions.map((icon) => (
                   <a
