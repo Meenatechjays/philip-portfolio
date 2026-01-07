@@ -253,7 +253,7 @@ export default function PortfolioHero({ isVisible = true }) {
           >
             <a
               href="/"
-              className="inline-block text-xl md:text-2xl font-bold text-[#1F2024] hover:opacity-80 transition-opacity"
+              className="inline-block text-2xl md:text-2xl font-bold text-[#1F2024] hover:opacity-80 transition-opacity"
             >
               Phil.in
             </a>

@@ -72,7 +72,7 @@ export default function Highlights() {
         </div>
 
         {/* Content Area - Highlights Cards */}
-        <div ref={cardsRef} className="relative w-full mt-2 md:mt-4 flex flex-row items-start justify-center gap-2 md:gap-3 lg:gap-4 flex-nowrap px-2 md:px-4 overflow-visible">
+        <div ref={cardsRef} className="relative w-full mt-2 md:mt-4 flex flex-row items-start justify-center gap-6 md:gap-8 lg:gap-10 flex-nowrap px-2 md:px-4 overflow-visible">
           {/* Card 1 - Press One Image - Highest */}
           <motion.div
             className="w-full max-w-[280px] flex-shrink-0"

@@ -1,5 +1,6 @@
 'use client';
 
+import { useState } from 'react';
 import Image from 'next/image';
 import { motion } from 'framer-motion';
 
@@ -10,6 +11,7 @@ export default function InvestmentCard({
   description,
   className = '',
 }) {
+  const [isHovered, setIsHovered] = useState(false);
   // Animation variants
   const imageVariants = {
     initial: {
@@ -28,8 +30,8 @@ export default function InvestmentCard({
 
   const contentVariants = {
     initial: {
-      y: 60,
-      opacity: 0.6,
+      y: 0,
+      opacity: 1,
     },
     hover: {
       y: 0,
@@ -59,6 +61,8 @@ export default function InvestmentCard({
       className={`relative w-[320px] h-[400px] md:h-[420px] lg:h-[440px] overflow-hidden rounded-[28px] ${className}`}
       initial="initial"
       whileHover="hover"
+      onMouseEnter={() => setIsHovered(true)}
+      onMouseLeave={() => setIsHovered(false)}
     >
       {/* Image Layer - Always visible, scales and fades on hover */}
       <div className="absolute inset-0 w-full h-full">
@@ -122,7 +126,9 @@ export default function InvestmentCard({
 
         {/* Description */}
         {description && (
-          <p className="text-sm md:text-base font-satoshi text-[#454654] relative z-20">
+          <p className={`text-xs md:text-sm font-satoshi text-[#454654] relative z-20 transition-all duration-300 leading-relaxed ${
+            !isHovered ? 'line-clamp-2' : ''
+          }`}>
             {description}
           </p>
         )}
