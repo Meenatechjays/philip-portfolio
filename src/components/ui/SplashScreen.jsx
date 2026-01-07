@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import Image from 'next/image';
 
 /**
@@ -17,6 +17,8 @@ export default function SplashScreen({ onComplete }) {
   const [currentGreeting, setCurrentGreeting] = useState(0);
   const [showSkyPhase, setShowSkyPhase] = useState(false);
   const [isGreetingComplete, setIsGreetingComplete] = useState(false);
+  const intervalRef = useRef(null);
+  const hasStartedRef = useRef(false);
 
   // Multi-language greetings configuration
   const greetings = [
@@ -29,38 +31,49 @@ export default function SplashScreen({ onComplete }) {
   ];
 
   useEffect(() => {
-    // Cycle through greetings every 300ms (1.5s total for 5 greetings)
-    const greetingInterval = setInterval(() => {
+    // Prevent duplicate execution in React Strict Mode
+    if (hasStartedRef.current) return;
+    hasStartedRef.current = true;
+
+    // Cycle through greetings every 600ms (3.6s total for 6 greetings)
+    intervalRef.current = setInterval(() => {
       setCurrentGreeting((prev) => {
         const nextIndex = prev + 1;
         if (nextIndex >= greetings.length) {
-          clearInterval(greetingInterval);
+          if (intervalRef.current) {
+            clearInterval(intervalRef.current);
+            intervalRef.current = null;
+          }
           setIsGreetingComplete(true);
           return prev;
         }
         return nextIndex;
       });
-    }, 300);
+    }, 600);
 
-    // After greetings complete (1.5s), wait 500ms, then show sky phase
+    // After greetings complete (3.6s for 6 greetings), wait 500ms, then show sky phase
     const skyPhaseTimeout = setTimeout(() => {
       setShowSkyPhase(true);
-    }, 2000); // 1.5s greetings + 0.5s pause
+    }, 4100); // 3.6s greetings + 0.5s pause
 
     // Hide splash screen after sky phase displays (3s for sky phase to be visible)
     const loaderTimeout = setTimeout(() => {
       if (onComplete) {
         onComplete();
       }
-    }, 5000); // 1.5s greetings + 0.5s pause + 3s sky phase
+    }, 7100); // 3.6s greetings + 0.5s pause + 3s sky phase
 
     // Cleanup intervals and timeouts
     return () => {
-      clearInterval(greetingInterval);
+      if (intervalRef.current) {
+        clearInterval(intervalRef.current);
+        intervalRef.current = null;
+      }
       clearTimeout(skyPhaseTimeout);
       clearTimeout(loaderTimeout);
+      hasStartedRef.current = false;
     };
-  }, [onComplete]);
+  }, [onComplete, greetings.length]);
 
   return (
     <div 
