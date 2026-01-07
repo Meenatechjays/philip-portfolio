@@ -327,7 +327,7 @@ export default function Contact() {
                       gradientUnits="userSpaceOnUse"
                     >
                       <stop offset="0%" stopColor="#FFFFFF" stopOpacity="0.95" />
-                      <stop offset="100%" stopColor="#999999" stopOpacity="0.95" />
+                      <stop offset="100%" stopColor="#FFFFFF" stopOpacity="0.95" />
                       <animateTransform
                         attributeName="gradientTransform"
                         attributeType="XML"

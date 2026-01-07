@@ -58,7 +58,7 @@ export default function InvestmentCard({
 
   return (
     <motion.div
-      className={`relative w-[320px] h-[400px] md:h-[420px] lg:h-[440px] overflow-hidden rounded-[28px] ${className}`}
+      className={`relative w-[360px] h-[400px] md:h-[420px] lg:h-[440px] overflow-hidden rounded-[28px] ${className}`}
       initial="initial"
       whileHover="hover"
       onMouseEnter={() => setIsHovered(true)}

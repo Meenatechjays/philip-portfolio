@@ -71,7 +71,7 @@ export default function Investors() {
       {/* Investment Header */}
       <div className="relative z-10 w-full max-w-[671px] flex flex-col gap-2 md:gap-4 items-center mb-2 md:mb-4 px-4 md:px-6 mx-auto pt-8 md:pt-12">
         <h2 className="w-full max-w-[428px] section-heading text-center mx-auto">
-          Investment portfolio
+          Investment Portfolio
         </h2>
         <p className="w-full max-w-[671px] section-body text-center mx-auto">
           Lorem ipsum dolor sit amet consectetur. Aliquam mattis tortor magna nisl. Non risus semper vel est amet leo non
@@ -81,20 +81,27 @@ export default function Investors() {
       {/* Investment Cards Container */}
       <div
          className="overflow-x-auto hide-scrollbar mt-2 md:mt-4 investment-section-bg w-full"
+         style={{
+           scrollbarWidth: 'none',
+           msOverflowStyle: 'none',
+         }}
       >
         <motion.div 
           ref={ref}
-          className="flex gap-6 md:gap-8 lg:gap-10 px-6 md:px-8 lg:px-12 py-2 md:py-3 lg:py-4 min-w-max bg-none"
+          className="flex gap-6 md:gap-8 lg:gap-10 px-6 md:px-8 lg:px-12 py-2 md:py-3 lg:py-4 bg-none"
           variants={containerVariants}
           initial="hidden"
           animate={isInView ? "visible" : "hidden"}
+          style={{
+            width: 'max-content',
+          }}
         >
           {cards.map((card, index) => (
             <motion.div
               key={`card-${index}`}
               variants={cardVariants}
               style={{
-                minWidth: '320px',
+                minWidth: '360px',
                 flexShrink: 0,
                 willChange: 'transform, opacity',
               }}
