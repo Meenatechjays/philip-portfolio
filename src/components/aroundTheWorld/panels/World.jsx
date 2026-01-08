@@ -161,7 +161,7 @@ export default function World() {
     <div ref={componentRef} className="relative w-full flex flex-col">
       {/* Header Section - Responsive */}
       <div 
-        className="opacity-100 flex flex-col gap-2 md:gap-4 mt-4 md:mt-8 w-full md:w-[clamp(300px,38.8vw,671px)]"
+        className="opacity-100 flex flex-col gap-2 md:gap-4 w-full md:w-[clamp(300px,38.8vw,671px)]"
       >
         <h2 className="section-heading">
           Around the World with AI
@@ -235,17 +235,7 @@ export default function World() {
               />
             </motion.div>
           )}
-           {showFinalLogo && (
-              <div className="absolute top-40 left-[calc(50%+100px)] animate-logo-fade-in">
-                <Image
-                  src="/techjays-logo.svg"
-                  alt="Techjays Logo"
-                  width={100}
-                  height={100}
-                  className="object-contain"
-                />
-              </div>
-            )}
+          {/* Logo and Stats will be combined below */}
 
           {/* Location markers - 7 SignalRipple components positioned on the map */}
           {/* Only render after map reaches original position */}
@@ -262,13 +252,25 @@ export default function World() {
             </div>
           ))} */}
 
-          {/* Stats positioned on the map - Desktop only */}
-          
-            <div className="hidden md:flex flex-row items-center justify-center gap-3 z-20">
-              <Stat value="7+" label="Countries" />
-              <Stat value="150+" label="Projects" />
-              <Stat value="170+" label="People" />
+          {/* Logo positioned on the same line as stats - Desktop only */}
+          {showFinalLogo && (
+            <div className="hidden md:flex absolute bottom-0 left-0 items-center z-20 animate-logo-fade-in">
+              <Image
+                src="/techjays-logo.svg"
+                alt="Techjays Logo"
+                width={100}
+                height={100}
+                className="object-contain"
+              />
             </div>
+          )}
+
+          {/* Stats positioned on the map - Desktop only */}
+          <div className="hidden md:flex absolute bottom-0 left-[15%] flex-row items-center justify-start gap-3 z-20">
+            <Stat value="7+" label="Countries" />
+            <Stat value="150+" label="Projects" />
+            <Stat value="170+" label="People" />
+          </div>
          
         </div>
 
@@ -308,8 +310,8 @@ export default function World() {
             </div>
           </div>
 
-          {/* Desktop Layout - Content only */}
-          <div className="hidden md:flex justify-start">
+          {/* Desktop Layout - Content */}
+          <div className="hidden md:flex flex-col justify-start">
             <div className="font-satoshi font-normal text-base lg:text-lg leading-relaxed text-[#454654] max-w-4xl space-y-4">
               <p>
                 Founded in 2020 in Menlo Park, California, Techjays is on a bold mission to build the world's best AI products, apps, and solutions. With over 150 projects delivered across 7 countries, they've rapidly grown to serve 65+ clients spanning 15+ verticals in just a few years.

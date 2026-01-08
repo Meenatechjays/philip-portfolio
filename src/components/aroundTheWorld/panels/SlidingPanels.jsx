@@ -77,31 +77,35 @@ export default function SlidingPanels({ stacks, active, previousIndex = 0, activ
               left: ${rightmostStackRightEdge.base}px;
               top: 0;
               width: calc(100vw - ${rightmostStackRightEdge.base}px);
-              height: 100vh;
+              min-height: 100vh;
               transition: left 2000ms cubic-bezier(0.4, 0, 0.2, 1), width 0ms;
             }
             @media (min-width: 640px) {
               #${styleId} {
                 left: ${rightmostStackRightEdge.sm}px;
                 width: calc(100vw - ${rightmostStackRightEdge.sm}px);
+                min-height: 100vh;
               }
             }
             @media (min-width: 768px) {
               #${styleId} {
                 left: ${rightmostStackRightEdge.md}px;
                 width: calc(100vw - ${rightmostStackRightEdge.md}px);
+                min-height: 100vh;
               }
             }
             @media (min-width: 1024px) {
               #${styleId} {
                 left: ${rightmostStackRightEdge.lg}px;
                 width: calc(100vw - ${rightmostStackRightEdge.lg}px);
+                min-height: 100vh;
               }
             }
             @media (min-width: 1200px) {
               #${styleId} {
                 left: ${rightmostStackRightEdge.xl}px;
                 width: calc(100vw - ${rightmostStackRightEdge.xl}px);
+                min-height: 100vh;
               }
             }
           `
@@ -113,17 +117,19 @@ export default function SlidingPanels({ stacks, active, previousIndex = 0, activ
         style={{
           ...(leftStackCount === 0 ? { 
             position: 'relative',
-            width: '100%' 
+            width: '100%',
+            minHeight: '100vh',
           } : {
             position: 'absolute',
             top: 0,
-            height: '100vh',
+            minHeight: '100vh',
             // GPU acceleration for smooth transitions
             transform: 'translateZ(0)',
           }),
           backfaceVisibility: 'hidden',
           WebkitBackfaceVisibility: 'hidden',
-          overflow: 'hidden',
+          overflowY: 'auto',
+          overflowX: 'hidden',
           // Left transitions smoothly with same timing as stacks to maintain fixed gap
           // Width changes instantly (0ms) to prevent gap changes during transition
           transition: leftStackCount > 0 ? 'left 2000ms cubic-bezier(0.4, 0, 0.2, 1)' : 'none',
