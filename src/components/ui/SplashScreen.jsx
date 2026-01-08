@@ -128,7 +128,7 @@ export default function SplashScreen({ onComplete }) {
         }`}
       >
         <h1 
-          className="text-center capitalize animate-fade-in splash-greeting-text"
+          className="text-center capitalize animate-fade-in splash-greeting-text font-sparkling-mellow"
           key={currentGreeting}
         >
           {greetings[currentGreeting]}
@@ -141,7 +141,7 @@ export default function SplashScreen({ onComplete }) {
           showSkyPhase ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-[100vh]'
         }`}
       >
-        <h1 className="text-center uppercase splash-sky-text text-4xl font-bold">
+        <h1 className="text-center uppercase splash-sky-text text-4xl font-bold font-sparkling-mellow">
           Sky is the limit
         </h1>
       </div>

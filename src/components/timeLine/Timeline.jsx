@@ -29,6 +29,8 @@ export default function Timeline() {
   const scrollAccumulator = useRef(0);
   const isSnapping = useRef(false);
   const hasStartedAnimationRef = useRef(false);
+  const isScrollingRef = useRef(false);
+  const lastScrollTime = useRef(0);
 
   // Skip animation and allow vertical scrolling
   const skipAnimation = () => {
@@ -196,8 +198,10 @@ export default function Timeline() {
   }, [isInView, timelineControls, cardPositions, cardWidth]);
 
   // Lock body scroll only when scroll hijacking is active (after intro animation) AND section is in view
+  // Disable scroll lock when on last card
   useEffect(() => {
-    if (scrollHijackActive && !timelineComplete && isInView) {
+    const isOnLastCard = currentCardIndex >= lastCardIndex;
+    if (scrollHijackActive && !timelineComplete && isInView && !isOnLastCard) {
       document.body.style.overflow = 'hidden';
       document.body.style.height = '100vh';
     } else {
@@ -209,179 +213,146 @@ export default function Timeline() {
       document.body.style.overflow = '';
       document.body.style.height = '';
     };
-  }, [scrollHijackActive, timelineComplete, isInView]);
+  }, [scrollHijackActive, timelineComplete, isInView, currentCardIndex, lastCardIndex]);
 
-  // Scroll hijacking with snap-to-card behavior
+  // Update scroll position based on currentCardIndex (like carousel)
+  useEffect(() => {
+    if (!scrollContainerRef.current || isSnapping.current || !scrollHijackActive) return;
+    
+    const scrollContainer = scrollContainerRef.current;
+    const containerWidth = scrollContainer.clientWidth;
+    const cardLeft = cardPositions[currentCardIndex];
+    const targetScroll = cardLeft - (containerWidth / 2) + (cardWidth / 2);
+    
+    scrollContainer.scrollTo({
+      left: targetScroll,
+      behavior: 'smooth'
+    });
+  }, [currentCardIndex, cardPositions, cardWidth, scrollHijackActive]);
+
+  // Scroll hijacking with snap-to-card behavior (inspired by reference)
   useEffect(() => {
     if (!isInView || !scrollHijackActive || timelineComplete) return;
 
-    const SCROLL_THRESHOLD = 50; // Lower threshold for more responsive snapping
-
-    const snapToCard = (targetIndex) => {
-      const scrollContainer = scrollContainerRef.current;
-      if (!scrollContainer || isSnapping.current) return;
-
-      isSnapping.current = true;
-      const containerWidth = scrollContainer.clientWidth;
-      const cardLeft = cardPositions[targetIndex];
-      const targetScroll = cardLeft - (containerWidth / 2) + (cardWidth / 2);
-
-      scrollContainer.scrollTo({
-        left: targetScroll,
-        behavior: 'smooth'
-      });
-
-      // Update current card index
-      setCurrentCardIndex(targetIndex);
-      scrollAccumulator.current = 0;
-
-      // Check if this is the last card
-      if (targetIndex >= lastCardIndex) {
-        setTimeout(() => {
-          setTimelineComplete(true);
-          setScrollHijackActive(false);
-          isSnapping.current = false;
-        }, 500);
-      } else {
-        setTimeout(() => {
-          isSnapping.current = false;
-        }, 500);
-      }
-    };
-
     const handleWheel = (e) => {
-      // Allow normal scrolling if timeline is complete
-      if (timelineComplete) {
-        return;
-      }
-
-      if (isSnapping.current) {
+      const now = Date.now();
+      
+      // Throttle scroll events
+      if (now - lastScrollTime.current < 800 || isScrollingRef.current) {
         e.preventDefault();
-        e.stopPropagation();
         return;
       }
 
-      // Prevent default to lock scroll only when timeline is active
-      e.preventDefault();
-      e.stopPropagation();
+      // If we're on the last card and scrolling forward, allow normal scrolling
+      if (currentCardIndex >= lastCardIndex && e.deltaY > 0) {
+        return; // Allow normal page scroll
+      }
 
-      const scrollContainer = scrollContainerRef.current;
-      if (!scrollContainer) return;
+      // Prevent default scroll for hijacking
+      e.preventDefault();
+      
+      isScrollingRef.current = true;
+      lastScrollTime.current = now;
 
       // Handle vertical scroll (down = next card, up = previous card)
       if (Math.abs(e.deltaY) > Math.abs(e.deltaX)) {
-        // Prevent scrolling forward if already on last card
-        if (currentCardIndex >= lastCardIndex && e.deltaY > 0) {
-          scrollAccumulator.current = 0;
-          return;
-        }
-
-        scrollAccumulator.current += e.deltaY;
-
-        // Snap to next card when scrolling down
-        if (scrollAccumulator.current > SCROLL_THRESHOLD) {
-          const nextIndex = Math.min(currentCardIndex + 1, lastCardIndex);
-          if (nextIndex !== currentCardIndex) {
-            snapToCard(nextIndex);
-          } else {
-            scrollAccumulator.current = 0;
+        if (e.deltaY > 0) {
+          // Scroll down = move forward
+          if (currentCardIndex < lastCardIndex) {
+            setCurrentCardIndex(prev => prev + 1);
           }
-        } 
-        // Snap to previous card when scrolling up
-        else if (scrollAccumulator.current < -SCROLL_THRESHOLD) {
-          const prevIndex = Math.max(currentCardIndex - 1, 0);
-          if (prevIndex !== currentCardIndex) {
-            snapToCard(prevIndex);
-          } else {
-            scrollAccumulator.current = 0;
+        } else {
+          // Scroll up = move backward
+          if (currentCardIndex > 0) {
+            setCurrentCardIndex(prev => prev - 1);
           }
         }
       }
       // Handle horizontal scroll (right = next card, left = previous card)
       else if (Math.abs(e.deltaX) > 0) {
-        // Prevent scrolling right if already on last card
-        if (currentCardIndex >= lastCardIndex && e.deltaX > 0) {
-          scrollAccumulator.current = 0;
-          return;
-        }
-
-        scrollAccumulator.current += e.deltaX;
-
-        // Scrolling right (positive deltaX) = next card
-        if (scrollAccumulator.current > SCROLL_THRESHOLD) {
-          const nextIndex = Math.min(currentCardIndex + 1, lastCardIndex);
-          if (nextIndex !== currentCardIndex) {
-            snapToCard(nextIndex);
-          } else {
-            scrollAccumulator.current = 0;
+        if (e.deltaX > 0) {
+          // Scroll right = move forward
+          if (currentCardIndex < lastCardIndex) {
+            setCurrentCardIndex(prev => prev + 1);
           }
-        }
-        // Scrolling left (negative deltaX) = previous card
-        else if (scrollAccumulator.current < -SCROLL_THRESHOLD) {
-          const prevIndex = Math.max(currentCardIndex - 1, 0);
-          if (prevIndex !== currentCardIndex) {
-            snapToCard(prevIndex);
-          } else {
-            scrollAccumulator.current = 0;
+        } else {
+          // Scroll left = move backward
+          if (currentCardIndex > 0) {
+            setCurrentCardIndex(prev => prev - 1);
           }
         }
       }
+
+      setTimeout(() => {
+        isScrollingRef.current = false;
+      }, 800);
     };
 
     // Prevent touch scroll on mobile only when timeline is active
     const handleTouchMove = (e) => {
-      // Allow normal scrolling if timeline is complete
       if (timelineComplete) {
+        return;
+      }
+      // If on last card, allow touch scrolling
+      if (currentCardIndex >= lastCardIndex) {
         return;
       }
       e.preventDefault();
     };
 
-    // Prevent manual scrolling past the last card
-    const handleScroll = () => {
-      if (isSnapping.current || timelineComplete || !scrollHijackActive) return;
-      
-      const scrollContainer = scrollContainerRef.current;
-      if (!scrollContainer) return;
-
-      // If on last card, prevent scrolling past it
-      if (currentCardIndex >= lastCardIndex) {
-        const containerWidth = scrollContainer.clientWidth;
-        const lastCardLeft = cardPositions[lastCardIndex];
-        const lastCardCenteredPosition = lastCardLeft - (containerWidth / 2) + (cardWidth / 2);
-        const currentScroll = scrollContainer.scrollLeft;
-        
-        // If scrolled past the last card's centered position, snap it back
-        if (currentScroll > lastCardCenteredPosition) {
-          isSnapping.current = true;
-          scrollContainer.scrollTo({
-            left: lastCardCenteredPosition,
-            behavior: 'smooth'
-          });
-          setTimeout(() => {
-            isSnapping.current = false;
-          }, 500);
-        }
-      }
-    };
-
     window.addEventListener('wheel', handleWheel, { passive: false });
     window.addEventListener('touchmove', handleTouchMove, { passive: false });
-    
-    const scrollContainer = scrollContainerRef.current;
-    if (scrollContainer) {
-      scrollContainer.addEventListener('scroll', handleScroll, { passive: true });
-    }
     
     return () => {
       window.removeEventListener('wheel', handleWheel);
       window.removeEventListener('touchmove', handleTouchMove);
-      const container = scrollContainerRef.current;
-      if (container) {
-        container.removeEventListener('scroll', handleScroll);
+    };
+  }, [isInView, scrollHijackActive, timelineComplete, currentCardIndex, lastCardIndex]);
+
+  // Detect current card when manually scrolling (especially when on last card)
+  useEffect(() => {
+    if (!isInView || !scrollContainerRef.current) return;
+
+    const scrollContainer = scrollContainerRef.current;
+    let scrollTimeout;
+    
+    const detectCurrentCard = () => {
+      if (isSnapping.current || isScrollingRef.current) return;
+      
+      const containerWidth = scrollContainer.clientWidth;
+      const scrollLeft = scrollContainer.scrollLeft;
+      const centerPosition = scrollLeft + (containerWidth / 2);
+
+      let closestCardIndex = 0;
+      let minDistance = Infinity;
+
+      cardPositions.forEach((cardLeft, index) => {
+        const cardCenter = cardLeft + (cardWidth / 2);
+        const distance = Math.abs(centerPosition - cardCenter);
+        
+        if (distance < minDistance) {
+          minDistance = distance;
+          closestCardIndex = index;
+        }
+      });
+
+      if (closestCardIndex !== currentCardIndex) {
+        setCurrentCardIndex(closestCardIndex);
       }
     };
-  }, [isInView, scrollHijackActive, timelineComplete, currentCardIndex, cardPositions, cardWidth, lastCardIndex]);
+
+    const handleScroll = () => {
+      clearTimeout(scrollTimeout);
+      scrollTimeout = setTimeout(detectCurrentCard, 150);
+    };
+
+    scrollContainer.addEventListener('scroll', handleScroll, { passive: true });
+    
+    return () => {
+      clearTimeout(scrollTimeout);
+      scrollContainer.removeEventListener('scroll', handleScroll);
+    };
+  }, [isInView, currentCardIndex, cardPositions, cardWidth]);
 
   return (
     <section 
@@ -512,9 +483,9 @@ export default function Timeline() {
         </div>
       </div>
 
-      {/* Skip Animation Button - Positioned within section layout */}
-      {!timelineComplete && (
-        <div className="absolute bottom-60 right-8 z-30">
+      {/* Skip Animation Button - Only show for cards 0-2, hide on last card */}
+      {!timelineComplete && currentCardIndex < lastCardIndex && (
+        <div className="absolute bottom-10 right-8 z-30">
           <button
             onClick={skipAnimation}
             className="box-border cursor-pointer flex flex-row justify-center items-center px-6 py-4 gap-3 isolate w-[196px] h-14 bg-[rgba(167,185,255,0.2)] rounded-lg font-satoshi text-[#1F2024] hover:bg-[rgba(167,185,255,0.3)] transition-colors duration-200"

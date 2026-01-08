@@ -11,9 +11,11 @@ export default function PortfolioHero({ isVisible = true }) {
   const [isInView, setIsInView] = useState(false);
   const [scrollHijackActive, setScrollHijackActive] = useState(false);
   const [aboutComplete, setAboutComplete] = useState(false);
+  const [animationDirection, setAnimationDirection] = useState(1); // 1 for down (next), -1 for up (previous)
   const sectionRef = useRef(null);
   const isScrolling = useRef(false);
   const scrollAccumulator = useRef(0);
+  const scrollDirection = useRef(0); // Track scroll direction: 1 for down, -1 for up
 
   const rightContentItems = [
     {
@@ -111,19 +113,37 @@ export default function PortfolioHero({ isVisible = true }) {
 
   // Scroll hijacking - scroll up to show next content item
   useEffect(() => {
-    if (!isInView || !scrollHijackActive || aboutComplete) return;
+    if (!isInView || !scrollHijackActive) return;
 
     const SCROLL_THRESHOLD = 50;
 
-    const moveToNextItem = (nextIndex) => {
+    const moveToItem = (targetIndex) => {
       if (isScrolling.current) return;
       
+      // Clamp index to valid range
+      const clampedIndex = Math.max(0, Math.min(targetIndex, lastItemIndex));
+      
+      if (clampedIndex === currentIndex) {
+        scrollAccumulator.current = 0;
+        return;
+      }
+      
+      // Set animation direction based on whether we're going forward or backward
+      const direction = clampedIndex > currentIndex ? 1 : -1;
+      setAnimationDirection(direction);
+      
       isScrolling.current = true;
-      setCurrentIndex(nextIndex);
+      setCurrentIndex(clampedIndex);
       scrollAccumulator.current = 0;
 
-      // If we reached the last item (Investor), allow normal scrolling
-      if (nextIndex >= lastItemIndex) {
+      // If we're scrolling up from the last item, reset aboutComplete to allow navigation
+      if (currentIndex >= lastItemIndex && scrollDirection.current < 0) {
+        setAboutComplete(false);
+        setScrollHijackActive(true);
+      }
+      
+      // If we reached the last item (Investor) by scrolling down, allow normal scrolling
+      if (clampedIndex >= lastItemIndex && scrollDirection.current > 0) {
         setTimeout(() => {
           setAboutComplete(true);
           setScrollHijackActive(false);
@@ -140,8 +160,11 @@ export default function PortfolioHero({ isVisible = true }) {
     };
 
     const handleWheel = (e) => {
-      // Allow normal scrolling if about section is complete
-      if (aboutComplete) {
+      const currentDirection = e.deltaY > 0 ? 1 : -1;
+      const isScrollingUpFromLast = aboutComplete && currentIndex >= lastItemIndex && currentDirection < 0;
+      
+      // Allow normal scrolling if about section is complete, unless scrolling up from last item
+      if (aboutComplete && !isScrollingUpFromLast) {
         return;
       }
 
@@ -155,25 +178,35 @@ export default function PortfolioHero({ isVisible = true }) {
       e.preventDefault();
       e.stopPropagation();
 
-      // Handle vertical scroll - both up and down move to next item
+      // Handle vertical scroll
       if (Math.abs(e.deltaY) > Math.abs(e.deltaX)) {
-        // Accumulate scroll in any direction
+        // Reset accumulator if direction changed
+        if (scrollDirection.current !== 0 && scrollDirection.current !== currentDirection) {
+          scrollAccumulator.current = 0;
+        }
+        
+        scrollDirection.current = currentDirection;
         scrollAccumulator.current += Math.abs(e.deltaY);
         
-        // Move to next item when threshold is reached (regardless of scroll direction)
+        // Move to next/previous item when threshold is reached
         if (scrollAccumulator.current > SCROLL_THRESHOLD) {
-          const nextIndex = Math.min(currentIndex + 1, lastItemIndex);
-          if (nextIndex !== currentIndex) {
-            moveToNextItem(nextIndex);
+          let targetIndex;
+          if (currentDirection > 0) {
+            // Scrolling down - move to next item
+            targetIndex = currentIndex + 1;
           } else {
-            scrollAccumulator.current = 0;
+            // Scrolling up - move to previous item
+            targetIndex = currentIndex - 1;
           }
+          
+          moveToItem(targetIndex);
         }
       }
     };
 
     // Prevent touch scroll on mobile
     const handleTouchMove = (e) => {
+      // Allow touch scrolling if about section is complete (unless we need to handle scroll up from last)
       if (aboutComplete) {
         return;
       }
@@ -189,20 +222,23 @@ export default function PortfolioHero({ isVisible = true }) {
     };
   }, [isInView, scrollHijackActive, aboutComplete, currentIndex, lastItemIndex]);
 
-  /* ❗ Animation UNCHANGED */
-  const contentVariants = {
-    initial: { y: '100vh', opacity: 0 },
+  /* Animation variants - direction aware */
+  const getContentVariants = (direction) => ({
+    initial: { 
+      y: direction > 0 ? '100vh' : '-100vh', 
+      opacity: 0 
+    },
     animate: {
       y: 0,
       opacity: 1,
       transition: { duration: 1, ease: 'easeInOut' }
     },
     exit: {
-      y: '-100vh',
+      y: direction > 0 ? '-100vh' : '100vh',
       opacity: 0,
       transition: { duration: 1, ease: 'easeInOut' }
     }
-  };
+  });
 
   return (
     <div ref={sectionRef} className="h-screen relative overflow-hidden">
@@ -236,7 +272,7 @@ export default function PortfolioHero({ isVisible = true }) {
               fill
               className="object-contain object-center"
               priority
-              style={{ opacity: 1, filter: 'contrast(5) brightness(2)' }}
+              // style={{ opacity: 1, filter: 'contrast(5) brightness(2)' }}
             />
           </div>
         </div>
@@ -245,7 +281,7 @@ export default function PortfolioHero({ isVisible = true }) {
       {/* ================= MAIN CONTENT ================= */}
       <div className="relative z-10 h-screen flex flex-col">
         {/* Logo - Header Section */}
-        <div className="pt-8 md:pt-12 lg:pt-16 px-4 sm:px-6 md:px-8 lg:px-[76px]">
+        <div className="pt-8 md:pt-12 lg:pt-8 px-4 sm:px-6 md:px-8 lg:px-[76px]">
           <div 
             className={`transition-all duration-700 ease-out ${
               isLeftMounted ? 'opacity-100 translate-y-0' : 'opacity-0 -translate-y-4'
@@ -279,13 +315,12 @@ export default function PortfolioHero({ isVisible = true }) {
           </div>
 
           {/* Center Image Column - Placeholder for grid */}
-          <div className="md:order-2 relative z-0"></div>
+          <div className="md:order-2 relative"></div>
 
           {/* Center Image - Absolutely positioned to not affect layout */}
-          <div className="absolute left-1/2 -translate-x-1/2 bottom-0 z-10 w-full max-w-[1000px] pointer-events-none">
+          <div className="absolute left-1/2 bottom-0 -translate-x-1/2 w-full max-w-[1000px] pointer-events-none">
             <div 
               className={`transition-all duration-700 ease-out delay-200
-                // isLeftMounted ? 'opacity-100 scale-100' : 'opacity-0 scale-95'
               `}
             >
               <div
@@ -319,7 +354,7 @@ export default function PortfolioHero({ isVisible = true }) {
               <AnimatePresence mode="wait">
                 <motion.div
                   key={currentIndex}
-                  variants={contentVariants}
+                  variants={getContentVariants(animationDirection)}
                   initial="initial"
                   animate="animate"
                   exit="exit"
