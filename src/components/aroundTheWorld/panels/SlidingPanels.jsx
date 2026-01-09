@@ -53,22 +53,24 @@ export default function SlidingPanels({ stacks, active, previousIndex = 0, activ
   };
   
   // Calculate the rightmost left-side stack's right edge position
-  // This ensures content left = stack right edge (0px gap, fixed)
-  // The active stack (at validIndex) has its right edge at: (validIndex * stackWidth) + stackWidth
-  // Content must start exactly at this position to maintain 0px gap
-  // Both stack and content use the same transition timing to move as one rigid unit
+  // This ensures content margin = stack right edge (0px gap, fixed)
+  // Formula: (validIndex * stackWidth) + stackWidth = (validIndex + 1) * stackWidth
+  // This equals leftStackCount * stackWidth, which is the same as margins
+  // But we calculate it explicitly to ensure gap is always 0px
   const rightmostStackRightEdge = {
-    base: (validIndex * 80) + 80,   // active stack left + stack width = right edge
+    base: (validIndex * 80) + 80,   // stack left position + stack width
     sm: (validIndex * 90) + 90,
     md: (validIndex * 100) + 100,
     lg: (validIndex * 110) + 110,
     xl: (validIndex * 110) + 110,
   };
+  
+  // Verify: rightmostStackRightEdge should equal margins (they're the same calculation)
+  // This ensures gap is always 0px: content margin = stack right edge
 
   return (
     <>
-      {/* Inject responsive styles - content positioned exactly at active stack's right edge (0px gap) */}
-      {/* Content and stack move together as one rigid unit with synchronized transitions */}
+      {/* Inject responsive styles - use left positioning to maintain fixed gap with stacks */}
       {leftStackCount > 0 && (
         <style dangerouslySetInnerHTML={{
           __html: `
@@ -76,32 +78,32 @@ export default function SlidingPanels({ stacks, active, previousIndex = 0, activ
               position: absolute;
               left: ${rightmostStackRightEdge.base}px;
               top: 0;
-              right: 0;
-              min-height: 100vh;
-              transition: left 2000ms cubic-bezier(0.4, 0, 0.2, 1), width 0ms;
+              width: calc(100vw - ${rightmostStackRightEdge.base}px);
+              height: 100vh;
+              transition: left 2000ms ease-in-out, width 0ms;
             }
             @media (min-width: 640px) {
               #${styleId} {
                 left: ${rightmostStackRightEdge.sm}px;
-                min-height: 100vh;
+                width: calc(100vw - ${rightmostStackRightEdge.sm}px);
               }
             }
             @media (min-width: 768px) {
               #${styleId} {
                 left: ${rightmostStackRightEdge.md}px;
-                min-height: 100vh;
+                width: calc(100vw - ${rightmostStackRightEdge.md}px);
               }
             }
             @media (min-width: 1024px) {
               #${styleId} {
                 left: ${rightmostStackRightEdge.lg}px;
-                min-height: 100vh;
+                width: calc(100vw - ${rightmostStackRightEdge.lg}px);
               }
             }
             @media (min-width: 1200px) {
               #${styleId} {
                 left: ${rightmostStackRightEdge.xl}px;
-                min-height: 100vh;
+                width: calc(100vw - ${rightmostStackRightEdge.xl}px);
               }
             }
           `
@@ -113,32 +115,27 @@ export default function SlidingPanels({ stacks, active, previousIndex = 0, activ
         style={{
           ...(leftStackCount === 0 ? { 
             position: 'relative',
-            width: '100%',
-            minHeight: '100vh',
+            width: '100%' 
           } : {
             position: 'absolute',
             top: 0,
-            minHeight: '100vh',
-            // GPU acceleration for smooth transitions
-            transform: 'translateZ(0)',
+            height: '100vh',
           }),
           backfaceVisibility: 'hidden',
           WebkitBackfaceVisibility: 'hidden',
-          overflowY: 'auto',
-          overflowX: 'hidden',
-          // Left transitions smoothly with same timing as stacks to maintain fixed gap
-          // Width changes instantly (0ms) to prevent gap changes during transition
-          transition: leftStackCount > 0 ? 'left 2000ms cubic-bezier(0.4, 0, 0.2, 1)' : 'none',
+          overflow: 'hidden',
+          // Left transitions smoothly, width changes instantly to maintain fixed gap
+          transition: leftStackCount > 0 ? 'left 2000ms ease-in-out' : 'none',
         }}
       >
         <div
-          className="flex will-change-transform"
+          className="flex transition-transform duration-[2000ms] ease-in-out will-change-transform"
           style={{
             transform: `translateX(-${validIndex * 100}%)`,
             backfaceVisibility: 'hidden',
             WebkitBackfaceVisibility: 'hidden',
-            // Synchronized transition timing with stacks and content container
-            transition: 'transform 2000ms cubic-bezier(0.4, 0, 0.2, 1)',
+            // Synchronized transition timing with stacks
+            transition: 'transform 2000ms ease-in-out',
           }}
         >
           {stacks.map((stack, idx) => {
@@ -165,7 +162,7 @@ export default function SlidingPanels({ stacks, active, previousIndex = 0, activ
                   pointerEvents: shouldHide ? 'none' : 'auto',
                 }}
               >
-                <div className={`w-full py-8 ${
+                <div className={`w-full py-1 ${
                   stack.id === 'world' 
                     ? 'pl-4 sm:pl-6 md:pl-8 lg:pl-10 xl:pl-12 2xl:pl-16 pr-0' 
                     : 'px-4 sm:px-6 md:px-8 lg:px-10 xl:px-12 2xl:px-16'

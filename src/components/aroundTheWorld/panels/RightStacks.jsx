@@ -28,30 +28,22 @@ export default function RightStacks({ stacks, active, onChange, activeIndex }) {
           
           return `
             #${styleId} {
-              ${isLeftSide 
-                ? `left: ${index * baseWidth}px;` 
-                : `right: ${positionFromRight * baseWidth}px;`}
-              transition: left 2000ms cubic-bezier(0.4, 0, 0.2, 1), right 2000ms cubic-bezier(0.4, 0, 0.2, 1);
+              left: ${isLeftSide ? `${index * baseWidth}px` : `calc(100vw - ${(positionFromRight + 1) * baseWidth}px)`};
+              transition: left 2000ms ease-in-out;
             }
             @media (min-width: 640px) {
               #${styleId} {
-                ${isLeftSide 
-                  ? `left: ${index * smWidth}px;` 
-                  : `right: ${positionFromRight * smWidth}px;`}
+                left: ${isLeftSide ? `${index * smWidth}px` : `calc(100vw - ${(positionFromRight + 1) * smWidth}px)`};
               }
             }
             @media (min-width: 768px) {
               #${styleId} {
-                ${isLeftSide 
-                  ? `left: ${index * mdWidth}px;` 
-                  : `right: ${positionFromRight * mdWidth}px;`}
+                left: ${isLeftSide ? `${index * mdWidth}px` : `calc(100vw - ${(positionFromRight + 1) * mdWidth}px)`};
               }
             }
             @media (min-width: 1024px) {
               #${styleId} {
-                ${isLeftSide 
-                  ? `left: ${index * lgWidth}px;` 
-                  : `right: ${positionFromRight * lgWidth}px;`}
+                left: ${isLeftSide ? `${index * lgWidth}px` : `calc(100vw - ${(positionFromRight + 1) * lgWidth}px)`};
               }
             }
           `;

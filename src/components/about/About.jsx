@@ -55,7 +55,7 @@ export default function PortfolioHero({ isVisible = true }) {
         });
       },
       {
-        threshold: 0.5, // Trigger when 50% of the component is visible
+        threshold: 0.5, // Trigger when 70% of the component is visible (ensures section is primary focus for scroll snap)
         rootMargin: '0px',
       }
     );
@@ -96,16 +96,24 @@ export default function PortfolioHero({ isVisible = true }) {
   }, [isVisible, isInView]);
 
   // Lock body scroll when scroll hijacking is active
+  // IMPORTANT: Restore overflow immediately when not actively hijacking to allow scroll snap to work
   useEffect(() => {
+    // Only lock scroll when ALL conditions are met:
+    // 1. Scroll hijacking is active
+    // 2. About section is not complete
+    // 3. Section is in view
+    // This ensures scroll snap works when navigating between sections
     if (scrollHijackActive && !aboutComplete && isInView) {
       document.body.style.overflow = 'hidden';
       document.body.style.height = '100vh';
     } else {
+      // Immediately restore scroll when conditions aren't met (allows scroll snap to work)
       document.body.style.overflow = '';
       document.body.style.height = '';
     }
 
     return () => {
+      // Always cleanup - restore scroll on unmount or when conditions change
       document.body.style.overflow = '';
       document.body.style.height = '';
     };

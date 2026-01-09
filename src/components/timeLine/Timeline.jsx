@@ -130,7 +130,7 @@ export default function Timeline() {
         });
       },
       {
-        threshold: 0.5, // Trigger when 50% of the component is visible (user is actually in the timeline)
+        threshold: 0.7, // Trigger when 70% of the component is visible (ensures section is primary focus for scroll snap)
         rootMargin: '0px',
       }
     );
@@ -199,17 +199,27 @@ export default function Timeline() {
 
   // Lock body scroll only when scroll hijacking is active (after intro animation) AND section is in view
   // Disable scroll lock when on last card
+  // IMPORTANT: Restore overflow immediately when not actively hijacking to allow scroll snap to work
   useEffect(() => {
     const isOnLastCard = currentCardIndex >= lastCardIndex;
+    
+    // Only lock scroll when ALL conditions are met:
+    // 1. Scroll hijacking is active
+    // 2. Timeline is not complete
+    // 3. Section is in view
+    // 4. Not on last card
+    // This ensures scroll snap works when navigating between sections
     if (scrollHijackActive && !timelineComplete && isInView && !isOnLastCard) {
       document.body.style.overflow = 'hidden';
       document.body.style.height = '100vh';
     } else {
+      // Immediately restore scroll when conditions aren't met (allows scroll snap to work)
       document.body.style.overflow = '';
       document.body.style.height = '';
     }
 
     return () => {
+      // Always cleanup - restore scroll on unmount or when conditions change
       document.body.style.overflow = '';
       document.body.style.height = '';
     };
