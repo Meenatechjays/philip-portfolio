@@ -28,22 +28,30 @@ export default function RightStacks({ stacks, active, onChange, activeIndex }) {
           
           return `
             #${styleId} {
-              left: ${isLeftSide ? `${index * baseWidth}px` : `calc(100vw - ${(positionFromRight + 1) * baseWidth}px)`};
-              transition: left 2000ms cubic-bezier(0.4, 0, 0.2, 1);
+              ${isLeftSide 
+                ? `left: ${index * baseWidth}px;` 
+                : `right: ${positionFromRight * baseWidth}px;`}
+              transition: left 2000ms cubic-bezier(0.4, 0, 0.2, 1), right 2000ms cubic-bezier(0.4, 0, 0.2, 1);
             }
             @media (min-width: 640px) {
               #${styleId} {
-                left: ${isLeftSide ? `${index * smWidth}px` : `calc(100vw - ${(positionFromRight + 1) * smWidth}px)`};
+                ${isLeftSide 
+                  ? `left: ${index * smWidth}px;` 
+                  : `right: ${positionFromRight * smWidth}px;`}
               }
             }
             @media (min-width: 768px) {
               #${styleId} {
-                left: ${isLeftSide ? `${index * mdWidth}px` : `calc(100vw - ${(positionFromRight + 1) * mdWidth}px)`};
+                ${isLeftSide 
+                  ? `left: ${index * mdWidth}px;` 
+                  : `right: ${positionFromRight * mdWidth}px;`}
               }
             }
             @media (min-width: 1024px) {
               #${styleId} {
-                left: ${isLeftSide ? `${index * lgWidth}px` : `calc(100vw - ${(positionFromRight + 1) * lgWidth}px)`};
+                ${isLeftSide 
+                  ? `left: ${index * lgWidth}px;` 
+                  : `right: ${positionFromRight * lgWidth}px;`}
               }
             }
           `;

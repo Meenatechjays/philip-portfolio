@@ -26,22 +26,22 @@ export default function Highlights() {
       </div>
 
       {/* Main Content Container */}
-      <div className="relative z-5 min-h-screen flex flex-col items-center justify-start px-4 pt-24 pb-32">
+      <div className="relative z-5 h-screen flex flex-col items-center justify-start px-4 pt-10 pb-6">
         {/* Header Section */}
-        <div className="w-full max-w-[671px] flex flex-col gap-4 items-center mb-16">
+        <div className="w-full max-w-[671px] flex flex-col gap-3 items-center mb-3">
           {/* Main Heading */}
-          <h2 className="w-full max-w-[428px] font-satoshi font-bold text-4xl leading-[100%] tracking-[0%] text-center text-[#1F2024] whitespace-nowrap">
+          <h2 className="w-full max-w-[428px] font-satoshi font-bold text-3xl leading-[100%] tracking-[0%] text-center text-[#1F2024] whitespace-nowrap">
             Press & Podcast Highlights
           </h2>
           
           {/* Description Paragraph */}
-          <p className="w-full max-w-[671px] font-satoshi font-normal text-lg leading-normal tracking-[0%] text-center text-[#454654]">
+          <p className="w-full max-w-[671px] font-satoshi font-normal text-base leading-normal tracking-[0%] text-center text-[#454654]">
             Lorem ipsum dolor sit amet consectetur. Aliquam mattis tortor magna nisl. Non risus semper vel est amet leo non
           </p>
         </div>
 
         {/* Toggle Button */}
-        <div className="relative flex flex-col items-start bg-white p-1.5 gap-2.5 w-[260px] h-[60px] rounded-[30px] mb-12">
+        <div className="relative flex flex-col items-start bg-white p-1 gap-1.5 w-[260px] h-[52px] rounded-[30px] mb-3">
           <ToggleButton
             options={toggleOptions}
             activeOption={activeOption}
@@ -50,17 +50,17 @@ export default function Highlights() {
         </div>
 
         {/* Content Area - Highlights Cards */}
-        <div className="relative w-full mt-8 flex flex-row items-start justify-center gap-6 flex-nowrap px-4">
+        <div className="relative w-[90%] mt-8 flex flex-row items-start justify-center gap-6 flex-nowrap px-4 lg:mx-10">
           {/* Card 1 - Press One Image - Highest */}
           <motion.div
-            className="w-full max-w-[341px] flex-shrink-0"
+            className="w-full"
             animate={{
-              y: [-10, 10, -10],
+              y: [0, -12, 0],
             }}
             transition={{
               duration: 2,
               repeat: Infinity,
-              ease: [0.68, -0.55, 0.265, 1.55],
+              ease: "easeInOut",
             }}
           >
             <HighlightsCard
@@ -76,14 +76,14 @@ export default function Highlights() {
 
           {/* Card 2 - Press Two Image - Lower than Card 1 */}
           <motion.div
-            className="w-full max-w-[341px] flex-shrink-0"
+            className="w-full"
             animate={{
-              y: [-10, 10, -10],
+              y: [0, -12, 0],
             }}
             transition={{
               duration: 2,
               repeat: Infinity,
-              ease: [0.68, -0.55, 0.265, 1.55],
+              ease: "easeInOut",
             }}
           >
             <HighlightsCard
@@ -99,14 +99,14 @@ export default function Highlights() {
 
           {/* Card 3 - Philip Header Image - Higher than Card 2 */}
           <motion.div
-            className="w-full max-w-[341px] flex-shrink-0"
+            className="w-full"
             animate={{
-              y: [-10, 10, -10],
+              y: [0, -12, 0],
             }}
             transition={{
               duration: 2,
               repeat: Infinity,
-              ease: [0.68, -0.55, 0.265, 1.55],
+              ease: "easeInOut",
             }}
           >
             <HighlightsCard
@@ -122,14 +122,14 @@ export default function Highlights() {
 
           {/* Card 4 - Timeline 2018 Image - Lower than Card 3 */}
           <motion.div
-            className="w-full max-w-[341px] flex-shrink-0"
+            className="w-full"
             animate={{
-              y: [-10, 10, -10],
+              y: [0, -12, 0],
             }}
             transition={{
               duration: 2,
               repeat: Infinity,
-              ease: [0.68, -0.55, 0.265, 1.55],
+              ease: "easeInOut",
             }}
           >
             <HighlightsCard

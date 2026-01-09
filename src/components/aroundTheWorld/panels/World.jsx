@@ -158,10 +158,10 @@ export default function World() {
   }, [hasAnimated, logoScrollControls, mapScrollControls, logoFinalControls]);
 
   return (
-    <div ref={componentRef} className="relative w-full flex flex-col">
+    <div ref={componentRef} className="relative min-w-full flex flex-col">
       {/* Header Section - Responsive */}
       <div 
-        className="opacity-100 flex flex-col gap-2 md:gap-4 mt-4 md:mt-8 w-full md:w-[clamp(300px,38.8vw,671px)]"
+        className="opacity-100 flex flex-col gap-2 md:gap-4 w-full md:w-[clamp(300px,38.8vw,671px)]"
       >
         <h2 className="section-heading">
           Around the World with AI
@@ -178,7 +178,7 @@ export default function World() {
         {/* Map Container - Responsive with overflow hidden for scroll effect */}
         <div 
           ref={mapContainerRef}
-          className="relative overflow-hidden max-w-full"
+          className="relative overflow-hidden max-w-full flex gap-4"
         >
           {/* Animated Map - Task 2: Scrolls right to left with fade */}
           <motion.div
@@ -186,7 +186,7 @@ export default function World() {
             animate={hasAnimated ? mapScrollControls : {}}
             initial={{ x: '0%', opacity: 1 }}
             className="relative w-full"
-            style={{ willChange: 'transform, opacity', maxWidth: '55%' }}
+            style={{ willChange: 'transform, opacity', maxWidth: '60%' }}
           >
             <DotLottieReact
               src="/World_map.lottie"
@@ -235,17 +235,7 @@ export default function World() {
               />
             </motion.div>
           )}
-           {showFinalLogo && (
-              <div className="absolute top-40 left-[calc(50%+100px)] animate-logo-fade-in">
-                <Image
-                  src="/techjays-logo.svg"
-                  alt="Techjays Logo"
-                  width={100}
-                  height={100}
-                  className="object-contain"
-                />
-              </div>
-            )}
+          {/* Logo and Stats will be combined below */}
 
           {/* Location markers - 7 SignalRipple components positioned on the map */}
           {/* Only render after map reaches original position */}
@@ -262,13 +252,25 @@ export default function World() {
             </div>
           ))} */}
 
-          {/* Stats positioned on the map - Desktop only */}
-          
-            <div className="hidden md:flex flex-row items-center justify-center gap-3 z-20">
-              <Stat value="7+" label="Countries" />
-              <Stat value="150+" label="Projects" />
-              <Stat value="170+" label="People" />
+          {/* Logo positioned on the same line as stats - Desktop only */}
+          {showFinalLogo && (
+            <div className="lg:flex md:flex items-center z-20 animate-logo-fade-in">
+              <Image
+                src="/techjays-logo.svg"
+                alt="Techjays Logo"
+                width={80}
+                height={80}
+                className="object-contain relative left-[-100px]"
+              />
             </div>
+          )}
+
+          {/* Stats positioned on the map - Desktop only */}
+          <div className="hidden md:flex items-center justify-center gap-3 z-20 lg:flex-col">
+            <Stat value="7+" label="Countries" />
+            <Stat value="150+" label="Projects" />
+            <Stat value="170+" label="People" />
+          </div>
          
         </div>
 
@@ -279,7 +281,7 @@ export default function World() {
       </div>
 
         {/* Bottom Section - Content only (Stats moved to map) */}
-        <div className="relative mt-8 md:mt-12 mb-4 md:mb-8 px-4 md:px-0">
+        <div className="relative mb-4 md:mb-8 px-4 md:px-0">
           {/* Mobile: Stack vertically */}
           <div className="md:hidden flex flex-col gap-4">
             {/* Mobile Logo */}
@@ -308,9 +310,9 @@ export default function World() {
             </div>
           </div>
 
-          {/* Desktop Layout - Content only */}
-          <div className="hidden md:flex justify-start">
-            <div className="font-satoshi font-normal text-base lg:text-lg leading-relaxed text-[#454654] max-w-4xl space-y-4">
+          {/* Desktop Layout - Content */}
+          <div className="hidden md:flex flex-col justify-start">
+            <div className="font-satoshi font-normal text-base lg:text-lg leading-relaxed text-[#454654] max-w-5xl space-y-4">
               <p>
                 Founded in 2020 in Menlo Park, California, Techjays is on a bold mission to build the world's best AI products, apps, and solutions. With over 150 projects delivered across 7 countries, they've rapidly grown to serve 65+ clients spanning 15+ verticals in just a few years.
               </p>

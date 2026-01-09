@@ -29,16 +29,6 @@ export default function Home() {
       >
         <div className="relative snap-section">
           <About isVisible={!showSplash} />
-          {/* <div className="absolute h-0 z-30 bottom-0 left-0 right-0 w-full pointer-events-none translate-y-1/2">
-            <Image
-              src="/rectangle.svg"
-              alt="Section Connector"
-              width={1832}
-              height={217}
-              className="w-full h-auto object-cover"
-              priority
-            />
-          </div> */}
         </div>
         <div className="snap-section">
           <Timeline />

@@ -53,7 +53,7 @@ export default function ServiceCard({
 
         {/* Description */}
         {description && (
-          <p className="text-xs sm:text-sm md:text-sm text-[#454654] flex-grow font-satoshi leading-relaxed break-words overflow-hidden line-clamp-3">
+          <p className="text-xs sm:text-sm md:text-sm text-[#454654] font-satoshi leading-relaxed break-words overflow-hidden line-clamp-2">
             {description}
           </p>
         )}

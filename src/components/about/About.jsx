@@ -324,7 +324,7 @@ export default function PortfolioHero({ isVisible = true }) {
               `}
             >
               <div
-                className="relative w-full h-[400px] md:h-[500px] lg:h-[600px]"
+                className="relative w-full h-[400px] md:h-[500px] lg:h-[630px]"
                 // style={{
                 //   WebkitMaskImage:
                 //     'linear-gradient(to bottom, black 75%, transparent 100%)',
