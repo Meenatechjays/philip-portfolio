@@ -266,11 +266,11 @@ export default function World() {
           )}
 
           {/* Stats positioned on the map - Desktop only */}
-          <div className="hidden md:flex items-center justify-center gap-3 z-20 lg:flex-col">
+          {showFinalLogo && <div className="hidden md:flex items-center justify-center gap-3 z-20 lg:flex-col">
             <Stat value="7+" label="Countries" />
             <Stat value="150+" label="Projects" />
             <Stat value="170+" label="People" />
-          </div>
+          </div>}
          
         </div>
 

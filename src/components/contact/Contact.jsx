@@ -231,7 +231,7 @@ export default function Contact() {
         background: 'linear-gradient(180deg, #89BBDD 0%, #FFFFFF 100%)',
       }}
     >
-      <div className="mx-auto w-full px-2 md:px-4 lg:px-10">
+      <div className="mx-auto w-full px-2 md:px-4 lg:px-16">
         <div className="grid grid-cols-1 lg:grid-cols-2 items-center gap-12">
 
           {/* LEFT – CONTACT FORM */}
@@ -240,7 +240,7 @@ export default function Contact() {
               Get In Touch
             </h2>
 
-            <p className="section-body max-w-md">
+            <p className="section-body max-w-md pb-4">
               Connect for business opportunities, partnerships, or thought leadership discussions
             </p>
 
@@ -311,7 +311,7 @@ export default function Contact() {
           </div>
 
           {/* RIGHT – IMAGE + SVG CURVE */}
-          <div className="relative flex justify-end items-center">
+          <div className="relative flex justify-end items-center right-[-60px]">
             <div className="relative w-full max-w-[460px]">
 
               {/* SVG CURVED LINE - positioned to create arc on left side (behind image) */}
