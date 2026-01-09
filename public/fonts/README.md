@@ -34,7 +34,9 @@ The splash screen will use the following fallback fonts if "Sparkling Mellow Dem
 
 ### CSS Configuration
 
-The font is already configured in `src/app/globals.css`:
+⚠️ **IMPORTANT**: The `@font-face` declaration is currently **commented out** in `src/app/globals.css` to prevent 404 errors until the font files are added.
+
+Once you add the font files to this directory, uncomment the `@font-face` declaration:
 
 ```css
 @font-face {
@@ -48,13 +50,26 @@ The font is already configured in `src/app/globals.css`:
 }
 ```
 
-### Testing
+### Steps to Enable the Font
 
-After adding the font files:
-1. Clear your browser cache
-2. Restart the development server: `npm run dev`
-3. Visit http://localhost:3000
-4. The splash screen should display all text in **Sparkling Mellow Demo** font:
-   - Greeting text (Hello, Bonjour, Hallo, வணக்கம், Hola)
-   - "Sky is the Limit" text
+1. **Add font files** to this directory (`/public/fonts/`):
+   - `SparklingMellowDemo.woff2`
+   - `SparklingMellowDemo.woff`
+   - `SparklingMellowDemo.ttf`
+
+2. **Uncomment the `@font-face` declaration** in `src/app/globals.css`:
+   - Remove the `/*` and `*/` around the `@font-face` block
+   - Update the CSS variable `--font-sparkling-mellow` back to `'Sparkling Mellow Demo'`
+
+3. **Restart your development server**:
+   ```bash
+   npm run dev
+   ```
+
+4. **Clear browser cache** and reload the page
+
+5. **Verify in DevTools**:
+   - Open Network tab → Filter by "Font"
+   - All three font files should load with status 200 (not 404)
+   - The splash screen should display text in **Sparkling Mellow Demo** font
 

@@ -373,7 +373,7 @@ export default function Timeline() {
       </div>
 
       {/* Fixed Header */}
-      <div className="relative z-10 w-full flex items-start justify-center pt-8 md:pt-12 pb-2">
+      <div className="relative z-10 w-full flex items-start justify-center pt-8 md:pt-8 pb-8">
         {/* Timeline Container */}
         <div className="w-full max-w-[671px] opacity-100 flex flex-col gap-3 items-center px-4 mb-6">
           {/* Timeline Heading */}
@@ -488,7 +488,7 @@ export default function Timeline() {
         <div className="absolute bottom-10 right-8 z-30">
           <button
             onClick={skipAnimation}
-            className="box-border cursor-pointer flex flex-row justify-center items-center px-6 py-4 gap-3 isolate w-[196px] h-14 bg-[rgba(167,185,255,0.2)] rounded-lg font-satoshi text-[#1F2024] hover:bg-[rgba(167,185,255,0.3)] transition-colors duration-200"
+            className="box-border cursor-pointer font-semibold flex flex-row justify-center items-center px-6 py-4 gap-3 isolate w-[196px] h-14 bg-[rgba(167,185,255,0.2)] rounded-lg font-satoshi text-[#1F2024] hover:bg-[rgba(167,185,255,0.3)] transition-colors duration-200"
           >
             <span>Skip Animation</span>
             <Image

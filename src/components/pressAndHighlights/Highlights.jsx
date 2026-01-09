@@ -26,16 +26,16 @@ export default function Highlights() {
       </div>
 
       {/* Main Content Container */}
-      <div className="relative z-5 h-screen flex flex-col items-center justify-start px-4 pt-10 pb-6">
+      <div className="relative z-5 h-screen flex flex-col items-center justify-start px-4 pt-8 pb-6">
         {/* Header Section */}
         <div className="w-full max-w-[671px] flex flex-col gap-3 items-center mb-3">
           {/* Main Heading */}
-          <h2 className="w-full max-w-[428px] font-satoshi font-bold text-3xl leading-[100%] tracking-[0%] text-center text-[#1F2024] whitespace-nowrap">
+          <h2 className="w-full font-satoshi section-heading leading-[100%] tracking-[0%] text-center text-[#1F2024] whitespace-nowrap">
             Press & Podcast Highlights
           </h2>
           
           {/* Description Paragraph */}
-          <p className="w-full max-w-[671px] font-satoshi font-normal text-base leading-normal tracking-[0%] text-center text-[#454654]">
+          <p className="w-full max-w-[671px] font-satoshi font-normal text-lg leading-normal tracking-[0%] text-center text-[#454654]">
             Lorem ipsum dolor sit amet consectetur. Aliquam mattis tortor magna nisl. Non risus semper vel est amet leo non
           </p>
         </div>
@@ -50,10 +50,10 @@ export default function Highlights() {
         </div>
 
         {/* Content Area - Highlights Cards */}
-        <div className="relative w-[90%] mt-8 flex flex-row items-start justify-center gap-6 flex-nowrap px-4 lg:mx-10">
+        <div className="relative w-full mt-8 flex flex-row items-center gap-6 justify-center flex-nowrap px-4 lg:pl-10 lg:pr-10 lg:mx-10">
           {/* Card 1 - Press One Image - Highest */}
           <motion.div
-            className="w-full"
+            className="w-full max-w-[280px]"
             animate={{
               y: [0, -12, 0],
             }}
@@ -76,7 +76,7 @@ export default function Highlights() {
 
           {/* Card 2 - Press Two Image - Lower than Card 1 */}
           <motion.div
-            className="w-full"
+            className="w-full max-w-[280px]"
             animate={{
               y: [0, -12, 0],
             }}
@@ -93,13 +93,13 @@ export default function Highlights() {
               description="Discover how cutting-edge technology solutions are transforming industries and driving digital transformation."
               readMoreLink="/article"
               position={{ left: '0', top: '0' }}
-              className="relative translate-y-20"
+              className="relative translate-y-10"
             />
           </motion.div>
 
           {/* Card 3 - Philip Header Image - Higher than Card 2 */}
           <motion.div
-            className="w-full"
+            className="w-full max-w-[280px]"
             animate={{
               y: [0, -12, 0],
             }}
@@ -122,7 +122,7 @@ export default function Highlights() {
 
           {/* Card 4 - Timeline 2018 Image - Lower than Card 3 */}
           <motion.div
-            className="w-full"
+            className="w-full max-w-[280px]"
             animate={{
               y: [0, -12, 0],
             }}
@@ -139,7 +139,7 @@ export default function Highlights() {
               description="A look back at the milestones and achievements that have shaped the technology landscape over the years."
               readMoreLink="/article"
               position={{ left: '0', top: '0' }}
-              className="relative translate-y-20"
+              className="relative translate-y-10"
             />
           </motion.div>
         </div>

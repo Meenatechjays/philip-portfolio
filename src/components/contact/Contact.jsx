@@ -22,13 +22,11 @@ export default function Contact() {
 
   const buttonStyle = isSubmitting
     ? {
-        border: '1px solid',
         borderImageSource: 'linear-gradient(180deg, #FFFFFF 0%, #999999 100%)',
         borderImageSlice: 1,
         background: '#9ca3af',
       }
     : {
-        border: '1px solid',
         borderImageSource: 'linear-gradient(180deg, #FFFFFF 0%, #999999 100%)',
         borderImageSlice: 1,
         background: 'var(--Colors-Surface-Buttons-Button-normal, #112643)',
@@ -244,7 +242,7 @@ export default function Contact() {
               Connect for business opportunities, partnerships, or thought leadership discussions
             </p>
 
-            <form onSubmit={handleSubmit} className="flex flex-col gap-3 max-w-lg">
+            <form onSubmit={handleSubmit} className="flex flex-col gap-4 max-w-lg">
               <div className="grid grid-cols-2 gap-3">
                 <input
                   name="name"
@@ -387,41 +385,6 @@ export default function Contact() {
 
         </div>
       </div>
-      <style jsx>{`
-        @keyframes sheen {
-          0% {
-            transform: translateX(-150%) rotate(20deg);
-          }
-          100% {
-            transform: translateX(150%) rotate(20deg);
-          }
-        }
-
-        .btn-sheen {
-          position: relative;
-          overflow: hidden;
-        }
-
-        .btn-sheen::after {
-          content: '';
-          position: absolute;
-          top: -50%;
-          left: -50%;
-          width: 200%;
-          height: 200%;
-          background: linear-gradient(
-            120deg,
-            transparent 0%,
-            rgba(255, 255, 255, 0.18) 45%,
-            rgba(255, 255, 255, 0.35) 50%,
-            rgba(255, 255, 255, 0.18) 55%,
-            transparent 70%
-          );
-          transform: translateX(-150%) rotate(20deg);
-          animation: sheen 2.2s linear infinite;
-          pointer-events: none;
-        }
-      `}</style>
     </section>
   );
 }

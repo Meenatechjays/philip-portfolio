@@ -3,9 +3,16 @@
 /* Custom Font - Sparkling Mellow Demo */
 @font-face {
   font-family: 'Sparkling Mellow Demo';
-  src: url('/fonts/SparklingMellowDemo.woff2') format('woff2'),
-       url('/fonts/SparklingMellowDemo.woff') format('woff'),
-       url('/fonts/SparklingMellowDemo.ttf') format('truetype');
+  src: url('/fonts/SparklingMellowDemo-Regular.otf') format('opentype');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+/* Custom Font - Satoshi */
+@font-face {
+  font-family: 'Satoshi';
+  src: url('/fonts/Satoshi-Regular.otf') format('opentype');
   font-weight: 400;
   font-style: normal;
   font-display: swap;
@@ -15,7 +22,7 @@
   --background: #ffffff;
   --foreground: #171717;
   --investment-bg: #F7F7F7;
-  --font-sparkling-mellow: 'Sparkling Mellow Demo';
+  --font-sparkling-mellow: 'Sparkling Mellow Demo', 'Geist', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
   --font-heading: 'Satoshi', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
   --text-primary: #1F2024;
   --text-secondary: #454654;
@@ -333,4 +340,39 @@ html {
   scroll-snap-align: start;
   scroll-snap-stop: normal;
   /* Allow natural height, no minimum height requirement */
+}
+
+/* Button sheen animation for contact form */
+@keyframes sheen {
+  0% {
+    transform: translateX(-150%) rotate(20deg);
+  }
+  100% {
+    transform: translateX(150%) rotate(20deg);
+  }
+}
+
+.btn-sheen {
+  position: relative;
+  overflow: hidden;
+}
+
+.btn-sheen::after {
+  content: '';
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: linear-gradient(
+    120deg,
+    transparent 0%,
+    rgba(255, 255, 255, 0.18) 45%,
+    rgba(255, 255, 255, 0.35) 50%,
+    rgba(255, 255, 255, 0.18) 55%,
+    transparent 70%
+  );
+  transform: translateX(-150%) rotate(20deg);
+  animation: sheen 2.2s linear infinite;
+  pointer-events: none;
 }

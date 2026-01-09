@@ -70,7 +70,7 @@ export default function Investors() {
     >
       {/* Investment Header */}
       <div className="relative z-10 w-full max-w-[671px] flex flex-col gap-2 md:gap-4 items-center mb-2 md:mb-4 px-4 md:px-6 mx-auto pt-8">
-        <h2 className="w-full max-w-[428px] section-heading text-center mx-auto">
+        <h2 className="w-full section-heading text-center mx-auto">
           Investment Portfolio
         </h2>
         <p className="w-full max-w-[671px] section-body text-center mx-auto">
