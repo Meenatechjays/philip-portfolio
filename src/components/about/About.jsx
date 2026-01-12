@@ -10,7 +10,6 @@ export default function PortfolioHero({ isVisible = true }) {
   const [isRightMounted, setIsRightMounted] = useState(false);
   const [isInView, setIsInView] = useState(false);
   const [scrollHijackActive, setScrollHijackActive] = useState(false);
-  const [aboutComplete, setAboutComplete] = useState(false);
   const [animationDirection, setAnimationDirection] = useState(1); // 1 for down (next), -1 for up (previous)
   const sectionRef = useRef(null);
   const isScrolling = useRef(false);
@@ -42,20 +41,17 @@ export default function PortfolioHero({ isVisible = true }) {
     const observer = new IntersectionObserver(
       (entries) => {
         entries.forEach((entry) => {
-          if (entry.isIntersecting) {
-            setIsInView(true);
-            // Activate scroll hijacking after right content is mounted
-            if (isRightMounted) {
-              setScrollHijackActive(true);
-            }
+          setIsInView(entry.isIntersecting);
+          // Activate scroll hijacking after right content is mounted and section is in view
+          if (entry.isIntersecting && isRightMounted) {
+            setScrollHijackActive(true);
           } else {
-            setIsInView(false);
             setScrollHijackActive(false);
           }
         });
       },
       {
-        threshold: 0.5, // Trigger when 70% of the component is visible (ensures section is primary focus for scroll snap)
+        threshold: 0.7,
         rootMargin: '0px',
       }
     );
@@ -83,10 +79,6 @@ export default function PortfolioHero({ isVisible = true }) {
     // Show right content after 2000ms
     const rightMountTimer = setTimeout(() => {
       setIsRightMounted(true);
-      // Activate scroll hijacking after right content is mounted and section is in view
-      if (isInView) {
-        setScrollHijackActive(true);
-      }
     }, 2000);
 
     return () => {
@@ -95,40 +87,15 @@ export default function PortfolioHero({ isVisible = true }) {
     };
   }, [isVisible, isInView]);
 
-  // Lock body scroll when scroll hijacking is active
-  // IMPORTANT: Restore overflow immediately when not actively hijacking to allow scroll snap to work
+  // Scroll hijacking - only hijack scroll within About section boundaries
   useEffect(() => {
-    // Only lock scroll when ALL conditions are met:
-    // 1. Scroll hijacking is active
-    // 2. About section is not complete
-    // 3. Section is in view
-    // This ensures scroll snap works when navigating between sections
-    if (scrollHijackActive && !aboutComplete && isInView) {
-      document.body.style.overflow = 'hidden';
-      document.body.style.height = '100vh';
-    } else {
-      // Immediately restore scroll when conditions aren't met (allows scroll snap to work)
-      document.body.style.overflow = '';
-      document.body.style.height = '';
-    }
-
-    return () => {
-      // Always cleanup - restore scroll on unmount or when conditions change
-      document.body.style.overflow = '';
-      document.body.style.height = '';
-    };
-  }, [scrollHijackActive, aboutComplete, isInView]);
-
-  // Scroll hijacking - scroll up to show next content item
-  useEffect(() => {
-    if (!isInView || !scrollHijackActive) return;
+    if (!isInView || !scrollHijackActive || !isRightMounted) return;
 
     const SCROLL_THRESHOLD = 50;
 
     const moveToItem = (targetIndex) => {
       if (isScrolling.current) return;
       
-      // Clamp index to valid range
       const clampedIndex = Math.max(0, Math.min(targetIndex, lastItemIndex));
       
       if (clampedIndex === currentIndex) {
@@ -136,7 +103,6 @@ export default function PortfolioHero({ isVisible = true }) {
         return;
       }
       
-      // Set animation direction based on whether we're going forward or backward
       const direction = clampedIndex > currentIndex ? 1 : -1;
       setAnimationDirection(direction);
       
@@ -144,51 +110,38 @@ export default function PortfolioHero({ isVisible = true }) {
       setCurrentIndex(clampedIndex);
       scrollAccumulator.current = 0;
 
-      // If we're scrolling up from the last item, reset aboutComplete to allow navigation
-      if (currentIndex >= lastItemIndex && scrollDirection.current < 0) {
-        setAboutComplete(false);
-        setScrollHijackActive(true);
-      }
-      
-      // If we reached the last item (Investor) by scrolling down, allow normal scrolling
-      if (clampedIndex >= lastItemIndex && scrollDirection.current > 0) {
-        setTimeout(() => {
-          setAboutComplete(true);
-          setScrollHijackActive(false);
-          isScrolling.current = false;
-          // Restore body scroll
-          document.body.style.overflow = '';
-          document.body.style.height = '';
-        }, 500);
-      } else {
-        setTimeout(() => {
-          isScrolling.current = false;
-        }, 500);
-      }
+      setTimeout(() => {
+        isScrolling.current = false;
+      }, 500);
     };
 
     const handleWheel = (e) => {
-      const currentDirection = e.deltaY > 0 ? 1 : -1;
-      const isScrollingUpFromLast = aboutComplete && currentIndex >= lastItemIndex && currentDirection < 0;
-      
-      // Allow normal scrolling if about section is complete, unless scrolling up from last item
-      if (aboutComplete && !isScrollingUpFromLast) {
-        return;
+      // Don't hijack if section is not in view or not active
+      if (!isInView || !scrollHijackActive) {
+        return; // Let scroll-snap handle it
       }
 
+      // Allow normal scroll when at boundaries (let scroll-snap work)
+      const currentDirection = e.deltaY > 0 ? 1 : -1;
+      if (currentIndex === 0 && currentDirection < 0) {
+        return; // At first item scrolling up - allow scroll to previous section
+      }
+      if (currentIndex >= lastItemIndex && currentDirection > 0) {
+        return; // At last item scrolling down - allow scroll to next section
+      }
+
+      // Prevent default only when actively hijacking (not at boundaries)
       if (isScrolling.current) {
         e.preventDefault();
         e.stopPropagation();
         return;
       }
 
-      // Prevent default to lock scroll
       e.preventDefault();
       e.stopPropagation();
 
       // Handle vertical scroll
       if (Math.abs(e.deltaY) > Math.abs(e.deltaX)) {
-        // Reset accumulator if direction changed
         if (scrollDirection.current !== 0 && scrollDirection.current !== currentDirection) {
           scrollAccumulator.current = 0;
         }
@@ -196,39 +149,19 @@ export default function PortfolioHero({ isVisible = true }) {
         scrollDirection.current = currentDirection;
         scrollAccumulator.current += Math.abs(e.deltaY);
         
-        // Move to next/previous item when threshold is reached
         if (scrollAccumulator.current > SCROLL_THRESHOLD) {
-          let targetIndex;
-          if (currentDirection > 0) {
-            // Scrolling down - move to next item
-            targetIndex = currentIndex + 1;
-          } else {
-            // Scrolling up - move to previous item
-            targetIndex = currentIndex - 1;
-          }
-          
+          const targetIndex = currentDirection > 0 ? currentIndex + 1 : currentIndex - 1;
           moveToItem(targetIndex);
         }
       }
     };
 
-    // Prevent touch scroll on mobile
-    const handleTouchMove = (e) => {
-      // Allow touch scrolling if about section is complete (unless we need to handle scroll up from last)
-      if (aboutComplete) {
-        return;
-      }
-      e.preventDefault();
-    };
-
     window.addEventListener('wheel', handleWheel, { passive: false });
-    window.addEventListener('touchmove', handleTouchMove, { passive: false });
 
     return () => {
       window.removeEventListener('wheel', handleWheel);
-      window.removeEventListener('touchmove', handleTouchMove);
     };
-  }, [isInView, scrollHijackActive, aboutComplete, currentIndex, lastItemIndex]);
+  }, [isInView, scrollHijackActive, isRightMounted, currentIndex, lastItemIndex]);
 
   /* Animation variants - direction aware */
   const getContentVariants = (direction) => ({

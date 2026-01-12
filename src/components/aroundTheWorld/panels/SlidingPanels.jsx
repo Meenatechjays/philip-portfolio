@@ -162,7 +162,7 @@ export default function SlidingPanels({ stacks, active, previousIndex = 0, activ
                   pointerEvents: shouldHide ? 'none' : 'auto',
                 }}
               >
-                <div className={`w-full py-1 ${
+                <div className={`w-full py-8 ${
                   stack.id === 'world' 
                     ? 'pl-4 sm:pl-6 md:pl-8 lg:pl-10 xl:pl-12 2xl:pl-16 pr-0' 
                     : 'px-4 sm:px-6 md:px-8 lg:px-10 xl:px-12 2xl:px-16'

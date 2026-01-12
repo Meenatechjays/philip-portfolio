@@ -34,10 +34,6 @@ export default function Timeline() {
 
   // Skip animation and allow vertical scrolling
   const skipAnimation = () => {
-    // Immediately restore body scroll
-    document.body.style.overflow = '';
-    document.body.style.height = '';
-    
     // Mark timeline as complete to allow vertical scrolling
     setTimelineComplete(true);
     setScrollHijackActive(false);
@@ -54,13 +50,6 @@ export default function Timeline() {
       });
       setCurrentCardIndex(lastCardIndex);
     }
-    
-    // Allow a small delay to ensure state updates, then enable normal scrolling
-    setTimeout(() => {
-      // Force remove any scroll prevention
-      document.body.style.overflow = '';
-      document.body.style.height = '';
-    }, 100);
   };
 
   // Dynamic timeline cards data - easily add more cards in the future
@@ -121,16 +110,21 @@ export default function Timeline() {
     const observer = new IntersectionObserver(
       (entries) => {
         entries.forEach((entry) => {
-          if (entry.isIntersecting && !hasStartedAnimationRef.current) {
-            setIsInView(true);
-          } else if (!entry.isIntersecting) {
+          // Only trigger when section is significantly visible (at least 80% in viewport)
+          // This ensures the user has actually scrolled to the Timeline section
+          if (entry.isIntersecting && entry.intersectionRatio >= 0.8 && !hasStartedAnimationRef.current) {
+            // Add a small delay to ensure scroll-snap has completed
+            setTimeout(() => {
+              setIsInView(true);
+            }, 100);
+          } else if (!entry.isIntersecting || entry.intersectionRatio < 0.3) {
             // Unlock scroll when section leaves viewport
             setIsInView(false);
           }
         });
       },
       {
-        threshold: 0.7, // Trigger when 70% of the component is visible (ensures section is primary focus for scroll snap)
+        threshold: [0, 0.3, 0.5, 0.8, 1.0], // Multiple thresholds for better detection
         rootMargin: '0px',
       }
     );
@@ -197,33 +191,6 @@ export default function Timeline() {
     runIntro();
   }, [isInView, timelineControls, cardPositions, cardWidth]);
 
-  // Lock body scroll only when scroll hijacking is active (after intro animation) AND section is in view
-  // Disable scroll lock when on last card
-  // IMPORTANT: Restore overflow immediately when not actively hijacking to allow scroll snap to work
-  useEffect(() => {
-    const isOnLastCard = currentCardIndex >= lastCardIndex;
-    
-    // Only lock scroll when ALL conditions are met:
-    // 1. Scroll hijacking is active
-    // 2. Timeline is not complete
-    // 3. Section is in view
-    // 4. Not on last card
-    // This ensures scroll snap works when navigating between sections
-    if (scrollHijackActive && !timelineComplete && isInView && !isOnLastCard) {
-      document.body.style.overflow = 'hidden';
-      document.body.style.height = '100vh';
-    } else {
-      // Immediately restore scroll when conditions aren't met (allows scroll snap to work)
-      document.body.style.overflow = '';
-      document.body.style.height = '';
-    }
-
-    return () => {
-      // Always cleanup - restore scroll on unmount or when conditions change
-      document.body.style.overflow = '';
-      document.body.style.height = '';
-    };
-  }, [scrollHijackActive, timelineComplete, isInView, currentCardIndex, lastCardIndex]);
 
   // Update scroll position based on currentCardIndex (like carousel)
   useEffect(() => {
@@ -240,25 +207,32 @@ export default function Timeline() {
     });
   }, [currentCardIndex, cardPositions, cardWidth, scrollHijackActive]);
 
-  // Scroll hijacking with snap-to-card behavior (inspired by reference)
+  // Scroll hijacking - only hijack scroll within Timeline section boundaries
   useEffect(() => {
     if (!isInView || !scrollHijackActive || timelineComplete) return;
 
     const handleWheel = (e) => {
+      // Don't hijack if section is not in view or not active
+      if (!isInView || !scrollHijackActive) {
+        return; // Let scroll-snap handle it
+      }
+
+      // Allow normal scroll when at boundaries (let scroll-snap work) - CHECK BEFORE THROTTLING
+      if (currentCardIndex >= lastCardIndex && e.deltaY > 0) {
+        return; // At last card scrolling down - allow scroll to next section
+      }
+      if (currentCardIndex === 0 && e.deltaY < 0) {
+        return; // At first card scrolling up - allow scroll to previous section
+      }
+
+      // Throttle scroll events (only after confirming we should hijack)
       const now = Date.now();
-      
-      // Throttle scroll events
       if (now - lastScrollTime.current < 800 || isScrollingRef.current) {
         e.preventDefault();
         return;
       }
 
-      // If we're on the last card and scrolling forward, allow normal scrolling
-      if (currentCardIndex >= lastCardIndex && e.deltaY > 0) {
-        return; // Allow normal page scroll
-      }
-
-      // Prevent default scroll for hijacking
+      // Prevent default only when actively hijacking (not at boundaries)
       e.preventDefault();
       
       isScrollingRef.current = true;
@@ -267,12 +241,10 @@ export default function Timeline() {
       // Handle vertical scroll (down = next card, up = previous card)
       if (Math.abs(e.deltaY) > Math.abs(e.deltaX)) {
         if (e.deltaY > 0) {
-          // Scroll down = move forward
           if (currentCardIndex < lastCardIndex) {
             setCurrentCardIndex(prev => prev + 1);
           }
         } else {
-          // Scroll up = move backward
           if (currentCardIndex > 0) {
             setCurrentCardIndex(prev => prev - 1);
           }
@@ -281,12 +253,10 @@ export default function Timeline() {
       // Handle horizontal scroll (right = next card, left = previous card)
       else if (Math.abs(e.deltaX) > 0) {
         if (e.deltaX > 0) {
-          // Scroll right = move forward
           if (currentCardIndex < lastCardIndex) {
             setCurrentCardIndex(prev => prev + 1);
           }
         } else {
-          // Scroll left = move backward
           if (currentCardIndex > 0) {
             setCurrentCardIndex(prev => prev - 1);
           }
@@ -298,24 +268,10 @@ export default function Timeline() {
       }, 800);
     };
 
-    // Prevent touch scroll on mobile only when timeline is active
-    const handleTouchMove = (e) => {
-      if (timelineComplete) {
-        return;
-      }
-      // If on last card, allow touch scrolling
-      if (currentCardIndex >= lastCardIndex) {
-        return;
-      }
-      e.preventDefault();
-    };
-
     window.addEventListener('wheel', handleWheel, { passive: false });
-    window.addEventListener('touchmove', handleTouchMove, { passive: false });
     
     return () => {
       window.removeEventListener('wheel', handleWheel);
-      window.removeEventListener('touchmove', handleTouchMove);
     };
   }, [isInView, scrollHijackActive, timelineComplete, currentCardIndex, lastCardIndex]);
 
