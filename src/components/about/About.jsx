@@ -71,6 +71,17 @@ export default function PortfolioHero({ isVisible = true }) {
     };
   }, [isRightMounted]);
 
+  // Disable scroll-snap when scroll hijack is active (they should never coexist)
+  useEffect(() => {
+    if (sectionRef.current) {
+      if (scrollHijackActive) {
+        sectionRef.current.style.scrollSnapAlign = 'none';
+      } else {
+        sectionRef.current.style.scrollSnapAlign = 'start';
+      }
+    }
+  }, [scrollHijackActive]);
+
   // Mount animation effects - triggered only when component becomes visible (after splash)
   useEffect(() => {
     if (!isVisible) return;
@@ -186,7 +197,11 @@ export default function PortfolioHero({ isVisible = true }) {
   });
 
   return (
-    <div ref={sectionRef} className="h-full relative overflow-hidden">
+    <div 
+      ref={sectionRef} 
+      className="h-[100dvh] relative overflow-hidden"
+      style={{ scrollSnapAlign: scrollHijackActive ? 'none' : 'start' }}
+    >
       {/* ================= BACKGROUND ================= */}
       <div className="absolute inset-0">
         <Image
@@ -263,7 +278,7 @@ export default function PortfolioHero({ isVisible = true }) {
           <div className="md:order-2 relative"></div>
 
           {/* Center Image - Absolutely positioned to not affect layout */}
-          <div className="absolute left-1/2 bottom-0 -translate-x-1/2 w-full max-w-[1000px] pointer-events-none">
+          <div className="absolute left-1/2 -translate-x-1/2 w-full max-w-[1000px] pointer-events-none">
             <div 
               className={`transition-all duration-700 ease-out delay-200
               `}
@@ -317,6 +332,16 @@ export default function PortfolioHero({ isVisible = true }) {
           </div>
         </div>
       </div>
+
+      {/* Bottom blur and white overlay */}
+      <div 
+        className="absolute left-0 right-0 h-[20px] bg-transparent z-30 pointer-events-none"
+        style={{
+          // backdropFilter: 'blur(20px)',
+          // WebkitBackdropFilter: 'blur(20px)',
+          boxShadow: '0 -10px 20px rgba(255, 255, 255, 0.8)',
+        }}
+      />
     </div>
 
   );

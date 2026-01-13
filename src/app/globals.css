@@ -327,6 +327,16 @@ body {
   height: 100%;
   overflow-y: scroll;
   scroll-snap-type: y mandatory;
+  scroll-padding-top: 0;
+}
+
+/* Disable scroll-snap during initial load to prevent scroll offset */
+body.scroll-snap-disabled {
+  scroll-snap-type: none !important;
+}
+
+html.scroll-snap-disabled {
+  scroll-snap-type: none !important;
 }
 
 @media (prefers-reduced-motion: no-preference) {
@@ -337,14 +347,27 @@ body {
   body {
     scroll-snap-type: y mandatory;
   }
+  
+  html.scroll-snap-disabled {
+    scroll-snap-type: none !important;
+  }
+  
+  body.scroll-snap-disabled {
+    scroll-snap-type: none !important;
+  }
 }
 
 /* Scroll snap alignment for full-height sections */
 .snap-section {
   scroll-snap-align: start;
   scroll-snap-stop: always;
-  height: 100vh;
+  scroll-margin-top: 0;
+  scroll-margin-bottom: 0;
+  height: 100dvh; /* Use dynamic viewport height to account for mobile UI */
+  overflow: hidden; /* Lock height - prevent content from expanding */
   flex-shrink: 0;
+  position: relative;
+  box-sizing: border-box;
 }
 
 /* Scroll snap alignment for variable-height sections (like Contact) */
@@ -352,6 +375,25 @@ body {
   scroll-snap-align: start;
   scroll-snap-stop: always;
   /* Allow natural height, no minimum height requirement */
+}
+
+/* Prevent scrolling during splash screen */
+body.splash-active {
+  overflow: hidden !important;
+  position: fixed;
+  width: 100%;
+  height: 100%;
+  top: 0;
+  left: 0;
+}
+
+/* Ensure main container doesn't interfere with scroll-snap calculations */
+main {
+  scroll-snap-type: none;
+}
+
+html.splash-active {
+  overflow: hidden !important;
 }
 
 /* Button sheen animation for contact form */

@@ -35,6 +35,11 @@ export default function SplashScreen({ onComplete }) {
     if (hasStartedRef.current) return;
     hasStartedRef.current = true;
 
+    // Lock scroll to top immediately when splash screen mounts
+    window.scrollTo({ top: 0, left: 0, behavior: 'instant' });
+    document.documentElement.scrollTop = 0;
+    document.body.scrollTop = 0;
+
     // Cycle through greetings every 600ms (3.6s total for 6 greetings)
     intervalRef.current = setInterval(() => {
       setCurrentGreeting((prev) => {

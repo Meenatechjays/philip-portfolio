@@ -357,7 +357,7 @@ export default function Timeline() {
       {/* Scrollable Timeline Container */}
       <div
         ref={scrollContainerRef}
-        className="relative z-20 w-full h-[calc(100vh-200px)] overflow-x-auto overflow-y-hidden scroll-smooth overscroll-x-none [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]"
+        className="relative z-20 w-full h-[calc(100dvh-200px)] overflow-x-auto overflow-y-hidden scroll-smooth overscroll-x-none [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]"
         style={{ overscrollBehaviorX: 'none' }}
       >
         <div
