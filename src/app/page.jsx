@@ -27,7 +27,7 @@ export default function Home() {
           showSplash ? 'opacity-0 translate-y-16' : 'opacity-100 translate-y-0'
         }`}
       >
-        <div className="relative snap-section">
+        <div className="snap-section">
           <About isVisible={!showSplash} />
         </div>
         <div className="snap-section">

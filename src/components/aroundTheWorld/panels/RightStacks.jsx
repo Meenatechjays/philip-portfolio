@@ -51,7 +51,7 @@ export default function RightStacks({ stacks, active, onChange, activeIndex }) {
       }} />
       
       {/* All stacks in one container - moves as rigid group with content */}
-      <div className="absolute left-0 top-0 w-full h-screen pointer-events-none z-[20]">
+      <div className="absolute left-0 top-0 w-full h-full pointer-events-none z-[20]">
         {stacks.map((stack, index) => {
           const styleId = `stack-${stack.id}-${activeIndex}`;
 
@@ -60,14 +60,14 @@ export default function RightStacks({ stacks, active, onChange, activeIndex }) {
               key={stack.id}
               id={styleId}
               onClick={() => onChange(stack.id)}
-              className="absolute top-0 h-full py-8 px-2 sm:px-3 border-l border-white flex flex-col items-center justify-between cursor-pointer w-[80px] sm:w-[90px] md:w-[100px] lg:w-[110px] pointer-events-auto will-change-[left]"
+              className="absolute top-0 h-full py-9 px-2 sm:px-3 border-l border-white flex flex-col items-center justify-between cursor-pointer w-[80px] sm:w-[90px] md:w-[100px] lg:w-[110px] pointer-events-auto will-change-[left]"
               style={{
                 background: "linear-gradient(180deg, #DBECF6 0%, #93CDEB 100%)",
                 backfaceVisibility: 'hidden',
                 WebkitBackfaceVisibility: 'hidden',
               }}
             >
-              <div className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold text-center font-heading tracking-tight leading-none font-satoshi text-[#1F2024] flex-shrink-0">
+              <div className="text-2xl sm:text-3xl md:text-4xl lg:text-4xl font-bold text-center font-heading tracking-tight leading-none font-satoshi text-[#1F2024] flex-shrink-0">
                 {stack.number}
               </div>
 
@@ -85,7 +85,7 @@ export default function RightStacks({ stacks, active, onChange, activeIndex }) {
       </div>
       
       {/* Spacer to maintain layout - same width as right-side stacks */}
-      <div className="flex self-stretch h-screen pointer-events-none">
+      <div className="flex self-stretch h-full pointer-events-none">
         {stacks.slice(activeIndex + 1).map((_, idx) => (
           <div
             key={`spacer-${idx}`}

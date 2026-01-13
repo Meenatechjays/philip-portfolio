@@ -31,6 +31,10 @@ export default function PortfolioHero({ isVisible = true }) {
       title: 'Investor',
       description:
         'As an investor, Philip focuses on early stage ideas that solve real world inefficiencies. He brings more than capital. He brings mentorship, strategic clarity, and operational rigor. His investment style is analytical yet empathetic. He backs people as much as ideas.'
+    },
+    {
+      title: '',
+      description: ''
     }
   ];
 
@@ -182,7 +186,7 @@ export default function PortfolioHero({ isVisible = true }) {
   });
 
   return (
-    <div ref={sectionRef} className="h-screen relative overflow-hidden">
+    <div ref={sectionRef} className="h-full relative overflow-hidden">
       {/* ================= BACKGROUND ================= */}
       <div className="absolute inset-0">
         <Image
@@ -220,7 +224,7 @@ export default function PortfolioHero({ isVisible = true }) {
       </div>
 
       {/* ================= MAIN CONTENT ================= */}
-      <div className="relative z-10 h-screen flex flex-col">
+      <div className="relative z-10 h-full flex flex-col">
         {/* Logo - Header Section */}
         <div className="pt-8 md:pt-12 lg:pt-8 px-4 sm:px-6 md:px-8 lg:px-[76px]">
           <div 

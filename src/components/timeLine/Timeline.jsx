@@ -323,7 +323,7 @@ export default function Timeline() {
   return (
     <section 
       ref={sectionRef}
-      className="relative h-screen w-full overflow-hidden snap-section-start"
+      className="relative h-full w-full overflow-hidden"
       style={{ position: 'relative' }}
     >
       {/* Background SVG */}

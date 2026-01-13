@@ -66,7 +66,7 @@ export default function Investors() {
 
   return (
     <section 
-      className="investment-section investment-section-bg relative w-full h-screen overflow-visible pb-2"
+      className="investment-section investment-section-bg relative w-full h-full overflow-visible pb-2"
     >
       {/* Investment Header */}
       <div className="relative z-10 w-full max-w-[671px] flex flex-col gap-2 md:gap-4 items-center mb-2 md:mb-4 px-4 md:px-6 mx-auto pt-8">

@@ -100,7 +100,10 @@ export default function InvestmentCard({
 
       {/* Content Layer - Slides up and fades in on hover */}
       <motion.div
-        className="absolute bottom-0 left-0 right-0 z-10 px-6 pt-8 pb-6 bg-white"
+        className="absolute bottom-0 left-0 right-0 z-10 px-6 pt-8 pb-6 backdrop-blur-md"
+        style={{
+          background: 'linear-gradient(to bottom, rgba(255, 255, 255, 0.7) 0%, rgba(255, 255, 255, 0.85) 40%, rgba(255, 255, 255, 0.95) 70%, rgba(255, 255, 255, 1) 100%)',
+        }}
         variants={contentVariants}
       >
         {/* Star Icon - Rotates smoothly to -180deg on hover */}

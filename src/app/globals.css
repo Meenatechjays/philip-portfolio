@@ -316,29 +316,41 @@ section .investment-section-bg {
   overflow: hidden;
 }
 
-/* Scroll Snap Configuration - Midpoint-based snapping */
+/* Scroll Snap Configuration - Strict snapping */
 html {
   scroll-snap-type: y proximity;
   scroll-behavior: smooth;
+  height: 100%;
+}
+
+body {
+  height: 100%;
+  overflow-y: scroll;
+  scroll-snap-type: y mandatory;
 }
 
 @media (prefers-reduced-motion: no-preference) {
   html {
     scroll-snap-type: y mandatory;
   }
+  
+  body {
+    scroll-snap-type: y mandatory;
+  }
 }
 
 /* Scroll snap alignment for full-height sections */
 .snap-section {
-  scroll-snap-align: center;
+  scroll-snap-align: start;
   scroll-snap-stop: always;
-  min-height: 100vh;
+  height: 100vh;
+  flex-shrink: 0;
 }
 
 /* Scroll snap alignment for variable-height sections (like Contact) */
 .snap-section-start {
   scroll-snap-align: start;
-  scroll-snap-stop: normal;
+  scroll-snap-stop: always;
   /* Allow natural height, no minimum height requirement */
 }
 
