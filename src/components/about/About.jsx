@@ -278,7 +278,7 @@ export default function PortfolioHero({ isVisible = true }) {
           <div className="md:order-2 relative"></div>
 
           {/* Center Image - Absolutely positioned to not affect layout */}
-          <div className="absolute left-1/2 -translate-x-1/2 w-full max-w-[1000px] pointer-events-none">
+          <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-full max-w-[1000px] pointer-events-none">
             <div 
               className={`transition-all duration-700 ease-out delay-200
               `}
