@@ -17,6 +17,7 @@ export default function SplashScreen({ onComplete }) {
   const [currentGreeting, setCurrentGreeting] = useState(0);
   const [showSkyPhase, setShowSkyPhase] = useState(false);
   const [isGreetingComplete, setIsGreetingComplete] = useState(false);
+  const [isReady, setIsReady] = useState(false);
   const intervalRef = useRef(null);
   const hasStartedRef = useRef(false);
 
@@ -30,9 +31,49 @@ export default function SplashScreen({ onComplete }) {
     "Hola"        // Spanish
   ];
 
+  // Wait for critical resources (images and fonts) to load before rendering
   useEffect(() => {
-    // Prevent duplicate execution in React Strict Mode
-    if (hasStartedRef.current) return;
+    const loadResources = async () => {
+      try {
+        // Wait for fonts to load
+        await document.fonts.ready;
+        
+        // Preload critical images
+        const bannerImage = new Image();
+        const skyImage = new Image();
+        
+        const bannerPromise = new Promise((resolve, reject) => {
+          bannerImage.onload = resolve;
+          bannerImage.onerror = reject;
+          // bannerImage.src = '/Banner Blue.png';
+        });
+        
+        const skyPromise = new Promise((resolve, reject) => {
+          skyImage.onload = resolve;
+          skyImage.onerror = reject;
+          skyImage.src = '/Sky.png';
+        });
+        
+        // Wait for both images to load
+        await Promise.all([bannerPromise, skyPromise]);
+        
+        // Small delay to ensure rendering is stable
+        await new Promise(resolve => setTimeout(resolve, 50));
+        
+        setIsReady(true);
+      } catch (error) {
+        // If images fail to load, still show splash screen after a timeout
+        console.warn('Some resources failed to load:', error);
+        setTimeout(() => setIsReady(true), 500);
+      }
+    };
+    
+    loadResources();
+  }, []);
+
+  useEffect(() => {
+    // Don't start animation until resources are ready
+    if (!isReady || hasStartedRef.current) return;
     hasStartedRef.current = true;
 
     // Lock scroll to top immediately when splash screen mounts
@@ -78,17 +119,32 @@ export default function SplashScreen({ onComplete }) {
       clearTimeout(loaderTimeout);
       hasStartedRef.current = false;
     };
-  }, [onComplete, greetings.length]);
+  }, [onComplete, greetings.length, isReady]);
+
+  // Don't render until resources are ready
+  if (!isReady) {
+    return (
+      <div 
+        className="fixed inset-0 z-[100] flex items-center justify-center overflow-hidden"
+        style={{
+          background: 'radial-gradient(circle, #FFFFFF 0%, #B1D6EC 100%)'
+        }}
+        role="dialog"
+        aria-label="Loading screen"
+        aria-live="polite"
+      />
+    );
+  }
 
   return (
     <div 
-      className="fixed inset-0 z-[100] flex items-center justify-center overflow-hidden"
+      className="fixed inset-0 z-[100] flex items-center justify-center overflow-hidden bg-[#1a3a52]"
       role="dialog"
       aria-label="Loading screen"
       aria-live="polite"
     >
       {/* Banner Blue Background - Always visible */}
-      <div className="absolute inset-0 w-full h-full">
+      <div className="absolute inset-0 w-full h-full bg-[#1a3a52]">
         <Image
           src="/Banner Blue.png"
           alt="Background"

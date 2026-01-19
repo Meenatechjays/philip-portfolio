@@ -6,7 +6,7 @@
   src: url('/fonts/SparklingMellowDemo-Regular.otf') format('opentype');
   font-weight: 400;
   font-style: normal;
-  font-display: swap;
+  font-display: block; /* Block rendering until font loads to prevent layout shift */
 }
 
 /* Custom Font - Satoshi */
