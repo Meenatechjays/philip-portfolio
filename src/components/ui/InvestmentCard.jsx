@@ -15,14 +15,22 @@ export default function InvestmentCard({
   // Animation variants
   const imageVariants = {
     initial: {
-      scale: 1,
+      scale: 1.15,
       opacity: 1,
     },
     hover: {
-      scale: 1.08,
+      scale: 1,
       opacity: 0.75,
       transition: {
-        duration: 0.6,
+        duration: 1,
+        ease: [0.25, 0.1, 0.25, 1],
+      },
+    },
+    exit: {
+      scale: 1.15,
+      opacity: 1,
+      transition: {
+        duration: 1,
         ease: [0.25, 0.1, 0.25, 1],
       },
     },
@@ -37,7 +45,15 @@ export default function InvestmentCard({
       y: 0,
       opacity: 1,
       transition: {
-        duration: 0.6,
+        duration: 1,
+        ease: [0.25, 0.1, 0.25, 1],
+      },
+    },
+    exit: {
+      y: 0,
+      opacity: 1,
+      transition: {
+        duration: 1,
         ease: [0.25, 0.1, 0.25, 1],
       },
     },
@@ -50,7 +66,14 @@ export default function InvestmentCard({
     hover: {
       rotate: -180,
       transition: {
-        duration: 0.6,
+        duration: 1,
+        ease: [0.25, 0.1, 0.25, 1],
+      },
+    },
+    exit: {
+      rotate: 0,
+      transition: {
+        duration: 1,
         ease: [0.25, 0.1, 0.25, 1],
       },
     },
@@ -61,6 +84,10 @@ export default function InvestmentCard({
       className={`relative w-[360px] h-[400px] md:h-[420px] lg:h-[440px] overflow-hidden rounded-[28px] ${className}`}
       initial="initial"
       whileHover="hover"
+      transition={{
+        duration: 1,
+        ease: [0.25, 0.1, 0.25, 1],
+      }}
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
     >
@@ -69,6 +96,9 @@ export default function InvestmentCard({
         {imageSrc && (
           <motion.div
             className="absolute inset-0 w-full h-full"
+            style={{
+              transformOrigin: 'center center',
+            }}
             variants={imageVariants}
           >
             <Image
@@ -81,7 +111,7 @@ export default function InvestmentCard({
           </motion.div>
         )}
 
-        {/* Simple gradient fade - Only at bottom, no blur */}
+        {/* Gradient fade at bottom - always visible */}
         <div
           className="absolute bottom-0 left-0 right-0 pointer-events-none z-[5]"
           style={{
@@ -98,14 +128,43 @@ export default function InvestmentCard({
         />
       </div>
 
-      {/* Content Layer - Slides up and fades in on hover */}
+      {/* Content Layer with solid white background */}
       <motion.div
-        className="absolute bottom-0 left-0 right-0 z-10 px-6 pt-8 pb-6 backdrop-blur-md"
+        className="absolute bottom-0 left-0 right-0 z-10 px-6 pt-8 pb-6"
         style={{
-          background: 'linear-gradient(to bottom, rgba(255, 255, 255, 0.7) 0%, rgba(255, 255, 255, 0.85) 40%, rgba(255, 255, 255, 0.95) 70%, rgba(255, 255, 255, 1) 100%)',
+          background: `linear-gradient(
+            to bottom,
+            rgba(255, 255, 255, 0) 0%,
+            rgba(255, 255, 255, 0.5) 25%,
+            rgba(255, 255, 255, 1) 50%,
+            rgba(255, 255, 255, 1) 100%
+          )`,
         }}
         variants={contentVariants}
       >
+        {/* Foggy radial gradient at top - appears on hover with smooth transition */}
+        <motion.div
+          className="absolute left-0 right-0 pointer-events-none"
+          style={{
+            top: '-30px',
+            height: '100px',
+            background: `radial-gradient(
+              ellipse 160% 100% at 50% 30%,
+              rgba(255, 255, 255, 0.8) 0%,
+              rgba(255, 255, 255, 0.5) 30%,
+              rgba(255, 255, 255, 0.2) 60%,
+              transparent 100%
+            )`,
+            filter: 'blur(12px)',
+          }}
+          initial={{ opacity: 0 }}
+          animate={{ opacity: isHovered ? 1 : 0 }}
+          transition={{
+            duration: 1,
+            ease: [0.25, 0.1, 0.25, 1],
+          }}
+        />
+
         {/* Star Icon - Rotates smoothly to -180deg on hover */}
         <motion.div
           className="mb-3 h-8 w-8 relative z-20"
@@ -129,7 +188,7 @@ export default function InvestmentCard({
 
         {/* Description */}
         {description && (
-          <p className={`text-xs md:text-sm font-satoshi text-[#454654] relative z-20 transition-all duration-300 leading-relaxed ${
+          <p className={`text-xs md:text-sm font-satoshi text-[#454654] relative z-20 transition-all duration-1000 leading-relaxed ${
             !isHovered ? 'line-clamp-2' : ''
           }`}>
             {description}

@@ -114,7 +114,7 @@ export default function Highlights() {
       </div>
 
       {/* Main Content Container */}
-      <div className="relative z-5 h-full flex flex-col items-center justify-start px-4 pt-8 pb-6">
+      <div className="relative z-5 h-full flex flex-col items-center justify-center px-4">
         {/* Header Section */}
         <div className="w-full max-w-[671px] flex flex-col gap-3 items-center mb-3">
           {/* Main Heading */}
@@ -138,7 +138,7 @@ export default function Highlights() {
         </div>
 
         {/* Content Area - Highlights Cards */}
-        <div className="relative w-full mt-8 flex flex-row items-center gap-8 justify-center flex-nowrap px-4 lg:pl-10 lg:pr-10 lg:mx-10">
+        <div className="relative w-full flex flex-row items-center gap-8 justify-center flex-nowrap px-4 lg:pl-10 lg:pr-10 lg:mx-10 h-[450px]">
           {cardsData.map((card, index) => (
             <motion.div
               key={index}

@@ -335,11 +335,11 @@ export default function PortfolioHero({ isVisible = true }) {
 
       {/* Bottom blur and white overlay */}
       <div 
-        className="absolute left-0 right-0 h-[20px] bg-transparent z-30 pointer-events-none"
+        className="absolute left-0 right-0 h-[40px] bg-transparent z-30 pointer-events-none"
         style={{
           // backdropFilter: 'blur(20px)',
           // WebkitBackdropFilter: 'blur(20px)',
-          boxShadow: '0 -10px 20px rgba(255, 255, 255, 0.8)',
+          boxShadow: '0 -10px 20px rgba(255, 255, 255, 0.3)',
         }}
       />
     </div>

@@ -327,7 +327,7 @@ export default function World() {
   function Stat({ value, label }) {
     return (
       <div 
-        className="flex flex-col items-start bg-[#F2F6FC] rounded-[9px] flex-none p-[clamp(8px,1.2vh,12px)] w-[clamp(85px,9vw,155.25px)] min-w-[85px] max-w-[155.25px] min-h-[70px] h-[clamp(70px,8.7vh,89px)] gap-[clamp(4px,0.8vh,8px)]"
+        className="flex flex-col items-center bg-[#F2F6FC] rounded-[9px] flex-none p-[clamp(8px,1.2vh,12px)] w-[clamp(85px,9vw,155.25px)] min-w-[85px] max-w-[155.25px] min-h-[70px] h-[clamp(70px,8.7vh,89px)] gap-[clamp(4px,0.8vh,8px)]"
       >
         <div className="text-lg md:text-xl lg:text-2xl font-bold text-[#1F2024] leading-tight">
           {value}
