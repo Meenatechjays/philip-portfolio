@@ -1,7 +1,7 @@
 'use client';
 
 import { motion, useAnimation } from 'framer-motion';
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState, useCallback } from 'react';
 import Image from 'next/image';
 import TimeLineCard from '../ui/TimeLineCard';
 
@@ -26,31 +26,14 @@ export default function Timeline() {
   const [timelineComplete, setTimelineComplete] = useState(false);
   const [isInView, setIsInView] = useState(false);
   const hasShownInitialPaddingRef = useRef(false);
-  const scrollAccumulator = useRef(0);
   const isSnapping = useRef(false);
   const hasStartedAnimationRef = useRef(false);
   const isScrollingRef = useRef(false);
   const lastScrollTime = useRef(0);
-
-  // Skip animation and allow vertical scrolling
-  const skipAnimation = () => {
-    // Mark timeline as complete to allow vertical scrolling
-    setTimelineComplete(true);
-    setScrollHijackActive(false);
-    setIsAnimationSkipped(true);
-    
-    // Scroll to last card
-    const scrollContainer = scrollContainerRef.current;
-    if (scrollContainer) {
-      const lastCardPosition = cardPositions[lastCardIndex];
-      const containerWidth = scrollContainer.clientWidth;
-      scrollContainer.scrollTo({
-        left: lastCardPosition - (containerWidth / 2) + (cardWidth / 2),
-        behavior: 'smooth'
-      });
-      setCurrentCardIndex(lastCardIndex);
-    }
-  };
+  const carouselScrollThrottle = useRef(0);
+  const wheelLockRef = useRef(false); // Prevent multiple card jumps per wheel gesture
+  const wasInViewRef = useRef(false); // Track previous view state for reset logic
+  const lastCardReachedAt = useRef(null); // Track when we reached the last card
 
   // Dynamic timeline cards data - easily add more cards in the future
   const timelineCards = [
@@ -105,26 +88,91 @@ export default function Timeline() {
   // Timeline line SVG width: since line starts at TIMELINE_LINE_START (600px), width should match container
   const timelineLineWidth = totalTimelineWidth;
 
+  // Helper function to get exact scroll position for a card index
+  const getCardScrollPosition = useCallback((index) => {
+    if (!scrollContainerRef.current) return 0;
+    const scrollContainer = scrollContainerRef.current;
+    const containerWidth = scrollContainer.clientWidth;
+    const cardLeft = cardPositions[index];
+    return Math.max(0, cardLeft - (containerWidth / 2) + (cardWidth / 2));
+  }, [cardPositions, cardWidth]);
+
+  const lockWheel = useCallback((duration = 500) => {
+    wheelLockRef.current = true;
+    setTimeout(() => {
+      wheelLockRef.current = false;
+    }, duration);
+  }, []);
+
+  // Strict snap function - forces scroll to exact card position
+  const snapToCard = useCallback((targetIndex, instant = false) => {
+    if (!scrollContainerRef.current || isSnapping.current) return;
+    
+    isSnapping.current = true;
+    const targetPosition = getCardScrollPosition(targetIndex);
+    const scrollContainer = scrollContainerRef.current;
+    
+    scrollContainer.scrollTo({
+      left: targetPosition,
+      behavior: instant ? 'auto' : 'smooth'
+    });
+    
+    setCurrentCardIndex(targetIndex);
+    
+    // Allow next snap after animation completes
+    setTimeout(() => {
+      isSnapping.current = false;
+    }, instant ? 50 : 500);
+  }, [getCardScrollPosition]);
+
+  // Skip animation and allow vertical scrolling
+  const skipAnimation = useCallback(() => {
+    setTimelineComplete(true);
+    setScrollHijackActive(false);
+    setIsAnimationSkipped(true);
+    snapToCard(lastCardIndex, false);
+  }, [snapToCard, lastCardIndex]);
+
   // Intersection Observer to detect when Timeline component enters/leaves viewport
   useEffect(() => {
     const observer = new IntersectionObserver(
       (entries) => {
         entries.forEach((entry) => {
-          // Only trigger when section is significantly visible (at least 80% in viewport)
-          // This ensures the user has actually scrolled to the Timeline section
-          if (entry.isIntersecting && entry.intersectionRatio >= 0.8 && !hasStartedAnimationRef.current) {
-            // Add a small delay to ensure scroll-snap has completed
+          const isNowInView = entry.isIntersecting && entry.intersectionRatio >= 0.8;
+          const wasInView = wasInViewRef.current;
+
+          // When entering viewport
+          if (isNowInView && !wasInView && !hasStartedAnimationRef.current) {
             setTimeout(() => {
               setIsInView(true);
             }, 100);
-          } else if (!entry.isIntersecting || entry.intersectionRatio < 0.3) {
-            // Unlock scroll when section leaves viewport
+          } 
+          // When leaving viewport - reset state for next entry
+          else if (!isNowInView && wasInView) {
             setIsInView(false);
+            // Reset all state when leaving viewport
+            hasStartedAnimationRef.current = false;
+            setIntroDone(false);
+            setCurrentCardIndex(0);
+            setIsAnimationSkipped(false);
+            setScrollHijackActive(false);
+            setTimelineComplete(false);
+            hasShownInitialPaddingRef.current = false;
+            isSnapping.current = false;
+            isScrollingRef.current = false;
+            lastCardReachedAt.current = null;
+            
+            // Reset scroll position
+            if (scrollContainerRef.current) {
+              scrollContainerRef.current.scrollLeft = 0;
+            }
           }
+
+          wasInViewRef.current = isNowInView;
         });
       },
       {
-        threshold: [0, 0.3, 0.5, 0.8, 1.0], // Multiple thresholds for better detection
+        threshold: [0, 0.3, 0.5, 0.8, 1.0],
         rootMargin: '0px',
       }
     );
@@ -171,82 +219,159 @@ export default function Timeline() {
         }
       });
 
-      setIntroDone(true); // unlock card scrolling logic
+      setIntroDone(true);
       hasShownInitialPaddingRef.current = true;
-      setScrollHijackActive(true); // Enable scroll hijacking after intro
+      setScrollHijackActive(true);
       
       // Center on first card after intro
-      const scrollContainer = scrollContainerRef.current;
-      if (scrollContainer) {
-        const containerWidth = scrollContainer.clientWidth;
-        const firstCardLeft = cardPositions[0];
-        const centerPosition = Math.max(0, firstCardLeft - (containerWidth / 2) + (cardWidth / 2));
-        scrollContainer.scrollTo({
-          left: centerPosition,
-          behavior: 'smooth'
-        });
-      }
+      setTimeout(() => {
+        snapToCard(0, false);
+      }, 100);
     }
 
     runIntro();
-  }, [isInView, timelineControls, cardPositions, cardWidth]);
+  }, [isInView, timelineControls, snapToCard]);
 
-
-  // Update scroll position based on currentCardIndex (like carousel)
+  // Update scroll position based on currentCardIndex - enforces strict snapping
   useEffect(() => {
-    if (!scrollContainerRef.current || isSnapping.current || !scrollHijackActive) return;
+    if (!scrollContainerRef.current || isSnapping.current) return;
     
-    const scrollContainer = scrollContainerRef.current;
-    const containerWidth = scrollContainer.clientWidth;
-    const cardLeft = cardPositions[currentCardIndex];
-    const targetScroll = cardLeft - (containerWidth / 2) + (cardWidth / 2);
-    
-    scrollContainer.scrollTo({
-      left: targetScroll,
-      behavior: 'smooth'
-    });
-  }, [currentCardIndex, cardPositions, cardWidth, scrollHijackActive]);
+    // During scroll hijacking phase, update smoothly
+    if (scrollHijackActive && !timelineComplete) {
+      const targetPosition = getCardScrollPosition(currentCardIndex);
+      scrollContainerRef.current.scrollTo({
+        left: targetPosition,
+        behavior: 'smooth'
+      });
+    }
+    // After timeline complete, always snap instantly
+    else if (timelineComplete) {
+      const targetPosition = getCardScrollPosition(currentCardIndex);
+      scrollContainerRef.current.scrollTo({
+        left: targetPosition,
+        behavior: 'auto'
+      });
+    }
+  }, [currentCardIndex, scrollHijackActive, timelineComplete, cardPositions, cardWidth]);
 
-  // Scroll hijacking - only hijack scroll within Timeline section boundaries
+  // Prevent manual scrolling that could cause intermediate positions (only when timelineComplete)
+  useEffect(() => {
+    if (!isInView || !scrollContainerRef.current || !timelineComplete) return;
+
+    const scrollContainer = scrollContainerRef.current;
+    let snapTimeout;
+    
+    const handleScroll = () => {
+      // Skip if we're already snapping (programmatic scroll)
+      if (isSnapping.current) return;
+      
+      // Debounce snap detection
+      clearTimeout(snapTimeout);
+      snapTimeout = setTimeout(() => {
+        // Immediately snap to nearest card if scrolled manually
+        const containerWidth = scrollContainer.clientWidth;
+        const scrollLeft = scrollContainer.scrollLeft;
+        const centerPosition = scrollLeft + (containerWidth / 2);
+
+        let closestCardIndex = 0;
+        let minDistance = Infinity;
+
+        cardPositions.forEach((cardLeft, index) => {
+          const cardCenter = cardLeft + (cardWidth / 2);
+          const distance = Math.abs(centerPosition - cardCenter);
+          
+          if (distance < minDistance) {
+            minDistance = distance;
+            closestCardIndex = index;
+          }
+        });
+
+        // If not on the closest card, snap to it
+        if (closestCardIndex !== currentCardIndex && minDistance > 100) {
+          snapToCard(closestCardIndex, true);
+        }
+      }, 100);
+    };
+
+    scrollContainer.addEventListener('scroll', handleScroll, { passive: true });
+    
+    return () => {
+      clearTimeout(snapTimeout);
+      scrollContainer.removeEventListener('scroll', handleScroll);
+    };
+  }, [isInView, timelineComplete, currentCardIndex, cardPositions, cardWidth, snapToCard]);
+
+  // Track when we reach the last card
+  useEffect(() => {
+    if (currentCardIndex === lastCardIndex) {
+      lastCardReachedAt.current = Date.now();
+    } else {
+      lastCardReachedAt.current = null;
+    }
+  }, [currentCardIndex, lastCardIndex]);
+
+  // Scroll hijacking - only hijack scroll within Timeline section boundaries (before timelineComplete)
   useEffect(() => {
     if (!isInView || !scrollHijackActive || timelineComplete) return;
 
+    const LAST_CARD_SCROLL_DELAY = 3000; // Delay in ms before allowing scroll to next page from last card
+
     const handleWheel = (e) => {
-      // Don't hijack if section is not in view or not active
       if (!isInView || !scrollHijackActive) {
-        return; // Let scroll-snap handle it
+        return;
       }
 
-      // Allow normal scroll when at boundaries (let scroll-snap work) - CHECK BEFORE THROTTLING
-      if (currentCardIndex >= lastCardIndex && e.deltaY > 0) {
-        return; // At last card scrolling down - allow scroll to next section
-      }
-      if (currentCardIndex === 0 && e.deltaY < 0) {
-        return; // At first card scrolling up - allow scroll to previous section
-      }
-
-      // Throttle scroll events (only after confirming we should hijack)
-      const now = Date.now();
-      if (now - lastScrollTime.current < 800 || isScrollingRef.current) {
+      if (wheelLockRef.current) {
         e.preventDefault();
         return;
       }
 
-      // Prevent default only when actively hijacking (not at boundaries)
+      // Allow normal scroll when at boundaries
+      if (currentCardIndex >= lastCardIndex && e.deltaY > 0) {
+        // At last card scrolling down - check if 1000ms has passed since reaching last card
+        if (lastCardReachedAt.current === null) {
+          // Just reached last card, start timer
+          lastCardReachedAt.current = Date.now();
+          e.preventDefault();
+          e.stopPropagation();
+          return;
+        }
+        
+        const timeSinceLastCard = Date.now() - lastCardReachedAt.current;
+        if (timeSinceLastCard < LAST_CARD_SCROLL_DELAY) {
+          // Still within 1000ms window - prevent scroll to next page
+          e.preventDefault();
+          e.stopPropagation();
+          return;
+        }
+        // 1000ms has passed - allow scroll to next section
+        return;
+      }
+      if (currentCardIndex === 0 && e.deltaY < 0) {
+        return;
+      }
+
+      // Throttle scroll events
+      const now = Date.now();
+      if (now - lastScrollTime.current < 800 || isScrollingRef.current || isSnapping.current) {
+        e.preventDefault();
+        return;
+      }
+
       e.preventDefault();
-      
       isScrollingRef.current = true;
       lastScrollTime.current = now;
+      lockWheel();
 
       // Handle vertical scroll (down = next card, up = previous card)
       if (Math.abs(e.deltaY) > Math.abs(e.deltaX)) {
         if (e.deltaY > 0) {
           if (currentCardIndex < lastCardIndex) {
-            setCurrentCardIndex(prev => prev + 1);
+            snapToCard(currentCardIndex + 1, false);
           }
         } else {
           if (currentCardIndex > 0) {
-            setCurrentCardIndex(prev => prev - 1);
+            snapToCard(currentCardIndex - 1, false);
           }
         }
       }
@@ -254,11 +379,11 @@ export default function Timeline() {
       else if (Math.abs(e.deltaX) > 0) {
         if (e.deltaX > 0) {
           if (currentCardIndex < lastCardIndex) {
-            setCurrentCardIndex(prev => prev + 1);
+            snapToCard(currentCardIndex + 1, false);
           }
         } else {
           if (currentCardIndex > 0) {
-            setCurrentCardIndex(prev => prev - 1);
+            snapToCard(currentCardIndex - 1, false);
           }
         }
       }
@@ -273,58 +398,74 @@ export default function Timeline() {
     return () => {
       window.removeEventListener('wheel', handleWheel);
     };
-  }, [isInView, scrollHijackActive, timelineComplete, currentCardIndex, lastCardIndex]);
+  }, [isInView, scrollHijackActive, timelineComplete, currentCardIndex, lastCardIndex, snapToCard, lockWheel]);
 
-  // Detect current card when manually scrolling (especially when on last card)
+  // Horizontal carousel scroll handler - only active when timelineComplete is true
   useEffect(() => {
-    if (!isInView || !scrollContainerRef.current) return;
+    if (!isInView || !timelineComplete || !scrollContainerRef.current) return;
 
-    const scrollContainer = scrollContainerRef.current;
-    let scrollTimeout;
-    
-    const detectCurrentCard = () => {
-      if (isSnapping.current || isScrollingRef.current) return;
-      
-      const containerWidth = scrollContainer.clientWidth;
-      const scrollLeft = scrollContainer.scrollLeft;
-      const centerPosition = scrollLeft + (containerWidth / 2);
+    const CAROUSEL_SCROLL_DELAY = 300;
 
-      let closestCardIndex = 0;
-      let minDistance = Infinity;
+    const handleCarouselWheel = (e) => {
+      // Only handle horizontal scroll (deltaX)
+      if (Math.abs(e.deltaX) <= Math.abs(e.deltaY)) {
+        return; // Ignore vertical scroll
+      }
 
-      cardPositions.forEach((cardLeft, index) => {
-        const cardCenter = cardLeft + (cardWidth / 2);
-        const distance = Math.abs(centerPosition - cardCenter);
-        
-        if (distance < minDistance) {
-          minDistance = distance;
-          closestCardIndex = index;
+      if (wheelLockRef.current) {
+        e.preventDefault();
+        return;
+      }
+
+      // Throttle to prevent rapid card switching
+      const now = Date.now();
+      if (now - carouselScrollThrottle.current < CAROUSEL_SCROLL_DELAY || isSnapping.current) {
+        e.preventDefault();
+        return;
+      }
+
+      e.preventDefault();
+      carouselScrollThrottle.current = now;
+      lockWheel(CAROUSEL_SCROLL_DELAY);
+
+      // Move to next/previous card based on scroll direction
+      if (e.deltaX > 0) {
+        // Scrolling right = next card
+        if (currentCardIndex < lastCardIndex) {
+          snapToCard(currentCardIndex + 1, true);
         }
-      });
-
-      if (closestCardIndex !== currentCardIndex) {
-        setCurrentCardIndex(closestCardIndex);
+      } else {
+        // Scrolling left = previous card
+        if (currentCardIndex > 0) {
+          snapToCard(currentCardIndex - 1, true);
+        }
       }
     };
 
-    const handleScroll = () => {
-      clearTimeout(scrollTimeout);
-      scrollTimeout = setTimeout(detectCurrentCard, 150);
-    };
-
-    scrollContainer.addEventListener('scroll', handleScroll, { passive: true });
+    window.addEventListener('wheel', handleCarouselWheel, { passive: false });
     
     return () => {
-      clearTimeout(scrollTimeout);
-      scrollContainer.removeEventListener('scroll', handleScroll);
+      window.removeEventListener('wheel', handleCarouselWheel);
     };
-  }, [isInView, currentCardIndex, cardPositions, cardWidth]);
+  }, [isInView, timelineComplete, currentCardIndex, lastCardIndex, snapToCard, lockWheel]);
+
+  // Mark timeline as complete when user reaches last card
+  useEffect(() => {
+    if (currentCardIndex === lastCardIndex && scrollHijackActive && !timelineComplete) {
+      setTimeout(() => {
+        setTimelineComplete(true);
+        setScrollHijackActive(false);
+      }, 500);
+    }
+  }, [currentCardIndex, lastCardIndex, scrollHijackActive, timelineComplete]);
+
+  // Show Skip Animation button based on current slide (not timelineComplete state)
+  const showSkipButton = !timelineComplete && currentCardIndex < lastCardIndex;
 
   return (
     <section 
       ref={sectionRef}
       className="relative h-full w-full overflow-hidden"
-      style={{ position: 'relative' }}
     >
       {/* Background SVG */}
       <div className="absolute inset-0 w-full h-full">
@@ -338,119 +479,122 @@ export default function Timeline() {
         />
       </div>
 
-      {/* Fixed Header */}
-      <div className="relative z-10 w-full flex items-start justify-center pt-8 md:pt-8 pb-8">
-        {/* Timeline Container */}
-        <div className="w-full max-w-[671px] opacity-100 flex flex-col gap-3 items-center px-4 mb-6">
+      {/* Main Content Container - Centered like Investors and Highlights */}
+      <div className="relative z-10 h-full flex flex-col items-center justify-center px-4">
+        {/* Header Section */}
+        <div className="w-full max-w-[671px] flex flex-col gap-3 items-center mb-16">
           {/* Timeline Heading */}
-          <h2 className="w-full max-w-[428px] opacity-100 section-heading text-center mx-auto">
+          <h2 className="w-full section-heading text-center">
             Timeline & Journey
           </h2>
 
           {/* Timeline Paragraph Content */}
-          <p className="w-full max-w-[671px] opacity-100 section-body text-center mx-auto">
+          <p className="w-full max-w-[671px] section-body text-center">
             Lorem ipsum dolor sit amet consectetur. Aliquam mattis tortor magna nisl. Non risus semper vel est amet leo non
           </p>
         </div>
-      </div>
 
-      {/* Scrollable Timeline Container */}
-      <div
-        ref={scrollContainerRef}
-        className="relative z-20 w-full h-[calc(100dvh-200px)] overflow-x-auto overflow-y-hidden scroll-smooth overscroll-x-none [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]"
-        style={{ overscrollBehaviorX: 'none' }}
-      >
-        <div
-          ref={innerContainerRef}
-          className="relative h-full"
-          style={{ width: `${totalTimelineWidth}px`, minHeight: '100%' }}
-        >
-          {/* Main Timeline Line - Horizontal line spanning the scrollable width */}
-          <motion.div 
-            className="absolute left-[1600px] top-[195px] z-[10]"
-            style={{ width: `${timelineLineWidth}px` }}
-            animate={timelineControls}
-            initial={{ x: 1800 }}
+        {/* Timeline Content Area - Centered */}
+        <div className="relative w-full flex items-center justify-center">
+          {/* Scrollable Timeline Container */}
+          <div
+            ref={scrollContainerRef}
+            className="relative z-20 w-full max-w-full overflow-x-auto overflow-y-hidden scroll-smooth overscroll-x-none [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]"
+            style={{ overscrollBehaviorX: 'none', height: '400px' }}
           >
-            <svg width={timelineLineWidth} height="1" viewBox={`0 0 ${timelineLineWidth} 1`} fill="none" xmlns="http://www.w3.org/2000/svg" className="w-full h-[1px]">
-              <line x1="0" y1="0.5" x2={timelineLineWidth} y2="0.5" stroke="#112643" strokeWidth="1" />
-            </svg>
-          </motion.div>
+            <div
+              ref={innerContainerRef}
+              className="relative"
+              style={{ width: `${totalTimelineWidth}px`, height: 400 }}
+            >
+              {/* Main Timeline Line - Horizontal line spanning the scrollable width */}
+              <motion.div 
+                className="absolute left-[1600px] top-[195px] z-[10]"
+                style={{ width: `${timelineLineWidth}px` }}
+                animate={timelineControls}
+                initial={{ x: 1800 }}
+              >
+                <svg width={timelineLineWidth} height="1" viewBox={`0 0 ${timelineLineWidth} 1`} fill="none" xmlns="http://www.w3.org/2000/svg" className="w-full h-[1px]">
+                  <line x1="0" y1="0.5" x2={timelineLineWidth} y2="0.5" stroke="#112643" strokeWidth="1" />
+                </svg>
+              </motion.div>
 
-          {/* Vertical Timeline Markers - Evenly spaced along the horizontal line */}
-          <motion.div 
-            className="absolute left-[1600px] top-[195px] z-[15] h-[68px] pointer-events-none transform -translate-y-1/2"
-            style={{ width: `${timelineLineWidth}px` }}
-            animate={timelineControls}
-            initial={{ x: 1920 }}
-          >
-            <svg width={timelineLineWidth} height="68" viewBox={`0 0 ${timelineLineWidth} 68`} fill="none" xmlns="http://www.w3.org/2000/svg" className="w-full h-full">
-              {/* Generate evenly spaced vertical lines every 50px for dense grid pattern */}
-              {Array.from({ length: Math.ceil(timelineLineWidth / 50) }, (_, i) => (
-                <line
-                  key={i}
-                  x1={i * 50}
-                  y1="0"
-                  x2={i * 50}
-                  y2="68"
-                  stroke="#112643"
-                  strokeWidth="1"
-                />
-              ))}
-            </svg>
-          </motion.div>
+              {/* Vertical Timeline Markers - Evenly spaced along the horizontal line */}
+              <motion.div 
+                className="absolute left-[1600px] top-[195px] z-[15] h-[68px] pointer-events-none transform -translate-y-1/2"
+                style={{ width: `${timelineLineWidth}px` }}
+                animate={timelineControls}
+                initial={{ x: 1920 }}
+              >
+                <svg width={timelineLineWidth} height="68" viewBox={`0 0 ${timelineLineWidth} 68`} fill="none" xmlns="http://www.w3.org/2000/svg" className="w-full h-full">
+                  {/* Generate evenly spaced vertical lines every 50px for dense grid pattern */}
+                  {Array.from({ length: Math.ceil(timelineLineWidth / 50) }, (_, i) => (
+                    <line
+                      key={i}
+                      x1={i * 50}
+                      y1="0"
+                      x2={i * 50}
+                      y2="68"
+                      stroke="#112643"
+                      strokeWidth="1"
+                    />
+                  ))}
+                </svg>
+              </motion.div>
 
-          {/* Year Labels - Display years below the timeline, evenly distributed */}
-          <motion.div 
-            className="absolute left-0 top-[195px] z-[15] pointer-events-none"
-            style={{ width: `${totalTimelineWidth}px`, paddingTop: '40px' }}
-            animate={timelineControls}
-            initial={{ x: 1920 }}
-          >
-            {Array.from({ length: TOTAL_YEARS }, (_, i) => {
-              const year = PRE_SCROLL_START_YEAR + i;
-              // Position years starting from paddingBeforeFirstCard, evenly distributed across PRE_SCROLL_TIMELINE_WIDTH
-              // Year 2000 at start, Year 2014 at end of the 1800px timeline width
-              const yearX = paddingBeforeFirstCard + (i * YEAR_WIDTH);
-              return (
-                <div
-                  key={year}
-                  className="absolute text-[#112643] font-medium font-satoshi text-lg whitespace-nowrap"
-                  style={{ left: `${yearX}px`, transform: 'translateX(-50%)' }}
-                >
-                  {year}
-                </div>
-              );
-            })}
-          </motion.div>
+              {/* Year Labels - Display years below the timeline, evenly distributed */}
+              <motion.div 
+                className="absolute left-0 top-[195px] z-[15] pointer-events-none"
+                style={{ width: `${totalTimelineWidth}px`, paddingTop: '40px' }}
+                animate={timelineControls}
+                initial={{ x: 1920 }}
+              >
+                {Array.from({ length: TOTAL_YEARS }, (_, i) => {
+                  const year = PRE_SCROLL_START_YEAR + i;
+                  // Position years starting from paddingBeforeFirstCard, evenly distributed across PRE_SCROLL_TIMELINE_WIDTH
+                  // Year 2000 at start, Year 2014 at end of the 1800px timeline width
+                  const yearX = paddingBeforeFirstCard + (i * YEAR_WIDTH);
+                  return (
+                    <div
+                      key={year}
+                      className="absolute text-[#112643] font-medium font-satoshi text-lg whitespace-nowrap"
+                      style={{ left: `${yearX}px`, transform: 'translateX(-50%)' }}
+                    >
+                      {year}
+                    </div>
+                  );
+                })}
+              </motion.div>
 
-          {/* Timeline Events Container */}
-          <div className="absolute inset-0 z-20 w-full">
-            {timelineCards.map((card, index) => {
-              const adjustedPosition = {
-                left: `${cardPositions[index]}px`,
-                top: card.position.top
-              };
-              return (
-                <TimeLineCard
-                  key={index}
-                  imageSrc={card.imageSrc}
-                  imageAlt={card.imageAlt}
-                  title={card.title}
-                  description={card.description}
-                  year={card.year}
-                  position={adjustedPosition}
-                  scrollContainerRef={scrollContainerRef}
-                  isActive={index === currentCardIndex}
-                />
-              );
-            })}
+              {/* Timeline Events Container */}
+              <div className="absolute inset-0 z-20 w-full h-[400px]">
+                {timelineCards.map((card, index) => {
+                  const adjustedPosition = {
+                    left: `${cardPositions[index]}px`,
+                    top: card.position.top
+                  };
+                  return (
+                    <TimeLineCard
+                      key={index}
+                      imageSrc={card.imageSrc}
+                      imageAlt={card.imageAlt}
+                      title={card.title}
+                      description={card.description}
+                      year={card.year}
+                      position={adjustedPosition}
+                      scrollContainerRef={scrollContainerRef}
+                      isActive={index === currentCardIndex}
+                    />
+                  );
+                })}
+              </div>
+            </div>
           </div>
         </div>
       </div>
 
-      {/* Skip Animation Button - Only show for cards 0-2, hide on last card */}
-      {!timelineComplete && currentCardIndex < lastCardIndex && (
+      {/* Skip Animation Button - Show based on current slide index, not timelineComplete */}
+      {showSkipButton && (
         <div className="absolute bottom-10 right-8 z-30">
           <button
             onClick={skipAnimation}
@@ -470,4 +614,3 @@ export default function Timeline() {
     </section>
   );
 }
-

@@ -15,6 +15,7 @@ export default function PortfolioHero({ isVisible = true }) {
   const isScrolling = useRef(false);
   const scrollAccumulator = useRef(0);
   const scrollDirection = useRef(0); // Track scroll direction: 1 for down, -1 for up
+  const lastSlideReachedAt = useRef(null); // Track when we reached the last slide
 
   const rightContentItems = [
     {
@@ -32,10 +33,6 @@ export default function PortfolioHero({ isVisible = true }) {
       description:
         'As an investor, Philip focuses on early stage ideas that solve real world inefficiencies. He brings more than capital. He brings mentorship, strategic clarity, and operational rigor. His investment style is analytical yet empathetic. He backs people as much as ideas.'
     },
-    {
-      title: '',
-      description: ''
-    }
   ];
 
   const lastItemIndex = rightContentItems.length - 1;
@@ -102,11 +99,21 @@ export default function PortfolioHero({ isVisible = true }) {
     };
   }, [isVisible, isInView]);
 
+  // Track when we reach the last slide
+  useEffect(() => {
+    if (currentIndex === lastItemIndex) {
+      lastSlideReachedAt.current = Date.now();
+    } else {
+      lastSlideReachedAt.current = null;
+    }
+  }, [currentIndex, lastItemIndex]);
+
   // Scroll hijacking - only hijack scroll within About section boundaries
   useEffect(() => {
     if (!isInView || !scrollHijackActive || !isRightMounted) return;
 
     const SCROLL_THRESHOLD = 50;
+    const LAST_SLIDE_SCROLL_DELAY = 3500; // Delay in ms before allowing scroll to next page from last slide
 
     const moveToItem = (targetIndex) => {
       if (isScrolling.current) return;
@@ -142,7 +149,24 @@ export default function PortfolioHero({ isVisible = true }) {
         return; // At first item scrolling up - allow scroll to previous section
       }
       if (currentIndex >= lastItemIndex && currentDirection > 0) {
-        return; // At last item scrolling down - allow scroll to next section
+        // At last item scrolling down - check if 500ms has passed since reaching last slide
+        if (lastSlideReachedAt.current === null) {
+          // Just reached last slide, start timer
+          lastSlideReachedAt.current = Date.now();
+          e.preventDefault();
+          e.stopPropagation();
+          return;
+        }
+        
+        const timeSinceLastSlide = Date.now() - lastSlideReachedAt.current;
+        if (timeSinceLastSlide < LAST_SLIDE_SCROLL_DELAY) {
+          // Still within 500ms window - prevent scroll to next page
+          e.preventDefault();
+          e.stopPropagation();
+          return;
+        }
+        // 500ms has passed - allow scroll to next section
+        return;
       }
 
       // Prevent default only when actively hijacking (not at boundaries)

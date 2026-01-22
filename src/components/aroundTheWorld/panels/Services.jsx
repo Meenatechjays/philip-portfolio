@@ -26,18 +26,18 @@ export default function Services() {
   ];
 
   return (
-    <div className="w-full h-full flex flex-col">
+    <div className="w-full flex flex-col">
       {/* Header Section */}
       <div className="flex flex-col items-start opacity-100 mb-6 sm:mb-8 lg:mb-10 gap-3 sm:gap-4 w-full">
         <h2 className="section-heading">
           Our Services
         </h2>
-        <p className="text-gray-600 font-satoshi text-sm sm:text-base md:text-lg max-w-3xl">
+        <p className="text-gray-600 font-satoshi text-sm sm:text-base md:text-lg w-[calc(100%-250px)]">
           Lorem ipsum dolor sit amet consectetur. Aliquam mattis tortor magna nisl.
         </p>
       </div>
   
-      <div className="opacity-100 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 w-full max-w-[1050px] gap-2 sm:gap-3 md:gap-5 lg:gap-4 auto-rows-fr">
+      <div className="opacity-100 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 w-[calc(100%-150px)] gap-2 sm:gap-3 md:gap-5 lg:gap-4 auto-rows-fr">
         {services.map((service, i) => (
           <div key={i} className="w-full min-w-0 flex">
             <ServiceCard

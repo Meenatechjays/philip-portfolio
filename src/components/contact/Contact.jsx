@@ -19,6 +19,7 @@ export default function Contact() {
   const animationFrameRef = useRef(null);
   const sectionRef = useRef(null);
   const isAnimatingRef = useRef(false);
+  const initialPositionsSetRef = useRef(false);
 
   const buttonStyle = isSubmitting
     ? {
@@ -86,6 +87,36 @@ export default function Contact() {
 
     const toRadians = (deg) => (deg * Math.PI) / 180;
 
+    // Initialize icon positions at their starting positions (before animation)
+    if (!initialPositionsSetRef.current) {
+      const baseEndDeg =
+        ORBIT_CONFIG.startAngleDeg + ORBIT_CONFIG.stopAngleOffsetDeg;
+      const startDeg = baseEndDeg + ORBIT_CONFIG.travelDeg;
+
+      const initialPositions = ICONS.map((icon, idx) => {
+        const startAngleRad = toRadians(startDeg);
+        const x =
+          ORBIT_CONFIG.centerX +
+          ORBIT_CONFIG.radius * Math.cos(startAngleRad) -
+          ORBIT_CONFIG.iconSize / 2;
+        const y =
+          ORBIT_CONFIG.centerY +
+          ORBIT_CONFIG.radius * Math.sin(startAngleRad) -
+          ORBIT_CONFIG.iconSize / 2;
+
+        return {
+          ...icon,
+          x,
+          y,
+          opacity: 0, // Start invisible, will fade in during animation
+          key: icon.alt,
+        };
+      });
+
+      setIconPositions(initialPositions);
+      initialPositionsSetRef.current = true;
+    }
+
     const startAnimation = () => {
       if (isAnimatingRef.current) return;
       isAnimatingRef.current = true;
@@ -118,11 +149,17 @@ export default function Contact() {
             ORBIT_CONFIG.radius * Math.sin(rad) -
             ORBIT_CONFIG.iconSize / 2;
 
+          // Fade in opacity during first 30% of animation, then stay at 1
+          const opacityFadeDuration = 0.3;
+          const opacity = t < opacityFadeDuration 
+            ? t / opacityFadeDuration 
+            : 1;
+
           return {
             ...icon,
             x,
             y,
-            opacity: 1,
+            opacity,
             key: icon.alt,
           };
         });

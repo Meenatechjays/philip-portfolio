@@ -111,11 +111,12 @@ export default function SlidingPanels({ stacks, active, previousIndex = 0, activ
       )}
       <div 
         id={styleId}
-        className="relative z-[1] will-change-[left]"
+        className="relative z-[1] will-change-[left] flex justify-center items-start"
         style={{
           ...(leftStackCount === 0 ? { 
             position: 'relative',
-            width: '100%' 
+            width: '100%',
+            minHeight: '100vh',
           } : {
             position: 'absolute',
             top: 0,
@@ -129,7 +130,7 @@ export default function SlidingPanels({ stacks, active, previousIndex = 0, activ
         }}
       >
         <div
-          className="flex transition-transform duration-[2000ms] ease-in-out will-change-transform"
+          className="flex items-start transition-transform duration-[2000ms] ease-in-out will-change-transform"
           style={{
             transform: `translateX(-${validIndex * 100}%)`,
             backfaceVisibility: 'hidden',
@@ -151,7 +152,7 @@ export default function SlidingPanels({ stacks, active, previousIndex = 0, activ
             return (
               <div
                 key={stack.id}
-                className="w-full flex-shrink-0 relative"
+                className="w-full flex-shrink-0 relative self-start"
                 style={{ 
                   minWidth: '100%',
                   maxWidth: '100%',

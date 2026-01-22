@@ -178,7 +178,7 @@ export default function World() {
         {/* Map Container - Responsive with overflow hidden for scroll effect */}
         <div 
           ref={mapContainerRef}
-          className="relative overflow-hidden max-w-full flex gap-4"
+          className="relative overflow-hidden max-w-full flex"
         >
           {/* Animated Map - Task 2: Scrolls right to left with fade */}
           <motion.div
@@ -311,8 +311,8 @@ export default function World() {
           </div>
 
           {/* Desktop Layout - Content */}
-          <div className="hidden md:flex flex-col justify-start">
-            <div className="font-satoshi font-normal text-base lg:text-lg leading-relaxed text-[#454654] max-w-5xl space-y-4">
+          <div className="hidden md:flex flex-col justify-start w-[calc(100%-250px)]">
+            <div className="font-satoshi font-normal text-base lg:text-lg leading-relaxed text-[#454654] w-full space-y-4">
               <p>
                 Founded in 2020 in Menlo Park, California, Techjays is on a bold mission to build the world's best AI products, apps, and solutions. With over 150 projects delivered across 7 countries, they've rapidly grown to serve 65+ clients spanning 15+ verticals in just a few years.
               </p>

@@ -19,7 +19,9 @@ export default function HighlightsCard({
   
   return (
     <div 
-      className={`${positionClass} flex flex-col items-start p-0 w-full max-w-[280px] h-[350px] flex-shrink-0 ${className}`}
+      className={`${positionClass} flex flex-col items-start p-0 w-full max-w-[300px] h-[350px] flex-shrink-0 ${className}`}
+      onMouseEnter={() => setIsHovered(true)}
+      onMouseLeave={() => setIsHovered(false)}
       style={!isRelative ? {
         left: position.left,
         top: position.top
@@ -46,8 +48,6 @@ export default function HighlightsCard({
           {/* Star Icon */}
           <div 
             className="w-8 h-8 flex-shrink-0 relative cursor-pointer"
-            onMouseEnter={() => setIsHovered(true)}
-            onMouseLeave={() => setIsHovered(false)}
           >
             <Image
               src="/star.svg"
@@ -70,7 +70,7 @@ export default function HighlightsCard({
 
           {/* Description */}
           {description && (
-            <p className="font-satoshi font-normal text-xs leading-relaxed text-[#454654] overflow-hidden line-clamp-2 pt-2">
+            <p className="font-satoshi font-normal text-sm leading-relaxed text-[#454654] overflow-hidden line-clamp-2 pt-2">
               {description}
             </p>
           )}

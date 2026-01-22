@@ -20,7 +20,7 @@ export default function Clients() {
   ];
 
   return (
-    <div className="w-full h-full flex flex-col">
+    <div className="w-full flex flex-col">
       {/* Header Content Section */}
       <div className="flex flex-col items-start opacity-100 mb-6 sm:mb-8 lg:mb-10 gap-3 sm:gap-4 w-full">
         <h2 className="section-heading">

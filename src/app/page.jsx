@@ -9,6 +9,7 @@ import Investors from '../components/investors/Investors';
 import AroundTheWorld from '../components/aroundTheWorld/AroundTheWorld';
 import SplashScreen from '../components/ui/SplashScreen';
 import Contact from '../components/contact/Contact';
+import TimelineTestPage from '../components/timeline-test/TimelineTestPage';
 export default function Home() {
   const [showSplash, setShowSplash] = useState(true);
 
@@ -143,6 +144,7 @@ export default function Home() {
         </div>
         <div className="snap-section">
           <Timeline />
+          {/* <TimelineTestPage /> */}
         </div>
         <div className="snap-section">
           <AroundTheWorld />
