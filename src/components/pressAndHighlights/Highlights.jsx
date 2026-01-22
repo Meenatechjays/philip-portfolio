@@ -114,7 +114,7 @@ export default function Highlights() {
       </div>
 
       {/* Main Content Container */}
-      <div className="relative z-5 h-full flex flex-col items-center justify-center px-4">
+      <div className="relative z-5 h-full flex flex-col items-center justify-center px-4 py-8">
         {/* Header Section */}
         <div className="w-full max-w-[671px] flex flex-col gap-3 items-center mb-3">
           {/* Main Heading */}
@@ -129,7 +129,7 @@ export default function Highlights() {
         </div>
 
         {/* Toggle Button */}
-        <div className="relative flex flex-col items-start bg-white p-1 gap-1.5 w-[260px] h-[52px] rounded-[30px] mb-3">
+        <div className="relative flex flex-col items-start bg-white p-1 gap-1.5 w-[260px] h-[52px] rounded-[30px] mb-10">
           <ToggleButton
             options={toggleOptions}
             activeOption={activeOption}
@@ -138,11 +138,11 @@ export default function Highlights() {
         </div>
 
         {/* Content Area - Highlights Cards */}
-        <div className="relative w-full flex flex-row items-center gap-8 justify-center flex-nowrap px-4 lg:pl-10 lg:pr-10 lg:mx-10 h-[450px]">
+        <div className="relative w-full flex flex-1 flex-row items-stretch gap-10 justify-center flex-nowrap px-8 max-h-[400px]">
           {cardsData.map((card, index) => (
             <motion.div
               key={index}
-              className="w-full max-w-[280px]"
+              className="w-full max-w-[300px] h-full flex"
               initial={{
                 y: ANIMATION_CONFIG.initialY,
                 opacity: ANIMATION_CONFIG.initialOpacity,
@@ -190,6 +190,8 @@ export default function Highlights() {
             </motion.div>
           ))}
         </div>
+
+        <div className="h-10"></div>
       </div>
     </section>
   );

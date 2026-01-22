@@ -19,7 +19,7 @@ export default function HighlightsCard({
   
   return (
     <div 
-      className={`${positionClass} flex flex-col items-start p-0 w-full max-w-[300px] h-[350px] flex-shrink-0 ${className}`}
+      className={`${positionClass} flex flex-1 flex-col items-start p-0 w-full h-full max-w-[300px] flex-shrink-0 ${className}`}
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
       style={!isRelative ? {
@@ -28,10 +28,10 @@ export default function HighlightsCard({
       } : {}}
     >
       {/* Card Container with rounded corners */}
-      <div className="w-full h-full bg-white rounded-2xl overflow-hidden relative">
+      <div className="w-full h-full bg-white rounded-2xl overflow-hidden relative flex flex-col">
         {/* Image Section */}
         {imageSrc && (
-          <div className="box-border w-full h-[215px] flex justify-between rounded-[16px] border-2 border-white relative overflow-hidden">
+          <div className="box-border w-full flex justify-between rounded-[16px] border-2 border-white relative overflow-hidden h-[215px]">
     
               <Image
                 src={imageSrc}
