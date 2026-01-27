@@ -192,7 +192,7 @@ export default function World() {
               src="/World_map.lottie"
               loop
               autoplay
-              className="w-full h-auto max-h-[400px] object-contain"
+              className="w-full h-auto min-h-[400px] object-contain flex items-center"
             />
           </motion.div>
 

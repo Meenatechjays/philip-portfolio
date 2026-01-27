@@ -281,7 +281,7 @@ export default function PortfolioHero({ isVisible = true }) {
         </div>
 
         {/* 3-Column Grid Layout */}
-        <div className="flex-1 grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-6 lg:gap-6 px-4 sm:px-6 md:px-8 lg:px-[76px] pb-8 md:pb-12 relative overflow-hidden">
+        <div className="flex-1 grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-6 lg:gap-6 px-4 sm:px-6 md:px-8 lg:px-[76px] pb-8 md:pb-12 relative">
           {/* Left Content Column */}
           <div 
             className={`flex flex-col gap-4 md:order-1 relative translate-y-1/5 z-20 transition-all duration-700 ease-out delay-100 ${
@@ -302,19 +302,37 @@ export default function PortfolioHero({ isVisible = true }) {
           <div className="md:order-2 relative"></div>
 
           {/* Center Image - Absolutely positioned to not affect layout */}
-          <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-full max-w-[1000px] pointer-events-none">
+          <div 
+            className="absolute bottom-0 left-1/2 -translate-x-1/2 w-full max-w-[1000px] pointer-events-none z-10"
+            style={{
+              background: 'transparent',
+              border: 'none',
+              outline: 'none',
+            }}
+          >
             <div 
-              className={`transition-all duration-700 ease-out delay-200
-              `}
+              className="transition-all duration-700 ease-out delay-200"
+              style={{
+                background: 'transparent',
+                border: 'none',
+                outline: 'none',
+              }}
             >
               <div
-                className="relative w-full h-[400px] md:h-[500px] lg:h-[630px]"
-                // style={{
-                //   WebkitMaskImage:
-                //     'linear-gradient(to bottom, black 75%, transparent 100%)',
-                //   maskImage:
-                //     'linear-gradient(to bottom, black 75%, transparent 100%)'
-                // }}
+                className="relative w-full overflow-hidden"
+                style={{
+                  height: 'clamp(401px, calc(50vw + 1px), 631px)',
+                  background: 'transparent',
+                  border: 'none',
+                  outline: 'none',
+                  minHeight: '401px',
+                  margin: 0,
+                  padding: 0,
+                  transform: 'translateZ(0) translateY(-1px)',
+                  backfaceVisibility: 'hidden',
+                  WebkitBackfaceVisibility: 'hidden',
+                  willChange: 'transform',
+                }}
               >
                 <Image
                   src="/header-img.svg"
@@ -322,6 +340,22 @@ export default function PortfolioHero({ isVisible = true }) {
                   width={815}
                   height={1500}
                   className="object-contain w-full h-full"
+                  style={{
+                    display: 'block',
+                    background: 'transparent',
+                    objectPosition: 'bottom center',
+                    margin: 0,
+                    padding: 0,
+                    border: 'none',
+                    outline: 'none',
+                    transform: 'translateZ(0)',
+                    backfaceVisibility: 'hidden',
+                    WebkitBackfaceVisibility: 'hidden',
+                    imageRendering: 'auto',
+                    WebkitImageRendering: 'auto',
+                    WebkitFontSmoothing: 'antialiased',
+                    MozOsxFontSmoothing: 'grayscale',
+                  }}
                   priority
                 />
               </div>
@@ -359,11 +393,11 @@ export default function PortfolioHero({ isVisible = true }) {
 
       {/* Bottom blur and white overlay */}
       <div 
-        className="absolute left-0 right-0 h-[40px] bg-transparent z-30 pointer-events-none"
+        className="absolute left-0 right-0 h-[50px] bg-transparent z-30 pointer-events-none"
         style={{
           // backdropFilter: 'blur(20px)',
           // WebkitBackdropFilter: 'blur(20px)',
-          boxShadow: '0 -10px 20px rgba(255, 255, 255, 0.3)',
+          boxShadow: '0 -20px 50px rgba(255, 255, 255, 0.5)',
         }}
       />
     </div>
