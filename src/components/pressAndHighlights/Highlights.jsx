@@ -32,7 +32,7 @@ export default function Highlights() {
       title: 'What Makes Techjays AI Products STAND OUT?',
       description: 'Exploring the innovative AI solutions and technology leadership that sets Techjays apart in the industry.',
       readMoreLink: '/article',
-      className: 'relative -translate-y-4',
+      className: 'relative lg:-translate-y-4',
     },
     {
       imageSrc: '/press-two.jpg',
@@ -40,7 +40,7 @@ export default function Highlights() {
       title: 'Innovation in Technology Leadership',
       description: 'Discover how cutting-edge technology solutions are transforming industries and driving digital transformation.',
       readMoreLink: '/article',
-      className: 'relative translate-y-10',
+      className: 'relative lg:translate-y-10',
     },
     {
       imageSrc: '/philip-header.png',
@@ -48,7 +48,7 @@ export default function Highlights() {
       title: 'Leadership and Vision',
       description: 'Insights into strategic leadership and vision that drives successful technology ventures and innovation.',
       readMoreLink: '/article',
-      className: 'relative -translate-y-2',
+      className: 'relative lg:-translate-y-2',
     },
     {
       imageSrc: '/time-line-2018.jpg',
@@ -56,7 +56,7 @@ export default function Highlights() {
       title: 'Journey Through Innovation',
       description: 'A look back at the milestones and achievements that have shaped the technology landscape over the years.',
       readMoreLink: '/article',
-      className: 'relative translate-y-10',
+      className: 'relative lg:translate-y-10',
     },
   ];
 
@@ -65,13 +65,13 @@ export default function Highlights() {
     const observer = new IntersectionObserver(
       (entries) => {
         entries.forEach((entry) => {
-          if (entry.isIntersecting && entry.intersectionRatio >= 0.5) {
+          if (entry.isIntersecting && entry.intersectionRatio >= 0.1) {
             setIsVisible(true);
           }
         });
       },
       {
-        threshold: 0.5, // Trigger when 50% of the section is visible
+        threshold: 0.1, // Trigger when 10% of the section is visible
         rootMargin: '0px',
       }
     );
@@ -100,7 +100,7 @@ export default function Highlights() {
   }, [isVisible]);
 
   return (
-    <section ref={sectionRef} className="relative h-full w-full overflow-hidden">
+    <section ref={sectionRef} className="relative h-auto lg:min-h-full lg:h-full w-full overflow-hidden">
       {/* Background - Media Mentions Image */}
       <div className="absolute inset-0 w-full h-full">
         <Image
@@ -114,7 +114,7 @@ export default function Highlights() {
       </div>
 
       {/* Main Content Container */}
-      <div className="relative z-5 h-full flex flex-col items-center justify-center px-4 py-8">
+      <div className="relative z-10 h-auto lg:h-full flex flex-col items-center justify-start lg:justify-center px-4 py-8">
         {/* Header Section */}
         <div className="w-full max-w-[671px] flex flex-col gap-3 items-center mb-3">
           {/* Main Heading */}
@@ -138,11 +138,11 @@ export default function Highlights() {
         </div>
 
         {/* Content Area - Highlights Cards */}
-        <div className="relative w-full flex flex-1 flex-row items-stretch gap-10 justify-center flex-nowrap px-8 max-h-[400px]">
+        <div className="relative w-full max-w-[1400px] grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 md:gap-8 lg:gap-10 px-4 md:px-8">
           {cardsData.map((card, index) => (
             <motion.div
               key={index}
-              className="w-full max-w-[300px] h-full flex"
+              className="w-full max-w-[300px] mx-auto h-[420px] md:h-[450px] lg:h-full"
               initial={{
                 y: ANIMATION_CONFIG.initialY,
                 opacity: ANIMATION_CONFIG.initialOpacity,

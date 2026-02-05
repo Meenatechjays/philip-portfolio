@@ -81,7 +81,7 @@ export default function InvestmentCard({
 
   return (
     <motion.div
-      className={`relative w-[360px] h-[400px] md:h-[420px] lg:h-[440px] overflow-hidden rounded-[28px] ${className}`}
+      className={`relative w-[280px] lg:w-[360px] h-[400px] mx-5 md:mx-0 md:h-[420px] lg:h-[440px] overflow-hidden rounded-[28px] ${className}`}
       initial="initial"
       whileHover="hover"
       transition={{

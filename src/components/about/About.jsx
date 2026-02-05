@@ -10,6 +10,7 @@ export default function PortfolioHero({ isVisible = true }) {
   const [isRightMounted, setIsRightMounted] = useState(false);
   const [isInView, setIsInView] = useState(false);
   const [scrollHijackActive, setScrollHijackActive] = useState(false);
+  const [isMobile, setIsMobile] = useState(false);
   const [animationDirection, setAnimationDirection] = useState(1); // 1 for down (next), -1 for up (previous)
   const sectionRef = useRef(null);
   const isScrolling = useRef(false);
@@ -37,14 +38,28 @@ export default function PortfolioHero({ isVisible = true }) {
 
   const lastItemIndex = rightContentItems.length - 1;
 
+  // Check if we're on mobile (max-width: 768px) - disable scroll hijacking on mobile
+  useEffect(() => {
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth <= 768);
+    };
+
+    checkMobile();
+    window.addEventListener('resize', checkMobile);
+
+    return () => {
+      window.removeEventListener('resize', checkMobile);
+    };
+  }, []);
+
   // Intersection Observer to detect when About section enters/leaves viewport
   useEffect(() => {
     const observer = new IntersectionObserver(
       (entries) => {
         entries.forEach((entry) => {
           setIsInView(entry.isIntersecting);
-          // Activate scroll hijacking after right content is mounted and section is in view
-          if (entry.isIntersecting && isRightMounted) {
+          // Activate scroll hijacking only on desktop (not mobile) after right content is mounted and section is in view
+          if (entry.isIntersecting && isRightMounted && !isMobile) {
             setScrollHijackActive(true);
           } else {
             setScrollHijackActive(false);
@@ -66,18 +81,22 @@ export default function PortfolioHero({ isVisible = true }) {
         observer.unobserve(sectionRef.current);
       }
     };
-  }, [isRightMounted]);
+  }, [isRightMounted, isMobile]);
 
   // Disable scroll-snap when scroll hijack is active (they should never coexist)
+  // On mobile, always keep scroll-snap enabled since we don't hijack on first page
   useEffect(() => {
     if (sectionRef.current) {
-      if (scrollHijackActive) {
+      if (isMobile) {
+        // Always enable scroll-snap on mobile (no hijacking on first page)
+        sectionRef.current.style.scrollSnapAlign = 'start';
+      } else if (scrollHijackActive) {
         sectionRef.current.style.scrollSnapAlign = 'none';
       } else {
         sectionRef.current.style.scrollSnapAlign = 'start';
       }
     }
-  }, [scrollHijackActive]);
+  }, [scrollHijackActive, isMobile]);
 
   // Mount animation effects - triggered only when component becomes visible (after splash)
   useEffect(() => {
@@ -108,9 +127,10 @@ export default function PortfolioHero({ isVisible = true }) {
     }
   }, [currentIndex, lastItemIndex]);
 
-  // Scroll hijacking - only hijack scroll within About section boundaries
+  // Scroll hijacking - only hijack scroll within About section boundaries (disabled on mobile)
   useEffect(() => {
-    if (!isInView || !scrollHijackActive || !isRightMounted) return;
+    // Disable scroll hijacking on mobile - it's handled by AboutRightContentMobile component
+    if (isMobile || !isInView || !scrollHijackActive || !isRightMounted) return;
 
     const SCROLL_THRESHOLD = 50;
     const LAST_SLIDE_SCROLL_DELAY = 3500; // Delay in ms before allowing scroll to next page from last slide
@@ -200,7 +220,7 @@ export default function PortfolioHero({ isVisible = true }) {
     return () => {
       window.removeEventListener('wheel', handleWheel);
     };
-  }, [isInView, scrollHijackActive, isRightMounted, currentIndex, lastItemIndex]);
+  }, [isMobile, isInView, scrollHijackActive, isRightMounted, currentIndex, lastItemIndex]);
 
   /* Animation variants - direction aware */
   const getContentVariants = (direction) => ({
@@ -224,7 +244,7 @@ export default function PortfolioHero({ isVisible = true }) {
     <div 
       ref={sectionRef} 
       className="h-[100dvh] relative overflow-hidden"
-      style={{ scrollSnapAlign: scrollHijackActive ? 'none' : 'start' }}
+      style={{ scrollSnapAlign: (isMobile || !scrollHijackActive) ? 'start' : 'none' }}
     >
       {/* ================= BACKGROUND ================= */}
       <div className="absolute inset-0">
@@ -362,9 +382,9 @@ export default function PortfolioHero({ isVisible = true }) {
             </div>
           </div>
 
-          {/* Right Content Column */}
+          {/* Right Content Column - Hidden on mobile (max-width: 768px), shown on md and up */}
           <div 
-            className={`flex flex-col gap-4 md:order-3 relative translate-y-1/5 z-20 transition-all duration-1000 ease-out ${
+            className={`hidden md:flex flex-col gap-4 md:order-3 relative translate-y-1/5 z-20 transition-all duration-1000 ease-out ${
               isRightMounted ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-16'
             }`}
           >

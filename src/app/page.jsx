@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react';
 import Image from 'next/image';
 import About from '../components/about/About';
+import AboutRightContentMobile from '../components/about/AboutRightContentMobile';
 import Timeline from '../components/timeLine/Timeline';
 import Highlights from '../components/pressAndHighlights/Highlights';
 import Investors from '../components/investors/Investors';
@@ -152,23 +153,27 @@ export default function Home() {
           showSplash ? 'opacity-0 translate-y-0' : 'opacity-100 translate-y-0'
         }`}
       >
-        <div className="snap-section">
+        <div id="about" className="snap-section">
           <About isVisible={!showSplash} />
         </div>
-        <div className="snap-section">
+        {/* Mobile-only section for right content column (max-width: 768px) */}
+        <div className="snap-section md:hidden">
+          <AboutRightContentMobile isVisible={!showSplash} />
+        </div>
+        <div id="timeline" className="snap-section">
           <Timeline />
           {/* <TimelineTestPage /> */}
         </div>
-        <div className="snap-section">
+        <div id="around-the-world" className="snap-section">
           <AroundTheWorld />
         </div>
-        <div className="snap-section">
+        <div className="snap-section-auto">
           <Highlights/>
         </div>
-        <div className="snap-section">
+        <div id="investors" className="snap-section">
           <Investors/>
         </div>
-        <div className="snap-section-start">
+        <div id="contact" className="snap-section-start">
           <Contact />
         </div>
       </main>

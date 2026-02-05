@@ -84,11 +84,12 @@ export default function Investors() {
          style={{
            scrollbarWidth: 'none',
            msOverflowStyle: 'none',
+           scrollSnapType: window.innerWidth < 768 ? 'x mandatory' : 'none',
          }}
       >
         <motion.div 
           ref={ref}
-          className="flex gap-6 md:gap-8 lg:gap-10 px-6 md:px-8 lg:px-16 py-2 md:py-3 lg:py-4 bg-none"
+          className="flex justify-center items-center gap-6 md:gap-8 lg:gap-10 px-6 md:px-8 lg:px-16 py-2 md:py-3 lg:py-4 bg-none"
           variants={containerVariants}
           initial="hidden"
           animate={isInView ? "visible" : "hidden"}
@@ -104,6 +105,8 @@ export default function Investors() {
                 minWidth: '360px',
                 flexShrink: 0,
                 willChange: 'transform, opacity',
+                scrollSnapAlign: window.innerWidth < 768 ? 'start' : 'none',
+                scrollSnapStop: window.innerWidth < 768 ? 'always' : 'none',
               }}
             >
               <InvestmentCard

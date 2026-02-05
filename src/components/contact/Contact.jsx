@@ -266,7 +266,7 @@ export default function Contact() {
         background: 'linear-gradient(180deg, #89BBDD 0%, #FFFFFF 100%)',
       }}
     >
-      <div className="mx-auto w-full px-2 md:px-4 lg:pl-16">
+      <div className="mx-auto w-full pl-5 pt-5 md:px-4 lg:pl-16 lg:pt-0">
         <div className="grid grid-cols-1 lg:grid-cols-2 items-center gap-12">
 
           {/* LEFT – CONTACT FORM */}
@@ -346,12 +346,12 @@ export default function Contact() {
           </div>
 
           {/* RIGHT – IMAGE + SVG CURVE */}
-          <div className="relative flex justify-end items-center right-[-60px]">
-            <div className="relative w-full max-w-[460px]">
+          <div className="relative hidden lg:flex justify-end items-center lg:right-[-60px]">
+            <div className="relative w-full max-w-[300px] md:max-w-[380px] lg:max-w-[460px]">
 
               {/* SVG CURVED LINE - positioned to create arc on left side (behind image) */}
-              <div className="absolute top-1/2 -translate-y-1/2 -left-[140px] w-[520px] h-[520px] pointer-events-none z-0">
-                <svg width="520" height="520" viewBox="0 0 520 520" fill="none">
+              <div className="absolute top-1/2 -translate-y-1/2 -left-[80px] md:-left-[100px] lg:-left-[140px] w-[300px] md:w-[400px] lg:w-[520px] h-[300px] md:h-[400px] lg:h-[520px] pointer-events-none z-0">
+                <svg width="100%" height="100%" viewBox="0 0 520 520" fill="none" preserveAspectRatio="xMidYMid meet">
                   <defs>
                     <linearGradient
                       id="contactArcGradient"
@@ -396,7 +396,7 @@ export default function Contact() {
               </div>
 
               {/* SOCIAL ICONS - quarter-arc, one-time animation on enter */}
-              <div className="absolute top-1/2 -translate-y-1/2 -left-[140px] w-[520px] h-[520px] z-20">
+              <div className="absolute top-1/2 -translate-y-1/2 -left-[80px] md:-left-[100px] lg:-left-[140px] w-[300px] md:w-[400px] lg:w-[520px] h-[300px] md:h-[400px] lg:h-[520px] z-20">
                 {iconPositions.map((icon) => (
                   <a
                     key={icon.key}

@@ -111,7 +111,7 @@ export default function SlidingPanels({ stacks, active, previousIndex = 0, activ
       )}
       <div 
         id={styleId}
-        className="relative z-[1] will-change-[left] flex justify-center items-center"
+        className="hidden lg:block relative z-[1] will-change-[left] flex justify-center items-center"
         style={{
           ...(leftStackCount === 0 ? { 
             position: 'relative',

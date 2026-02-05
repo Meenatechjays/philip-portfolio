@@ -161,20 +161,20 @@ export default function World() {
     <div ref={componentRef} className="relative min-w-full flex flex-col">
       {/* Header Section - Responsive */}
       <div 
-        className="opacity-100 flex flex-col gap-2 md:gap-4 w-full md:w-[clamp(300px,38.8vw,671px)]"
+        className="opacity-100 flex flex-col gap-2 md:gap-4 w-full lg:w-[clamp(300px,38.8vw,671px)]"
       >
-        <h2 className="section-heading">
+        <h2 className="text-center lg:text-start section-heading">
           Around the World with AI
         </h2>
         <p 
-          className="font-satoshi font-normal text-base md:text-lg leading-normal tracking-[0%] opacity-100 text-[#454654] w-full"
+          className="text-center lg:text-start font-satoshi font-normal text-base md:text-lg leading-normal tracking-[0%] opacity-100 text-[#454654] w-full"
         >
           Lorem ipsum dolor sit amet consectetur. Aliquam mattis tortor magna nisl. Non risus semper vel est amet leo non
         </p>
       </div>
 
-      {/* Map Section Wrapper */}
-      <div className="relative mt-4 md:mt-6 px-4 md:px-0 flex-shrink-0">
+      {/* Map Section Wrapper - Hidden on mobile */}
+      <div className="relative mt-4 md:mt-6 px-4 md:px-0 flex-shrink-0 hidden lg:block">
         {/* Map Container - Responsive with overflow hidden for scroll effect */}
         <div 
           ref={mapContainerRef}
@@ -283,9 +283,9 @@ export default function World() {
         {/* Bottom Section - Content only (Stats moved to map) */}
         <div className="relative mb-4 md:mb-8 px-4 md:px-0">
           {/* Mobile: Stack vertically */}
-          <div className="md:hidden flex flex-col gap-4">
+          <div className="lg:hidden flex flex-col gap-4 items-center justify-center">
             {/* Mobile Logo */}
-            <div className="flex items-center justify-start h-[80px]">
+            <div className="hidden flex md:hidden items-center justify-center h-[80px]">
               <Image
                 src="/techjays-logo.svg"
                 alt="Techjays Logo"
@@ -296,7 +296,7 @@ export default function World() {
             </div>
             
             {/* Mobile Stats */}
-            <div className="flex flex-row items-center gap-2 flex-wrap justify-start">
+            <div className="flex mt-5 flex-row items-center gap-2 flex-wrap justify-start">
               <Stat value="7+" label="Countries" />
               <Stat value="150+" label="Projects" />
               <Stat value="170+" label="People" />
@@ -311,8 +311,8 @@ export default function World() {
           </div>
 
           {/* Desktop Layout - Content */}
-          <div className="hidden md:flex flex-col justify-start w-[calc(100%-250px)]">
-            <div className="font-satoshi font-normal text-base lg:text-lg leading-relaxed text-[#454654] w-full space-y-4">
+          <div className=" lg:flex flex-col justify-start lg:w-[calc(100%-250px)]">
+            <div className="font-satoshi font-normal text-base lg:text-lg leading-relaxed text-[#454654] w-full lg:space-y-4">
               <p>
                 Founded in 2020 in Menlo Park, California, Techjays is on a bold mission to build the world's best AI products, apps, and solutions. With over 150 projects delivered across 7 countries, they've rapidly grown to serve 65+ clients spanning 15+ verticals in just a few years.
               </p>

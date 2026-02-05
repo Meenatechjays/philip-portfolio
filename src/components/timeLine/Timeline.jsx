@@ -71,7 +71,26 @@ export default function Timeline() {
     }
   ];
 
-  const cardWidth = 810; // Width of each timeline card
+  // Responsive card width - matches TimeLineCard component widths
+  const getCardWidth = () => {
+    if (typeof window === 'undefined') return 810;
+    const width = window.innerWidth;
+    if (width < 640) return 350; // Mobile: max-w-[350px]
+    if (width < 768) return 500; // Tablet: max-w-[500px]
+    if (width < 1024) return 750; // Small desktop: md:w-[750px]
+    return 810; // Desktop: lg:w-[810px]
+  };
+  
+  const [cardWidth, setCardWidth] = useState(getCardWidth());
+  
+  // Update card width on resize
+  useEffect(() => {
+    const handleResize = () => {
+      setCardWidth(getCardWidth());
+    };
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
   const paddingBeforeFirstCard = 2000; // Add space before first card for more lines
   const paddingAfterLastCard = 2000; // Extra padding after last card for more timeline lines
   const TIMELINE_LINE_START = 600; // Timeline line starts at 600px (changed from 2000px)
@@ -566,27 +585,29 @@ export default function Timeline() {
                 })}
               </motion.div>
 
-              {/* Timeline Events Container */}
-              <div className="absolute inset-0 z-20 w-full h-[400px]">
-                {timelineCards.map((card, index) => {
-                  const adjustedPosition = {
-                    left: `${cardPositions[index]}px`,
-                    top: card.position.top
-                  };
-                  return (
-                    <TimeLineCard
-                      key={index}
-                      imageSrc={card.imageSrc}
-                      imageAlt={card.imageAlt}
-                      title={card.title}
-                      description={card.description}
-                      year={card.year}
-                      position={adjustedPosition}
-                      scrollContainerRef={scrollContainerRef}
-                      isActive={index === currentCardIndex}
-                    />
-                  );
-                })}
+              {/* Timeline Events Container - Centered */}
+              <div className="absolute inset-0 z-20 w-full h-[400px] flex items-center justify-center">
+                <div className="relative w-full h-full">
+                  {timelineCards.map((card, index) => {
+                    const adjustedPosition = {
+                      left: `${cardPositions[index]}px`,
+                      top: card.position.top
+                    };
+                    return (
+                      <TimeLineCard
+                        key={index}
+                        imageSrc={card.imageSrc}
+                        imageAlt={card.imageAlt}
+                        title={card.title}
+                        description={card.description}
+                        year={card.year}
+                        position={adjustedPosition}
+                        scrollContainerRef={scrollContainerRef}
+                        isActive={index === currentCardIndex}
+                      />
+                    );
+                  })}
+                </div>
               </div>
             </div>
           </div>

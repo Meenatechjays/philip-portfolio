@@ -19,7 +19,7 @@ export default function HighlightsCard({
   
   return (
     <div 
-      className={`${positionClass} flex flex-1 flex-col items-start p-0 w-full h-full max-w-[300px] flex-shrink-0 ${className}`}
+      className={`${positionClass} flex flex-col items-start p-0 w-full h-[420px] md:h-[450px] lg:h-full max-w-[300px] ${className}`}
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
       style={!isRelative ? {
@@ -31,20 +31,24 @@ export default function HighlightsCard({
       <div className="w-full h-full bg-white rounded-2xl overflow-hidden relative flex flex-col">
         {/* Image Section */}
         {imageSrc && (
-          <div className="box-border w-full flex justify-between rounded-[16px] border-2 border-white relative overflow-hidden h-[215px]">
+          <div className="box-border justify-between rounded-[16px] border-2 border-white relative overflow-hidden h-[300px] md:h-[400px] flex-shrink-0 lg:h-[calc(100vh-320px)]">
     
               <Image
                 src={imageSrc}
                 alt={imageAlt}
                 fill
-                className="object-cover"
+                className="absolute top-0 object-cover"
+                style={{ 
+                  objectPosition: 'center bottom',
+                  transform: 'translateY(-50px)'
+                }}
               />
          
           </div>
         )}
 
         {/* Content Section - Overlapping the image */}
-        <div className="box-border absolute bottom-0 left-0 right-0 flex flex-col items-start p-4 w-full h-[200px] bg-[#F4F6FF] border-2 border-white rounded-t-[24px] rounded-b-2xl z-10 overflow-hidden">
+        <div className="box-border absolute bottom-0 left-0 right-0 flex flex-col items-start p-4 w-full h-[200px] md:h-[210px] lg:h-[200px] bg-[#F4F6FF] border-2 border-white rounded-t-[24px] rounded-b-2xl z-10 overflow-hidden">
           {/* Star Icon */}
           <div 
             className="w-8 h-8 flex-shrink-0 relative cursor-pointer"
@@ -94,4 +98,3 @@ export default function HighlightsCard({
     </div>
   );
 }
-
