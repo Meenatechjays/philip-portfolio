@@ -10,8 +10,10 @@ export default function InvestmentCard({
   title,
   description,
   className = '',
+  isActive = false,
 }) {
   const [isHovered, setIsHovered] = useState(false);
+  const showEffect = isHovered || isActive;
   // Animation variants
   const imageVariants = {
     initial: {
@@ -83,6 +85,7 @@ export default function InvestmentCard({
     <motion.div
       className={`relative w-[280px] lg:w-[360px] h-[400px] mx-5 md:mx-0 md:h-[420px] lg:h-[440px] overflow-hidden rounded-[28px] ${className}`}
       initial="initial"
+      animate={isActive ? "hover" : "initial"}
       whileHover="hover"
       transition={{
         duration: 1,
@@ -158,7 +161,7 @@ export default function InvestmentCard({
             filter: 'blur(12px)',
           }}
           initial={{ opacity: 0 }}
-          animate={{ opacity: isHovered ? 1 : 0 }}
+          animate={{ opacity: showEffect ? 1 : 0 }}
           transition={{
             duration: 1,
             ease: [0.25, 0.1, 0.25, 1],
@@ -189,7 +192,7 @@ export default function InvestmentCard({
         {/* Description */}
         {description && (
           <p className={`text-xs md:text-sm font-satoshi text-[#454654] relative z-20 transition-all duration-1000 leading-relaxed ${
-            !isHovered ? 'line-clamp-2' : ''
+            !showEffect ? 'line-clamp-2' : ''
           }`}>
             {description}
           </p>

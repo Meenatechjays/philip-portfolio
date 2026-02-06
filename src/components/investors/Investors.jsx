@@ -6,20 +6,60 @@ import { motion, useInView } from 'framer-motion';
 
 export default function Investors() {
   const ref = useRef(null);
+  const scrollContainerRef = useRef(null);
   const isInView = useInView(ref, { once: true, amount: 0.1 });
   const [isMobile, setIsMobile] = useState(false);
+  const [activeCardIndex, setActiveCardIndex] = useState(-1);
 
   useEffect(() => {
     const checkMobile = () => {
       setIsMobile(typeof window !== 'undefined' && window.innerWidth < 768);
     };
-    
+
     checkMobile();
     if (typeof window !== 'undefined') {
       window.addEventListener('resize', checkMobile);
       return () => window.removeEventListener('resize', checkMobile);
     }
   }, []);
+
+  // Track which card is closest to viewport center on mobile
+  useEffect(() => {
+    if (!isMobile || !scrollContainerRef.current) return;
+
+    const container = scrollContainerRef.current;
+
+    const updateActiveCard = () => {
+      const containerRect = container.getBoundingClientRect();
+      const centerX = containerRect.left + containerRect.width / 2;
+
+      const cardElements = container.querySelectorAll('[data-card-index]');
+      let closestIndex = 0;
+      let minDistance = Infinity;
+
+      cardElements.forEach((el) => {
+        const rect = el.getBoundingClientRect();
+        const cardCenter = rect.left + rect.width / 2;
+        const distance = Math.abs(centerX - cardCenter);
+        if (distance < minDistance) {
+          minDistance = distance;
+          closestIndex = parseInt(el.dataset.cardIndex);
+        }
+      });
+
+      setActiveCardIndex(closestIndex);
+    };
+
+    container.addEventListener('scroll', updateActiveCard, { passive: true });
+
+    // Activate first card after entrance animation settles
+    const timer = setTimeout(updateActiveCard, 4000);
+
+    return () => {
+      container.removeEventListener('scroll', updateActiveCard);
+      clearTimeout(timer);
+    };
+  }, [isMobile]);
 
   const containerVariants = {
     hidden: {
@@ -93,6 +133,7 @@ export default function Investors() {
       
       {/* Investment Cards Container */}
       <div
+         ref={scrollContainerRef}
          className="overflow-x-auto hide-scrollbar mt-2 md:mt-4 investment-section-bg w-full"
          style={{
            scrollbarWidth: 'none',
@@ -100,25 +141,32 @@ export default function Investors() {
            scrollSnapType: isMobile ? 'x mandatory' : 'none',
          }}
       >
-        <motion.div 
+        <motion.div
           ref={ref}
-          className="flex justify-center items-center gap-6 md:gap-8 lg:gap-10 px-6 md:px-8 lg:px-16 py-2 md:py-3 lg:py-4 bg-none"
+          className={`flex items-center gap-6 md:gap-8 lg:gap-10 py-2 md:py-3 lg:py-4 bg-none ${
+            isMobile ? '' : 'justify-center px-6 md:px-8 lg:px-16'
+          }`}
           variants={containerVariants}
           initial="hidden"
           animate={isInView ? "visible" : "hidden"}
           style={{
             width: 'max-content',
+            ...(isMobile ? {
+              paddingLeft: 'max(24px, calc(50vw - 160px))',
+              paddingRight: 'max(24px, calc(50vw - 160px))',
+            } : {}),
           }}
         >
           {cards.map((card, index) => (
             <motion.div
               key={`card-${index}`}
+              data-card-index={index}
               variants={cardVariants}
               style={{
-                minWidth: '360px',
+                ...(isMobile ? {} : { minWidth: '360px' }),
                 flexShrink: 0,
                 willChange: 'transform, opacity',
-                scrollSnapAlign: isMobile ? 'start' : 'none',
+                scrollSnapAlign: isMobile ? 'center' : 'none',
                 scrollSnapStop: isMobile ? 'always' : 'none',
               }}
             >
@@ -127,6 +175,7 @@ export default function Investors() {
                 imageAlt={card.imageAlt}
                 title={card.title}
                 description={card.description}
+                isActive={isMobile && index === activeCardIndex}
               />
             </motion.div>
           ))}

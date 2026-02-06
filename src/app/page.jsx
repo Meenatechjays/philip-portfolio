@@ -167,7 +167,7 @@ export default function Home() {
         <div id="around-the-world" className="snap-section-auto">
           <AroundTheWorld />
         </div>
-        <div className="snap-section-auto">
+        <div className="snap-section-auto no-snap-mobile">
           <Highlights/>
         </div>
         <div id="investors" className="snap-section">

@@ -414,6 +414,14 @@ html.scroll-snap-disabled {
   }
 }
 
+/* Remove height constraint on mobile but keep snap alignment so section isn't skipped */
+@media (max-width: 1023px) {
+  .no-snap-mobile {
+    min-height: unset !important;
+    height: auto !important;
+  }
+}
+
 /* Scroll snap alignment for variable-height sections (like Contact) */
 .snap-section-start {
   scroll-snap-align: start;

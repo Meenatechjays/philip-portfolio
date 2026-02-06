@@ -266,7 +266,7 @@ export default function Contact() {
         background: 'linear-gradient(180deg, #89BBDD 0%, #FFFFFF 100%)',
       }}
     >
-      <div className="mx-auto w-full pl-5 pt-5 md:px-4 lg:pl-16 lg:pt-0">
+      <div className="mx-auto w-full p-5 md:px-4 lg:pl-16 lg:pt-0">
         <div className="grid grid-cols-1 lg:grid-cols-2 items-center gap-12">
 
           {/* LEFT – CONTACT FORM */}
@@ -280,7 +280,7 @@ export default function Contact() {
             </p>
 
             <form onSubmit={handleSubmit} className="flex flex-col gap-4 max-w-lg">
-              <div className="grid grid-cols-2 gap-3">
+              <div className="grid lg:grid-cols-2 gap-3">
                 <input
                   name="name"
                   value={formData.name}
