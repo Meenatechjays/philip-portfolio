@@ -420,42 +420,64 @@ export default function Timeline() {
   }, [isInView, scrollHijackActive, timelineComplete, currentCardIndex, lastCardIndex, snapToCard, lockWheel]);
 
   // Touch-based scroll hijacking for real mobile devices (during scroll hijack phase)
+  // Handles both vertical (swipe up/down) and horizontal (swipe left/right) to navigate cards
   useEffect(() => {
     if (!isInView || !scrollHijackActive || timelineComplete) return;
 
     const TOUCH_THRESHOLD = 50;
     const LAST_CARD_SCROLL_DELAY = 3000;
+    let touchStartX = null;
     let touchStartY = null;
     let touchHandled = false;
     let released = false;
+    let directionLocked = false;
+    let isHorizontal = false;
 
     const handleTouchStart = (e) => {
+      touchStartX = e.touches[0].clientX;
       touchStartY = e.touches[0].clientY;
       touchHandled = false;
       released = false;
+      directionLocked = false;
+      isHorizontal = false;
     };
 
     const handleTouchMove = (e) => {
-      if (touchStartY === null || released) return;
+      if (touchStartX === null || released) return;
 
-      const deltaY = touchStartY - e.touches[0].clientY; // positive = swipe up (next card)
-      const absDelta = Math.abs(deltaY);
+      const deltaX = touchStartX - e.touches[0].clientX; // positive = swipe left (next)
+      const deltaY = touchStartY - e.touches[0].clientY; // positive = swipe up (next)
+      const absDeltaX = Math.abs(deltaX);
+      const absDeltaY = Math.abs(deltaY);
 
-      if (absDelta < 5) return;
-
-      const direction = deltaY > 0 ? 1 : -1;
-
-      // At first card swiping down - release to previous section
-      if (currentCardIndex === 0 && direction < 0) {
-        released = true;
-        return;
+      // Lock direction on first significant movement
+      if (!directionLocked && (absDeltaX > 10 || absDeltaY > 10)) {
+        directionLocked = true;
+        isHorizontal = absDeltaX > absDeltaY;
       }
 
-      // At last card swiping up - release if delay has passed
-      if (currentCardIndex >= lastCardIndex && direction > 0) {
-        if (lastCardReachedAt.current && (Date.now() - lastCardReachedAt.current >= LAST_CARD_SCROLL_DELAY)) {
+      if (!directionLocked) return;
+
+      // Determine card direction: +1 = next card, -1 = previous card
+      // Horizontal: swipe left = next, swipe right = prev
+      // Vertical: swipe up = next, swipe down = prev
+      const cardDirection = isHorizontal ? (deltaX > 0 ? 1 : -1) : (deltaY > 0 ? 1 : -1);
+      const absDelta = isHorizontal ? absDeltaX : absDeltaY;
+
+      // Boundary checks - only release on vertical swipes (section navigation)
+      if (!isHorizontal) {
+        // At first card swiping down - release to previous section
+        if (currentCardIndex === 0 && cardDirection < 0) {
           released = true;
           return;
+        }
+
+        // At last card swiping up - release if delay has passed
+        if (currentCardIndex >= lastCardIndex && cardDirection > 0) {
+          if (lastCardReachedAt.current && (Date.now() - lastCardReachedAt.current >= LAST_CARD_SCROLL_DELAY)) {
+            released = true;
+            return;
+          }
         }
       }
 
@@ -475,9 +497,9 @@ export default function Timeline() {
       lastScrollTime.current = now;
       lockWheel();
 
-      if (direction > 0 && currentCardIndex < lastCardIndex) {
+      if (cardDirection > 0 && currentCardIndex < lastCardIndex) {
         snapToCard(currentCardIndex + 1, false);
-      } else if (direction < 0 && currentCardIndex > 0) {
+      } else if (cardDirection < 0 && currentCardIndex > 0) {
         snapToCard(currentCardIndex - 1, false);
       }
 
@@ -487,9 +509,12 @@ export default function Timeline() {
     };
 
     const handleTouchEnd = () => {
+      touchStartX = null;
       touchStartY = null;
       touchHandled = false;
       released = false;
+      directionLocked = false;
+      isHorizontal = false;
     };
 
     const section = sectionRef.current;

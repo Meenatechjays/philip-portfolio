@@ -275,7 +275,7 @@ export default function Contact() {
               Get In Touch
             </h2>
 
-            <p className="section-body max-w-md pb-4">
+            <p className="section-body lg:max-w-md pb-4">
               Connect for business opportunities, partnerships, or thought leadership discussions
             </p>
 
