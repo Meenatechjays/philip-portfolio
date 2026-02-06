@@ -35,9 +35,9 @@ export default function AroundTheWorld() {
   const activeIndex = STACKS.findIndex(s => s.id === active);
 
   return (
-    <section className="relative bg-white h-full w-full overflow-hidden">
+    <section className="relative bg-white min-h-full lg:h-full w-full lg:overflow-hidden">
       {/* Single rigid group container - moves both stacks and content together */}
-      <div className="relative w-full h-full">
+      <div className="relative w-full min-h-full lg:h-full">
         {/* LEFT – sliding content (desktop only) */}
         <SlidingPanels
           stacks={STACKS}

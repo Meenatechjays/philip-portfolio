@@ -1,12 +1,25 @@
 'use client';
 
-import { useRef } from 'react';
+import { useRef, useState, useEffect } from 'react';
 import InvestmentCard from '../ui/InvestmentCard';
 import { motion, useInView } from 'framer-motion';
 
 export default function Investors() {
   const ref = useRef(null);
   const isInView = useInView(ref, { once: true, amount: 0.1 });
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    const checkMobile = () => {
+      setIsMobile(typeof window !== 'undefined' && window.innerWidth < 768);
+    };
+    
+    checkMobile();
+    if (typeof window !== 'undefined') {
+      window.addEventListener('resize', checkMobile);
+      return () => window.removeEventListener('resize', checkMobile);
+    }
+  }, []);
 
   const containerVariants = {
     hidden: {
@@ -84,7 +97,7 @@ export default function Investors() {
          style={{
            scrollbarWidth: 'none',
            msOverflowStyle: 'none',
-           scrollSnapType: window.innerWidth < 768 ? 'x mandatory' : 'none',
+           scrollSnapType: isMobile ? 'x mandatory' : 'none',
          }}
       >
         <motion.div 
@@ -105,8 +118,8 @@ export default function Investors() {
                 minWidth: '360px',
                 flexShrink: 0,
                 willChange: 'transform, opacity',
-                scrollSnapAlign: window.innerWidth < 768 ? 'start' : 'none',
-                scrollSnapStop: window.innerWidth < 768 ? 'always' : 'none',
+                scrollSnapAlign: isMobile ? 'start' : 'none',
+                scrollSnapStop: isMobile ? 'always' : 'none',
               }}
             >
               <InvestmentCard

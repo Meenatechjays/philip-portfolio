@@ -419,6 +419,95 @@ export default function Timeline() {
     };
   }, [isInView, scrollHijackActive, timelineComplete, currentCardIndex, lastCardIndex, snapToCard, lockWheel]);
 
+  // Touch-based scroll hijacking for real mobile devices (during scroll hijack phase)
+  useEffect(() => {
+    if (!isInView || !scrollHijackActive || timelineComplete) return;
+
+    const TOUCH_THRESHOLD = 50;
+    const LAST_CARD_SCROLL_DELAY = 3000;
+    let touchStartY = null;
+    let touchHandled = false;
+    let released = false;
+
+    const handleTouchStart = (e) => {
+      touchStartY = e.touches[0].clientY;
+      touchHandled = false;
+      released = false;
+    };
+
+    const handleTouchMove = (e) => {
+      if (touchStartY === null || released) return;
+
+      const deltaY = touchStartY - e.touches[0].clientY; // positive = swipe up (next card)
+      const absDelta = Math.abs(deltaY);
+
+      if (absDelta < 5) return;
+
+      const direction = deltaY > 0 ? 1 : -1;
+
+      // At first card swiping down - release to previous section
+      if (currentCardIndex === 0 && direction < 0) {
+        released = true;
+        return;
+      }
+
+      // At last card swiping up - release if delay has passed
+      if (currentCardIndex >= lastCardIndex && direction > 0) {
+        if (lastCardReachedAt.current && (Date.now() - lastCardReachedAt.current >= LAST_CARD_SCROLL_DELAY)) {
+          released = true;
+          return;
+        }
+      }
+
+      // Not at a releasing boundary - prevent browser scroll immediately
+      e.preventDefault();
+
+      if (touchHandled) return;
+      if (absDelta < TOUCH_THRESHOLD) return;
+
+      touchHandled = true;
+
+      // Throttle
+      const now = Date.now();
+      if (now - lastScrollTime.current < 800 || isScrollingRef.current || isSnapping.current) return;
+
+      isScrollingRef.current = true;
+      lastScrollTime.current = now;
+      lockWheel();
+
+      if (direction > 0 && currentCardIndex < lastCardIndex) {
+        snapToCard(currentCardIndex + 1, false);
+      } else if (direction < 0 && currentCardIndex > 0) {
+        snapToCard(currentCardIndex - 1, false);
+      }
+
+      setTimeout(() => {
+        isScrollingRef.current = false;
+      }, 800);
+    };
+
+    const handleTouchEnd = () => {
+      touchStartY = null;
+      touchHandled = false;
+      released = false;
+    };
+
+    const section = sectionRef.current;
+    if (section) {
+      section.addEventListener('touchstart', handleTouchStart, { passive: true });
+      section.addEventListener('touchmove', handleTouchMove, { passive: false });
+      section.addEventListener('touchend', handleTouchEnd);
+    }
+
+    return () => {
+      if (section) {
+        section.removeEventListener('touchstart', handleTouchStart);
+        section.removeEventListener('touchmove', handleTouchMove);
+        section.removeEventListener('touchend', handleTouchEnd);
+      }
+    };
+  }, [isInView, scrollHijackActive, timelineComplete, currentCardIndex, lastCardIndex, snapToCard, lockWheel]);
+
   // Horizontal carousel scroll handler - only active when timelineComplete is true
   useEffect(() => {
     if (!isInView || !timelineComplete || !scrollContainerRef.current) return;
@@ -467,6 +556,85 @@ export default function Timeline() {
       window.removeEventListener('wheel', handleCarouselWheel);
     };
   }, [isInView, timelineComplete, currentCardIndex, lastCardIndex, snapToCard, lockWheel]);
+
+  // Touch-based horizontal carousel for real mobile devices (after timeline complete)
+  useEffect(() => {
+    if (!isInView || !timelineComplete || !scrollContainerRef.current) return;
+
+    const TOUCH_THRESHOLD = 40;
+    let touchStartX = null;
+    let touchStartY = null;
+    let touchHandled = false;
+    let directionLocked = false;
+    let isHorizontal = false;
+
+    const handleTouchStart = (e) => {
+      touchStartX = e.touches[0].clientX;
+      touchStartY = e.touches[0].clientY;
+      touchHandled = false;
+      directionLocked = false;
+      isHorizontal = false;
+    };
+
+    const handleTouchMove = (e) => {
+      if (touchStartX === null) return;
+
+      // Already handled - keep preventing default if horizontal
+      if (touchHandled) {
+        if (isHorizontal) e.preventDefault();
+        return;
+      }
+
+      const deltaX = touchStartX - e.touches[0].clientX;
+      const deltaY = touchStartY - e.touches[0].clientY;
+
+      // Lock direction on first significant movement
+      if (!directionLocked && (Math.abs(deltaX) > 10 || Math.abs(deltaY) > 10)) {
+        directionLocked = true;
+        isHorizontal = Math.abs(deltaX) > Math.abs(deltaY);
+      }
+
+      if (!directionLocked) return;
+
+      // Vertical swipe - let browser handle (scroll to next/prev section)
+      if (!isHorizontal) return;
+
+      // Horizontal swipe - prevent default and handle card navigation
+      e.preventDefault();
+
+      if (Math.abs(deltaX) < TOUCH_THRESHOLD) return;
+
+      touchHandled = true;
+
+      if (isSnapping.current) return;
+
+      // Swipe left (deltaX > 0) = next card, swipe right (deltaX < 0) = previous card
+      if (deltaX > 0 && currentCardIndex < lastCardIndex) {
+        snapToCard(currentCardIndex + 1, true);
+      } else if (deltaX < 0 && currentCardIndex > 0) {
+        snapToCard(currentCardIndex - 1, true);
+      }
+    };
+
+    const handleTouchEnd = () => {
+      touchStartX = null;
+      touchStartY = null;
+      touchHandled = false;
+      directionLocked = false;
+      isHorizontal = false;
+    };
+
+    const container = scrollContainerRef.current;
+    container.addEventListener('touchstart', handleTouchStart, { passive: true });
+    container.addEventListener('touchmove', handleTouchMove, { passive: false });
+    container.addEventListener('touchend', handleTouchEnd);
+
+    return () => {
+      container.removeEventListener('touchstart', handleTouchStart);
+      container.removeEventListener('touchmove', handleTouchMove);
+      container.removeEventListener('touchend', handleTouchEnd);
+    };
+  }, [isInView, timelineComplete, currentCardIndex, lastCardIndex, snapToCard]);
 
   // Mark timeline as complete when user reaches last card
   useEffect(() => {

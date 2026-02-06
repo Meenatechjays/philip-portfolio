@@ -164,7 +164,7 @@ export default function Home() {
           <Timeline />
           {/* <TimelineTestPage /> */}
         </div>
-        <div id="around-the-world" className="snap-section">
+        <div id="around-the-world" className="snap-section-auto">
           <AroundTheWorld />
         </div>
         <div className="snap-section-auto">

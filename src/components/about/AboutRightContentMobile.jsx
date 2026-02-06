@@ -185,6 +185,93 @@ export default function AboutRightContentMobile({ isVisible = true }) {
     };
   }, [isInView, scrollHijackActive, isMounted, currentIndex, lastItemIndex]);
 
+  // Touch-based scroll hijacking for real mobile devices
+  useEffect(() => {
+    if (!isInView || !scrollHijackActive || !isMounted) return;
+
+    const TOUCH_THRESHOLD = 50;
+    const LAST_SLIDE_SCROLL_DELAY = 3500;
+    let touchStartY = null;
+    let touchHandled = false;
+    let released = false;
+
+    const handleTouchStart = (e) => {
+      touchStartY = e.touches[0].clientY;
+      touchHandled = false;
+      released = false;
+    };
+
+    const handleTouchMove = (e) => {
+      if (touchStartY === null || released) return;
+
+      const deltaY = touchStartY - e.touches[0].clientY; // positive = swipe up (scroll down)
+      const absDelta = Math.abs(deltaY);
+
+      // Need at least a small movement to detect direction reliably
+      if (absDelta < 5) return;
+
+      const direction = deltaY > 0 ? 1 : -1;
+
+      // Check boundaries EARLY (before threshold) to decide: hijack or release
+      // At first slide swiping down - release to let browser scroll to previous section
+      if (currentIndex === 0 && direction < 0) {
+        released = true;
+        return;
+      }
+
+      // At last slide swiping up - release if delay has passed
+      if (currentIndex >= lastItemIndex && direction > 0) {
+        if (lastSlideReachedAt.current && (Date.now() - lastSlideReachedAt.current >= LAST_SLIDE_SCROLL_DELAY)) {
+          released = true;
+          return;
+        }
+      }
+
+      // NOT at a releasing boundary - prevent browser scroll immediately
+      // This must happen before threshold to stop the browser from starting native scroll
+      e.preventDefault();
+
+      // Already changed slide for this gesture
+      if (touchHandled) return;
+
+      // Wait for full threshold before changing slide
+      if (absDelta < TOUCH_THRESHOLD) return;
+
+      touchHandled = true;
+
+      if (isScrolling.current) return;
+
+      setAnimationDirection(direction);
+      isScrolling.current = true;
+      setCurrentIndex(Math.max(0, Math.min(currentIndex + direction, lastItemIndex)));
+
+      setTimeout(() => {
+        isScrolling.current = false;
+      }, 500);
+    };
+
+    const handleTouchEnd = () => {
+      touchStartY = null;
+      touchHandled = false;
+      released = false;
+    };
+
+    const section = sectionRef.current;
+    if (section) {
+      section.addEventListener('touchstart', handleTouchStart, { passive: true });
+      section.addEventListener('touchmove', handleTouchMove, { passive: false });
+      section.addEventListener('touchend', handleTouchEnd);
+    }
+
+    return () => {
+      if (section) {
+        section.removeEventListener('touchstart', handleTouchStart);
+        section.removeEventListener('touchmove', handleTouchMove);
+        section.removeEventListener('touchend', handleTouchEnd);
+      }
+    };
+  }, [isInView, scrollHijackActive, isMounted, currentIndex, lastItemIndex]);
+
   // Animation variants - direction aware
   const getContentVariants = (direction) => ({
     initial: { 

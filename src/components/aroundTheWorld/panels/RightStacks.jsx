@@ -29,8 +29,8 @@ export default function RightStacks({ stacks, active, onChange, activeIndex, ope
   return (
     <>
       {/* Mobile/Tablet Accordion (max-width: 1024px) */}
-      <div className="lg:hidden absolute left-0 top-0 w-full h-full z-[20] pointer-events-none overflow-y-auto">
-        <div className="flex flex-col min-h-full">
+      <div className="lg:hidden relative w-full min-h-full z-[20]">
+        <div className="flex flex-col w-full">
           {stacks.map((stack, index) => {
             const isOpen = openAccordions[stack.id];
             const isActive = active === stack.id;
@@ -38,7 +38,6 @@ export default function RightStacks({ stacks, active, onChange, activeIndex, ope
             return (
               <div
                 key={stack.id}
-                className="pointer-events-auto"
               >
                 <button
                   onClick={() => toggleAccordion(stack.id)}
@@ -68,7 +67,7 @@ export default function RightStacks({ stacks, active, onChange, activeIndex, ope
                 {/* Accordion Content */}
                 <div
                   className={`overflow-hidden transition-all duration-300 ease-in-out ${
-                    isOpen ? 'max-h-[2000px] opacity-100' : 'max-h-0 opacity-0'
+                    isOpen ? 'max-h-none opacity-100' : 'max-h-0 opacity-0'
                   }`}
                 >
                   <div className="bg-white px-4 py-6">
